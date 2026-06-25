@@ -38,7 +38,7 @@ Decisions and reasoning belong in the artifact you produced (`plan.md` Decision 
 
 You are turn-based, **not a daemon**. While idle you execute nothing and send nothing — any OS process you launched in the background is unsupervised, may die when your turn ends, and there is no live *you* left to observe it finish and message the result. Therefore:
 
-- **Never background a long command and end your turn promising to report when it finishes.** That message can never be sent — the team-lead would wait on a phantom run forever (this has actually happened with a `dotnet test` category run). Run it in the **foreground**, block until it exits, and only then send your done-report and go idle.
+- **Never background a long command and end your turn promising to report when it finishes.** That message can never be sent — the team-lead would wait on a phantom run forever (this has actually happened with a long test-suite run). Run it in the **foreground**, block until it exits, and only then send your done-report and go idle.
 - A multi-minute test or build is still **one turn's work** — wait it out in-turn. "Monitor armed / run in progress" is not a deliverable; the recorded result (pass/fail counts) is.
 - If a run genuinely cannot complete in a single turn, **andon-cord the team-lead and say so** — never fake async completion by going idle mid-run.
 

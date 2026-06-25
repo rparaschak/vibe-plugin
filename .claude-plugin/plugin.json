@@ -1,5 +1,7 @@
 {
   "name": "vibe",
+  "version": "0.1.0",
   "description": "Feature planning, implementation, and knowledge-distillation harness",
-  "author": { "name": "Roman Paraschak" }
+  "author": { "name": "Roman Paraschak" },
+  "keywords": ["planning", "implementation", "orchestration", "agents", "workflow"]
 }

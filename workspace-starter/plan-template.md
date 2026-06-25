@@ -75,7 +75,7 @@ pre-name NEW files/components — the engineer owns naming (plan intent binds, n
 ⚠️ = a choice that needs YOUR call before /vibe:implement (new tool/library/subsystem, or a
 constitution deviation) — give options + a recommendation. Any ⚠️ left open → Open Questions.
 
-Platform (Article V):
+Platform (the constitution's platform/feature split):
 - A NEW subsystem/wrapper → its own Platform task (T-9xx) + a paired platform test task, built and
   green before the BE/FE blocks. Test OUR wrapper, never the installed package. A NEW tool/library
   is ⚠️ (you decide). If it's big enough to blow this plan's budget, it becomes its OWN separate
@@ -88,7 +88,7 @@ Platform (Article V):
 
 - [decision — 1-line driver]
 - ⚠️ [new tool / library / subsystem, or constitution deviation — options + recommendation]
-- **Constitution**: ✅ all clear  (or: ⚠️ Article N — why + how it's justified)
+- **Constitution**: ✅ all clear  (or: ⚠️ <which rule> — why + how it's justified)
 
 ### FE *(architect — frontend; append here, never edit BE content)*
 

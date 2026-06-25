@@ -1,9 +1,9 @@
 # Constitution
 
 > **Starter file — adapt to your project.** This ships with the `vibe` plugin as a starting point.
-> The vibe harness hard-references some article *numbers* (Article V = Platform vs Feature;
-> Articles VI–VII = the test/QA gates; Article VIII = build clean; reviewers check "Articles I–V").
-> Keep those slots meaningful when you edit; renumbering them silently breaks those references.
+> The vibe harness binds to the **concepts** in your constitution — the platform-vs-feature split, the
+> test/QA gates, the build-clean gate — **not** to specific article numbers. Number and structure this
+> file however you like; just keep those concepts stated somewhere a plan's Constitution line can cite.
 > Replace the stack-specific wording below (paths, commands, tools) with your project's reality.
 
 Non-negotiable rules for this project. Loaded by every vibe phase. Gated explicitly by `/vibe:plan` — any violation must be justified on the plan's `## Architecture` Constitution line (⚠️ + why), otherwise the plan is incomplete.

@@ -25,7 +25,7 @@ Resolved by name at runtime. Most are **per-domain** (`<domain>-architecture`, `
   - **Starter: ✅** `workspace-starter/environment-sample.md` — currently a Go/`make` backend + `yarn` frontend monorepo; adapt per repo.
 
 - [ ] **`product-design`** *(needed only if the repo has a UI)* — the other **repo-level** skill: the app's UX/UI conventions (design system, component library, layout/interaction patterns) the `product-designer` proposes against. Resolved by name by the **`product-designer`** agent; if absent, it proposes from the existing UI alone.
-  - **Starter: —** (none yet; author from the repo's existing UI and design system).
+  - **Starter: ✅** `workspace-starter/product-design-sample.md` — adapt to the repo's design system, component library, and interaction patterns.
 
 ## Documents (`.workspace/`)
 

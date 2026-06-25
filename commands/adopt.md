@@ -37,7 +37,7 @@ Resolve the starter seeds the same way: `$CLAUDE_PLUGIN_ROOT/workspace-starter/<
 ### 1. Load the contract & detect domains
 
 - Resolve + read `$CLAUDE_PLUGIN_ROOT/CHECKLIST.md`; extract the item list and each item's starter seed path.
-- **Detect the repo's domains/stacks** from signals: `go.mod` / `api/` → a backend domain; `package.json` / `web/` / `tsconfig.json` → a frontend domain; other markers (mobile, etc.) → that domain. A repo with no UI has no frontend domain and likely doesn't need `product-design`.
+- **Detect the repo's domains/stacks** from signals (common examples, not exhaustive): a backend manifest (`go.mod` / `pom.xml` / `Cargo.toml` / `requirements.txt` / `*.csproj` …) or an `api/`-style dir → a backend domain; a `package.json` / `tsconfig.json` or a web app dir → a frontend domain; other markers (mobile, etc.) → that domain. A repo with no UI has no frontend domain and likely doesn't need `product-design`.
 - **Confirm with the user** via `AskUserQuestion`: the domains you detected, editable (add/remove). The confirmed set drives everything downstream.
 - **Expand** every `<domain>-*` item per confirmed domain (e.g. `backend-architecture`, `frontend-architecture`, `backend-testing`, …). Repo-level items (`environment`, `product-design`, `constitution.md`, MCPs) stay singular.
 
@@ -74,7 +74,7 @@ Domains: <e.g. backend, frontend>
 - [ ] frontend-architecture — ❌ missing · seed: workspace-starter/architecture-sample.md (adapt for frontend)
 - [ ] environment — ❌ missing · candidate: Makefile, package.json · seed: workspace-starter/environment-sample.md
 - [~] backend-review — ➖ optional, not present · seed: workspace-starter/review-checklist-sample.md
-- [~] product-design — ➖ optional (UI repos) · seed: —
+- [~] product-design — ➖ optional (UI repos) · seed: workspace-starter/product-design-sample.md
 
 ## Documents (.workspace/)
 - [x] constitution.md — ✅

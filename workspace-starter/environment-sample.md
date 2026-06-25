@@ -1,6 +1,8 @@
 # Development Environment
 
-If you are in Claude Web environment(CLAUDE_CODE_WEB=1) then use `claude-code-web` skill. It explains how to operate there.
+<!-- If this repo operates differently in a specific environment (e.g. a hosted web/CI sandbox), point here
+to the skill or doc that explains how to bring things up there. -->
+
 
 ## Backend
 

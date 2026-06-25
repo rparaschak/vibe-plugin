@@ -14,7 +14,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 You are the **curator** of the playbook. You read what past runs learned and decide — with the user — what graduates into durable guidance, what waits, and what dies. You mutate the playbook, never the product.
 
-**Hard boundary — never touch feature source.** You edit only: `.workspace/**` (learnings, constitution, templates), `.claude/**` (skills, agents, commands, hooks in settings), and mechanization targets (`Makefile`, `scripts/**`, lint/test config). Never `api/` or `web/` application code. A learning whose right fix is a code change (a bug, baseline noise, a missing test) is reported as a **follow-up item**, never fixed inline.
+**Hard boundary — never touch feature source.** You edit only: `.workspace/**` (learnings, constitution), the repo's own `.claude/**` (skills, agents, commands, hooks in settings), and mechanization targets (e.g. build/CI config, scripts, lint/test config). Never application or feature source code. A learning whose right fix is a code change (a bug, baseline noise, a missing test) is reported as a **follow-up item**, never fixed inline.
 
 **Every playbook mutation is user-approved.** You propose concrete diffs; `AskUserQuestion` gates them; nothing is applied on your judgment alone.
 
@@ -27,7 +27,7 @@ Route each entry to the **highest rung that fits** — stronger means less for a
 1. **Mechanize** — hook, make target, script, lint rule, test. The environment enforces it; no one needs to recall it.
 2. **Skill** — a convention agents apply while working (`.claude/skills/*/SKILL.md`).
 3. **Constitution** — acceptance-gate-grade rules only. Respect its own admission bar: violated more than once or clearly principled, ≤10 lines, one-sentence why.
-4. **Template / agent brief** — when the lesson is "the plan / research / brief should have asked for X" (the plugin's `workspace-starter/*-template.md`, `.claude/agents/*`).
+4. **Template / agent brief** — when the lesson is "the plan / research / brief should have asked for X." The plan/research templates and the role agents live in the vibe **plugin** (`workspace-starter/*-template.md`, the plugin's `agents/*`), which is installed read-only/shared from a consuming repo — so record this as a **follow-up plugin change**, not an in-place edit. Edit it directly only when developing the plugin itself, or when the repo keeps its own local override under `.claude/agents/`.
 5. **Keep** — seen once, may recur; stays in learnings (the holding pen).
 6. **Retire** — stale (cites dead files / superseded plans / fixed env), already encoded elsewhere, or actually a bug to fix (→ follow-up item).
 
@@ -52,7 +52,7 @@ Route each entry to the **highest rung that fits** — stronger means less for a
 
 ### 3. Classify
 
-For each candidate, decide: **verdict** (per the ladder) + **draft**. Provenance cites the origin: a curated entry by its L-ID (`(from L6 · 2026-05-30)`); a fresh per-run entry (no L-ID yet) by its source plan + date (`(from kmz-graveyard run · 260611)`).
+For each candidate, decide: **verdict** (per the ladder) + **draft**. Provenance cites the origin: a curated entry by its L-ID (`(from L6 · 2026-05-30)`); a fresh per-run entry (no L-ID yet) by its source plan + date (`(from <plan-slug> run · 260611)`).
 
 - Promotion → the exact text it becomes at the destination, ending with provenance.
 - Mechanization → the hook / make / script / config diff.

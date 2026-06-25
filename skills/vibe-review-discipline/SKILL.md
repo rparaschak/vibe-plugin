@@ -54,5 +54,5 @@ Findings — <Platform | BE | FE> block:
 
 - Review only the block you were assigned. Don't review unrelated pre-existing code.
 - Don't re-review files you already approved in a prior cycle unless the fix touched them.
-- Before flagging a contract, env var, or behavior from an older plan as broken or missing, check that plan's header `Status` — **Superseded** plans' contracts are obsolete by design, not findings. Supersession is the #1 source of false findings. (from L11 · 2026-06-06)
-- A finding may already be satisfied in the working tree — a reviewer can race the engineer's in-flight writes. Fix engineers verify each finding against current code before changing anything; the team-lead arbitrates a disputed finding by re-review, not a blind re-fix. (from L19 · 2026-06-16)
+- Before flagging a contract, env var, or behavior from an older plan as broken or missing, check that plan's header `Status` — **Superseded** plans' contracts are obsolete by design, not findings. Supersession is the #1 source of false findings.
+- A finding may already be satisfied in the working tree — a reviewer can race the engineer's in-flight writes. Fix engineers verify each finding against current code before changing anything; the team-lead arbitrates a disputed finding by re-review, not a blind re-fix.

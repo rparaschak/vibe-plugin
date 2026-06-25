@@ -75,7 +75,7 @@ For each block in order:
 
 - Set the block's **impl** tasks (owner `platform` / `be-eng` / `fe-eng`) to `In Progress`.
 - **Dispatch to the `engineer`**: its **domain** (backend / frontend — so it resolves the matching `<domain>-architecture` skill), its block, the plan path, the constitution path, the `research.md` path (if present), and its impl Task IDs. It reads its own block and decomposes internally.
-- **Platform**: brief it to build the subsystem feature-agnostic (Article V) and include any fake/mock the subsystem needs to be drivable in tests, as part of the Task.
+- **Platform**: brief it to build the subsystem feature-agnostic (the constitution's platform/feature split) and include any fake/mock the subsystem needs to be drivable in tests, as part of the Task.
 - **Consuming a prior block's contracts** (e.g. FE on BE): the brief MUST remind it to run its domain's codegen / client-regen step (project-supplied — see its `<domain>-architecture` / `environment` skill) before consuming those contracts.
 - Wait for the done reply.
 
@@ -129,7 +129,7 @@ For each block in order:
   - Any plan that now has its dependency satisfied and is ready to run next (don't auto-chain).
 
 - **Blocked** (any task `Blocked`, **or the testing gate above is not met** — including when E2E / manual QA could not be executed) → set `Status: Blocked — Implement`. In the plan header, directly under the Status line, write a short **`Blocked — Implement`** note that states:
-  - **Why** it's blocked (verbatim reason — e.g. "E2E + manual QA could not run: Postgres/MinIO images unreachable in this environment").
+  - **Why** it's blocked (verbatim reason — e.g. "E2E + manual QA could not run: required infra images unreachable in this environment").
   - **What was NOT done / not verified** — an explicit checklist (e.g. `- [ ] BE integration suite executed`, `- [ ] FE E2E suite run green`, `- [ ] manual QA click-through (`QA pass`)`), so a resume knows exactly what remains.
   - **What IS done** (built + reviewer-approved + which test layers actually ran green), so a resume picks up cleanly.
 

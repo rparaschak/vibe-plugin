@@ -22,7 +22,7 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 
 | Command | What it does |
 |---|---|
-| 🔌 `/vibe:adopt` | **Onboarding.** Reads the project-setup contract (`CHECKLIST.md`), detects what the repo already supplies vs. what's missing, records it in `.workspace/adoption-checklist.md`, then walks the gaps with the user — each project skill is authored by hand or drafted by exploring the repo. Goal: close the whole list. Resumable. |
+| 🔌 `/vibe:adopt` | **Onboarding.** Reads the project-setup contract (`CHECKLIST.md`), detects what the repo already supplies vs. what's missing, records it in `.workspace/adoption-checklist.md`, then walks the gaps with the user — each project skill is reused from an existing guideline (the repo may already have one under another name), authored by hand, or drafted by exploring the repo. Goal: close the whole list. Resumable. |
 | 🔌 `/vibe:plan` | Team-lead for **planning**. Researches the codebase into a cited `research.md`, frames behaviors, gates them with an adversarial critic, sizes the work, decomposes into one-team-sized plans, then designs data model + architecture + tasks + tests. Produces `plan.md`. Never touches code. |
 | 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. |
 | 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
@@ -37,7 +37,7 @@ The flows are hardcoded in the command files. They reference 📁 artifacts (con
 `read contract (CHECKLIST.md) → detect & confirm domains → probe what exists → write adoption-checklist.md → close gaps point-by-point → finalize`
 
 - Reads the plugin's `CHECKLIST.md` as the canonical required-item list (single source of truth — no hardcoded list to drift).
-- Per gap, the user chooses (via `AskUserQuestion`): **author it myself**, **explore & propose** (a `codebase-researcher` maps the repo's real conventions; the command drafts a `SKILL.md` from the matching `*-sample.md` seed + findings, for the user to approve), or **skip**.
+- Per gap, the user chooses (via `AskUserQuestion`): **reuse an existing guideline** (when the repo already has one under another name — as a shallow pointer skill or compacted into a skill), **author it myself**, **explore & propose** (a `codebase-researcher` maps the repo's real conventions; the command drafts a `SKILL.md` from the matching `*-sample.md` seed + findings, for the user to approve), or **skip**.
 - Writes only `.workspace/adoption-checklist.md` (durable, resumable state) and — on approval — `.claude/skills/<name>/SKILL.md` / `.workspace/constitution.md`. Never touches code; never installs MCP tooling (it gives the steps).
 
 ### `/vibe:plan` flow
@@ -78,7 +78,7 @@ The flows are hardcoded in the command files. They reference 📁 artifacts (con
 
 ## 3. Agents
 
-All **8** live in `agents/`. The agent **definitions** are 🔌. Each declares its 🔌 skills in the `skills:` frontmatter; the four role agents also resolve 📁 project skills **by name at runtime** (the domain comes from the dispatch brief). No agent hardcodes environment commands or ports — those are resolved from the project's `environment` skill.
+All **8** live in `agents/`. The agent **definitions** are 🔌. Each declares its 🔌 skills in the `skills:` frontmatter; six of them also resolve 📁 project skills **by name at runtime** — the four domain-generic roles resolve their `<domain>-*` skills (the domain comes from the dispatch brief), and `product-designer` / `qa-engineer` resolve the repo-level `product-design` / `environment` skills. No agent hardcodes environment commands or ports — those are resolved from the project's `environment` skill.
 
 | Agent | 🔌 Plugin skills | 📁 Project skills (resolved by name) | What it does |
 |---|---|---|---|
@@ -157,6 +157,7 @@ Everything in `workspace-starter/` ships with the plugin. Two kinds:
 | 🔌 `workspace-starter/review-checklist-sample.md` | sample | Seed for a `<domain>-review` checklist. |
 | 🔌 `workspace-starter/environment-sample.md` | sample | Seed for the repo-level `environment` skill. |
 | 🔌 `workspace-starter/constitution-sample.md` | sample | Seed for `.workspace/constitution.md`. |
+| 🔌 `workspace-starter/product-design-sample.md` | sample | Seed for the repo-level `product-design` skill (UI repos). |
 
 > No `learnings-template.md` ships. The learnings format is described inline by `/vibe:implement` and `/vibe:distill` (one dated line per lesson; L-IDs assigned at distill). Add one only if that format ever needs to be enforced as a file.
 
@@ -181,7 +182,7 @@ The per-repo playbook, read/written by the commands and discovered at runtime re
 - 4 commands + their flows (`adopt`, `plan`, `implement`, `distill`)
 - 8 agent definitions (4 domain-generic roles + 4 fixed roles)
 - 6 bundled skills (all clean — no hardcoded project specifics)
-- `workspace-starter/` scaffold: 2 runtime templates + 5 sample seeds
+- `workspace-starter/` scaffold: 2 runtime templates + 6 sample seeds
 
 **📁 Project (authored once per consuming repo — see [`CHECKLIST.md`](CHECKLIST.md)):**
 - Per-domain skills: `<domain>-architecture`, `<domain>-testing`, `<domain>-review` *(optional)*
@@ -191,6 +192,5 @@ The per-repo playbook, read/written by the commands and discovered at runtime re
 **⚠️ External tooling (installed/connected in the repo):**
 - `codegraph` MCP, Playwright MCP
 
-**Remaining harness limits (in the command files, not the agents):**
+**Remaining harness limit (in the command files, not the agents):**
 - The **Platform → BE → FE** block order and the **backend → frontend** design sequence are hardcoded in `plan.md` / `implement.md`. The role *agents* are domain-generic, but admitting a brand-new top-level domain (e.g. mobile) into the *flow* still needs a command edit.
-- A few residual constitution **article-number** references survive in the harness (`implement.md`, `plan-template.md`) and the `constitution-sample.md` header, even though the agents and skills are otherwise decoupled from article numbers.
