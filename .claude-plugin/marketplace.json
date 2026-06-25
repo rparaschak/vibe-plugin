@@ -1,0 +1,7 @@
+{
+  "name": "vibe",
+  "owner": { "name": "Roman Paraschak" },
+  "plugins": [
+    { "name": "vibe", "source": "./", "description": "Vibe planning & implementation harness" }
+  ]
+}
