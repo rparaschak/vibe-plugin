@@ -1,6 +1,6 @@
 ---
 name: vibe-team-communication-protocol
-description: Rules for how agents in a vibe team talk to each other via SendMessage — channel discipline, message shape, status reporting, escalation — plus the solo fallback when team tools are absent (the returned result is the channel). Applies in every phase that spawns workers (plan, implement).
+description: Rules for how agents in a vibe team talk to each other via SendMessage — channel discipline, message shape, status reporting, escalation. Applies in every phase that spawns workers (plan, implement).
 ---
 
 # Team communication protocol
@@ -57,14 +57,6 @@ Stop and escalate to team-lead the moment you see:
 - A blocker you cannot resolve.
 
 Send one message describing what you saw and stop. Do not try to fix structural problems by guessing.
-
-## When team tools are absent (solo mode)
-
-You may be spawned as a single-shot subagent with no `SendMessage`. Everything above still applies, with one substitution: **your returned result is your only message** — same shapes, same discipline.
-
-- Reply with the same done / findings formats. One terse result; the file you produced is the channel, not the reply.
-- A blocker or andon you'd normally escalate → finish what you safely can, then end your result with `BLOCKED / NEED: <one line>` plus what's already done, so a successor can resume from the working tree. The lead answers by spawning that successor — there is no second message to you.
-- On-call peers don't exist here. A design-intent question you'd ask an architect goes into `BLOCKED / NEED:` instead — never guess past it, never wait for a reply.
 
 ## Role boundaries
 

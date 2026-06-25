@@ -84,13 +84,13 @@ Platform (Article V):
   task that needs it; no separate task, architect decides.
 -->
 
-### BE *(backend-architect)*
+### BE *(architect — backend)*
 
 - [decision — 1-line driver]
 - ⚠️ [new tool / library / subsystem, or constitution deviation — options + recommendation]
 - **Constitution**: ✅ all clear  (or: ⚠️ Article N — why + how it's justified)
 
-### FE *(frontend-architect — append here, never edit BE content)*
+### FE *(architect — frontend; append here, never edit BE content)*
 
 - [decision — 1-line driver]
 
@@ -98,11 +98,11 @@ Platform (Article V):
 
 <!-- Inventory the implement-phase test engineers write against the built code. Each cites a behavior. -->
 
-### BE *(backend-architect)*
+### BE *(architect — backend)*
 
 - [what's verified] · B-001
 
-### FE *(frontend-architect)*
+### FE *(architect — frontend)*
 
 - [what's verified] · B-002
 
@@ -134,9 +134,9 @@ None
 
 <!--
 Flat list, sized so ONE team builds this plan in one pass. Order: Platform (T-9xx) → BE (T-0xx) →
-FE (T-1xx). The team builds each block and makes it green before the next; the FE engineer runs
-`cd web && npm run update-api-client` before consuming this plan's BE contracts. This table is the
-ONLY thing /vibe:implement mutates.
+FE (T-1xx). The team builds each block and makes it green before the next; an engineer consuming a prior
+block's contracts runs its domain's codegen/client-regen step (project-supplied) first. This table
+is the ONLY thing /vibe:implement mutates.
 
 - A Task is ONE coherent deliverable (a CRUD endpoint group; a page WITH its hooks + sub-components).
 - A Task CELL is 1–2 lines: the deliverable + what it Delivers. Design detail (pipelines, wiring,

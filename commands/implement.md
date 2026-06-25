@@ -19,12 +19,7 @@ You are the **team-lead** for the implement phase. **You only orchestrate.** You
 - The engineers and test engineers write code and tests; the reviewers read and judge (never edit). You dispatch and track.
 - **You edit only the Tasks table, at finalize the header `Status` line (+ its `Verified` / `Blocked — Implement` note), and this run's own `.workspace/plans/<this-plan>/learnings.md`.** You never touch the plan's design body, and never the curated `.workspace/learnings.md` (only `/vibe:distill` writes that).
 
-**Dispatch through the right orchestration skill. Agent teams are the default.** Check whether `SendMessage` is available:
-
-- Available (the default) → follow **vibe-team-orchestration**.
-- Unavailable (fallback — some headless/cron contexts, or the agent-teams experimental flag is off) → follow **vibe-solo-orchestration**.
-
-That skill defines how you **dispatch a unit of work to a role** and how each worker gets its code context. Throughout this command, **"dispatch to \<role\>"** means the dispatch primitive from the loaded skill. The phase algorithm below is identical either way — only dispatch differs. Briefs are short; "done" replies follow the **vibe-team-communication-protocol** done-format; agents andon-cord on unexpected state.
+**Dispatch through `vibe-team-orchestration`** — it defines how you **dispatch a unit of work to a role** and how each worker gets its code context. Throughout this command, **"dispatch to \<role\>"** means that skill's dispatch primitive. Briefs are short; "done" replies follow the **vibe-team-communication-protocol** done-format; agents andon-cord on unexpected state.
 
 ## Execution model
 
@@ -65,10 +60,10 @@ That skill defines how you **dispatch a unit of work to a role** and how each wo
 
 ### 4. Set up the roles
 
-The roles the plan's blocks need (per the loaded orchestration skill — in team mode spawn each as a named `Agent` when its block is first reached, on-call peers only once a design question arises; in solo mode just note which subagent types you'll spawn):
+The roles the plan's blocks need (per `vibe-team-orchestration` — spawn each as a named `Agent` when its block is first reached, on-call peers only once a design question arises):
 
-- **Platform / BE blocks** — `backend-engineer`, `backend-test-engineer`, `backend-reviewer`; plus the `architect` (backend domain — on-call in team mode). Workers use `codegraph` for code lookups.
-- **FE block** — `frontend-engineer`, `frontend-test-engineer` (component **and** Playwright E2E specs), `frontend-reviewer`, `qa-engineer` (manual click-through of the running app); plus the `architect` (frontend domain — on-call in team mode).
+- **Platform / BE blocks** — the `engineer` (backend domain), the `test-engineer` (backend domain), the `reviewer` (backend domain); plus the `architect` (backend domain — on-call). Workers use `codegraph` for code lookups.
+- **FE block** — the `engineer` (frontend domain), the `test-engineer` (frontend domain — writes the component + E2E layers), the `reviewer` (frontend domain), `qa-engineer` (manual click-through of the running app); plus the `architect` (frontend domain — on-call).
 
 Include only the stacks the plan actually uses. A genuinely wrong design is an andon to you, not an edit.
 
@@ -79,15 +74,15 @@ For each block in order:
 #### 5a. Implement
 
 - Set the block's **impl** tasks (owner `platform` / `be-eng` / `fe-eng`) to `In Progress`.
-- **Dispatch to the engineer**: its block, the plan path, the constitution path, the `research.md` path (if present), and its impl Task IDs. It reads its own block and decomposes internally.
+- **Dispatch to the `engineer`**: its **domain** (backend / frontend — so it resolves the matching `<domain>-architecture` skill), its block, the plan path, the constitution path, the `research.md` path (if present), and its impl Task IDs. It reads its own block and decomposes internally.
 - **Platform**: brief it to build the subsystem feature-agnostic (Article V) and include any fake/mock the subsystem needs to be drivable in tests, as part of the Task.
-- **FE**: the brief MUST remind it to run `cd web && npm run update-api-client` before consuming this plan's backend contracts.
+- **Consuming a prior block's contracts** (e.g. FE on BE): the brief MUST remind it to run its domain's codegen / client-regen step (project-supplied — see its `<domain>-architecture` / `environment` skill) before consuming those contracts.
 - Wait for the done reply.
 
 #### 5b. Test
 
 - Set the block's **test** task (owner `be-test` / `fe-test`) to `In Progress`.
-- **Dispatch to the test engineer** (a fresh context): write the block's Test behaviors against the implementation; report green/red.
+- **Dispatch to the `test-engineer`** (a fresh context): its **domain** (backend / frontend — so it resolves the matching `<domain>-testing` skill), the block's Test behaviors, and the plan path. It writes every test layer the domain defines against the implementation and reports green/red per layer.
 - **Platform**: drive the subsystem's real mechanism against real infra; use the engineer's fake only for the external edge — never test the installed package.
 - **FE**: the test engineer also writes Playwright **E2E specs** for the block's user-facing behaviors and **runs them green** via `make api-run` + `make web-run` (backgrounded) + `make e2e`. Report both layers with **verbatim run results** — component pass/fail counts AND the E2E run outcome. Writing the specs is not enough; an E2E layer that was not executed is reported as **not run**, and the block cannot be closed on it (it becomes a blocked-finalize reason in step 6).
 - Wait for the reply. If red on an impl defect, route it as a finding in 5c.
@@ -102,7 +97,7 @@ For each block in order:
 #### 5d. Fix loop
 
 - Reviewer **approved**, `qa-engineer` returned `QA pass` (user-facing blocks), and tests green (**actually executed** — integration for BE/Platform, **E2E run green** for FE) → 5e.
-- **Findings** (from the reviewer OR `qa-engineer`): set the impl task(s) back to `In Progress`, **re-dispatch to the engineer** with the findings verbatim, let it fix, re-dispatch the reviewer and (for QA findings) `qa-engineer` (5c). The engineer's fix reply must state **`covered behavior changed: yes | no`** — you never read code to judge this yourself. On `yes`, re-run the test engineer (5b) and, for FE, `qa-engineer` too — a fix invalidates that layer's earlier green/`QA pass`. (Per the orchestration skill: team mode re-messages the same standing engineer via `SendMessage`; solo mode spawns a fresh engineer with the findings + a note that prior work is already in the working tree.)
+- **Findings** (from the reviewer OR `qa-engineer`): set the impl task(s) back to `In Progress`, **re-dispatch to the engineer** with the findings verbatim, let it fix, re-dispatch the reviewer and (for QA findings) `qa-engineer` (5c). The engineer's fix reply must state **`covered behavior changed: yes | no`** — you never read code to judge this yourself. On `yes`, re-run the test engineer (5b) and, for FE, `qa-engineer` too — a fix invalidates that layer's earlier green/`QA pass`. (Re-message the same standing engineer via `SendMessage` with the findings.)
 - Cap at **3 fix cycles**. If still not approved, set the unresolved tasks `Blocked`, stop, and report (step 6, blocked variant).
 
 #### 5e. Close the block
@@ -125,7 +120,7 @@ For each block in order:
   1. **Capture learnings first** (the bullet below) so `learnings.md` is written while the plan dir is still in place.
   2. **Archive the plan.** Move the entire plan dir (`plan.md`, `research.md`, `learnings.md`, anything alongside) from `.workspace/plans/<plan>/` to `.workspace/plans/archive/<plan>/` (create `.workspace/plans/archive/` if absent; use `git mv` so history is preserved). The dir keeps its `yymmdd-slug` name. Do this only on a true Implemented finalize — never archive a `Blocked — Implement` plan.
   3. **Commit the run's work** on the current branch — `git add -A` + one descriptive message naming the plan slug and what was implemented. The commit captures the status flip, the learnings, and the archive move together. Commit only: never push, never open a PR.
-  4. **Shut down the team.** Tear down per the orchestration skill (team mode: dismiss every teammate — the team's files are cleaned up automatically on session end, there is no `TeamDelete`; solo mode: nothing). No teammate is left running.
+  4. **Shut down the team** per `vibe-team-orchestration` — no teammate left running.
 
   Report:
   - Plan path, blocks completed (Platform / BE / FE), tasks done
@@ -138,7 +133,7 @@ For each block in order:
   - **What was NOT done / not verified** — an explicit checklist (e.g. `- [ ] BE integration suite executed`, `- [ ] FE E2E suite run green`, `- [ ] manual QA click-through (`QA pass`)`), so a resume knows exactly what remains.
   - **What IS done** (built + reviewer-approved + which test layers actually ran green), so a resume picks up cleanly.
 
-  **Leave the plan in `.workspace/plans/` — do NOT archive a blocked plan** (it must be resumable in place). **Shut down the team** per the orchestration skill (team mode: dismiss every teammate — team files clean up automatically on session end; solo mode: nothing). Then report the same to the user. Do **not** call a plan Implemented to "save" an otherwise-complete build — an unverified plan is Blocked, by design.
+  **Leave the plan in `.workspace/plans/` — do NOT archive a blocked plan** (it must be resumable in place). **Shut down the team** per `vibe-team-orchestration`. Then report the same to the user. Do **not** call a plan Implemented to "save" an otherwise-complete build — an unverified plan is Blocked, by design.
 
 - **Capture learnings.** Before reporting, write anything durable this run surfaced — env traps, mid-run decisions, false leads — sourced from the workers' done-replies, to **this run's own learnings file in the plan dir** (`.workspace/plans/<this-plan>/learnings.md`; create it if absent). Writing only to the plan dir you already own keeps concurrent runs conflict-free — never append to the curated `.workspace/learnings.md`. Hold the same bar: one dated line each, only what would change a future run's outcome or speed. No L-IDs — `/vibe:distill` assigns those when it consolidates. Nothing learned → write nothing (don't create an empty file).
   - **Dedupe within your run only**: if several workers surface the same lesson, write it once. Do **not** read or dedupe against other plans' learnings files — cross-run recurrence (`seen 2x`) is `/vibe:distill`'s job, since it alone reads every run's file together.

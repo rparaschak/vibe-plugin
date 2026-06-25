@@ -27,7 +27,7 @@ Route each entry to the **highest rung that fits** — stronger means less for a
 1. **Mechanize** — hook, make target, script, lint rule, test. The environment enforces it; no one needs to recall it.
 2. **Skill** — a convention agents apply while working (`.claude/skills/*/SKILL.md`).
 3. **Constitution** — acceptance-gate-grade rules only. Respect its own admission bar: violated more than once or clearly principled, ≤10 lines, one-sentence why.
-4. **Template / agent brief** — when the lesson is "the plan / research / brief should have asked for X" (`.workspace/templates/*`, `.claude/agents/*`).
+4. **Template / agent brief** — when the lesson is "the plan / research / brief should have asked for X" (the plugin's `workspace-starter/*-template.md`, `.claude/agents/*`).
 5. **Keep** — seen once, may recur; stays in learnings (the holding pen).
 6. **Retire** — stale (cites dead files / superseded plans / fixed env), already encoded elsewhere, or actually a bug to fix (→ follow-up item).
 

@@ -20,12 +20,7 @@ You are the **team-lead** for planning. You own framing and orchestration; the a
 
 **Your window into the code is `research.md`** (step 3). Of it you read **only `## Summary`** — the full file is for the critic, the architects, and the implement-phase workers. When you need a code fact, the Summary's cites are what you pass on; you still never open the cited files yourself.
 
-**Dispatch through the right orchestration skill. Agent teams are the default.** Check whether `SendMessage` is available:
-
-- Available (the default) → follow **vibe-team-orchestration** (named-`Agent` team).
-- Unavailable (fallback — some headless/cron contexts, or the agent-teams flag is off) → follow **vibe-solo-orchestration** (stateless single-shot subagents; you are the durable memory and re-spawn instead of resuming — this keeps critique reconciliation and the architect handoff coherent when peers can't be messaged back).
-
-Throughout this command, **"dispatch to \<role\>"** means the dispatch primitive from the loaded skill. The planning algorithm below is identical either way — only dispatch differs. Briefs are short; "done" replies follow the **vibe-team-communication-protocol** done-format.
+**Dispatch through `vibe-team-orchestration`** (a persistent named-`Agent` team). Throughout this command, **"dispatch to \<role\>"** means that skill's dispatch primitive. Briefs are short; "done" replies follow the **vibe-team-communication-protocol** done-format.
 
 ## Plan location & naming
 
@@ -36,7 +31,7 @@ Throughout this command, **"dispatch to \<role\>"** means the dispatch primitive
 ## Plan shape (what the team produces)
 
 - A plan lives in its own `.workspace/plans/yymmdd-slug/plan.md`. The common case is **one** plan implemented in **one** run.
-- A plan is sized for ONE team to build in one pass: roughly one coherent capability per stack (~3–5 engineering deliverables; test tasks don't count). Follow `.workspace/templates/plan-template.md` **exactly**: bullets, 1–2 lines, no prose.
+- A plan is sized for ONE team to build in one pass: roughly one coherent capability per stack (~3–5 engineering deliverables; test tasks don't count). Follow the plugin's bundled `plan-template.md` (resolved in step 1) **exactly**: bullets, 1–2 lines, no prose.
 - **There is no concept of "parts."** Work too big for one pass is decomposed into **separate plans** — each its own `yymmdd-slug/plan.md` dir and its own run — wired by `Depends on`. A plan that needs another's output names it in `Depends on`; behavior IDs (B-NNN) are **local to each plan**, starting at B-001. A new platform subsystem big enough to stand alone is its own plan, named as a dependency by the plans that consume it.
 - **A stub plan parks intent without designing it**: `Status: Parked — Stub`, carrying only Problem, sketch Behaviors, Assumptions, and Open Questions. It skips the self-review gate and gets its own full `/vibe:plan` pass later.
 
@@ -46,17 +41,17 @@ Critical path: **research → frame → draft behaviors → critic gate (behavio
 
 ### 1. Load context & resolve the feature
 
-- Read `.workspace/constitution.md` (note constraining articles) and `.workspace/templates/plan-template.md`.
+- Read `.workspace/constitution.md` (note constraining rules). The plan + research **templates ship with the plugin** — resolve their dir once with `echo $CLAUDE_PLUGIN_ROOT/workspace-starter` (Bash), read `plan-template.md` from there, and pass that absolute path (and the research template's) in the briefs you dispatch, since agents can't expand `$CLAUDE_PLUGIN_ROOT` themselves.
 - Derive a kebab-case slug from the input (2–4 words, action-noun, preserve acronyms). The dir name is `yymmdd-slug` using today's date as the `yymmdd` prefix (if the work decomposes into multiple plans in step 7, they share today's date prefix and differ by slug). One feature per invocation.
 
 ### 2. Set up the roles
 
-Set up the planning roles (per the loaded orchestration skill — in team mode spawn each as a named `Agent` when the algorithm first needs it, on-call peers only once a design question arises; in solo mode just note the subagent types you'll spawn): **you** (lead), `codebase-researcher`, `product-designer`, `product-critic`, and `architect` (researcher and architect use `codegraph` for code lookups). The **`architect`** is domain-generic: dispatch it **per domain** — backend, then frontend — and each brief names the domain so the architect resolves and follows that domain's own `<domain>-architecture` skill (e.g. `backend-architecture`, `frontend-architecture`) at runtime. In team mode it's a single persistent agent re-dispatched per domain (it carries BE context into the FE pass); in solo mode it's re-spawned per domain.
+Set up the planning roles (per `vibe-team-orchestration` — spawn each as a named `Agent` when the algorithm first needs it, on-call peers only once a design question arises): **you** (lead), `codebase-researcher`, `product-designer`, `product-critic`, and `architect` (researcher and architect use `codegraph` for code lookups). The **`architect`** is domain-generic: dispatch it **per domain** — backend, then frontend — and each brief names the domain so the architect resolves and follows that domain's own `<domain>-architecture` skill (e.g. `backend-architecture`, `frontend-architecture`) at runtime. It's a single persistent agent re-dispatched per domain (it carries BE context into the FE pass). Every `architect` / `codebase-researcher` brief includes the absolute path to the bundled template it must follow (`plan-template.md` / `research-template.md`, resolved in step 1).
 
 ### 3. Research the current state *(before framing — nothing downstream decides against a guess)*
 
-- **Dispatch to `codebase-researcher`**: the raw feature request + the feature dir (`.workspace/plans/yymmdd-slug/`, created by the researcher) + "map the current state, cite everything". One researcher by default; only when the feature plainly runs deep on both stacks, split into BE/FE-scoped dispatches — **sequentially**, the second appending its sections (parallel writers would clobber the one file).
-- It writes `research.md` in the feature dir per `.workspace/templates/research-template.md` — facts only, every claim cited `file:line` — and replies terse (the file is the channel, not the chat).
+- **Dispatch to `codebase-researcher`**: the raw feature request + the feature dir (`.workspace/plans/yymmdd-slug/`, created by the researcher) + the bundled `research-template.md` absolute path (from step 1) + "map the current state, cite everything". One researcher by default; only when the feature plainly runs deep on both stacks, split into BE/FE-scoped dispatches — **sequentially**, the second appending its sections (parallel writers would clobber the one file).
+- It writes `research.md` in the feature dir per that bundled `research-template.md` — facts only, every claim cited `file:line` — and replies terse (the file is the channel, not the chat).
 - **Read only `## Summary`.** The full file goes to the critic, the architects, and (later) the implement-phase workers by path.
 - A gap discovered downstream (by you, the critic, or an architect) → re-dispatch the researcher with the refined question; it appends. Research narrows **scope and framing** — it never sets priorities (user value does).
 

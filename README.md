@@ -99,10 +99,9 @@ Located in `skills/`. These are the harness itself: orchestration discipline and
 
 | Skill | What it does | Used by |
 |---|---|---|
-| 🔌 `vibe-team-communication-protocol` | Rules for how agents talk via SendMessage — channel discipline, done-format, andon-cord escalation, role boundaries; plus the solo fallback (returned result is the channel). | Every agent |
-| 🔌 `vibe-team-orchestration` | How the team-lead dispatches via a persistent named-agent team — the **default** mode. Spawn, dispatch, context, teardown. | `/vibe:plan`, `/vibe:implement` |
-| 🔌 `vibe-solo-orchestration` | Fallback dispatch via stateless single-shot subagents when SendMessage is unavailable (headless/cron or flag off). Re-spawn instead of resume. | `/vibe:plan`, `/vibe:implement` |
-| 🔌 `vibe-review-discipline` | Reviewer method: read-only stance, three-pass review, what to check against, approve/findings formats. | backend-reviewer, frontend-reviewer |
+| 🔌 `vibe-team-communication-protocol` | Rules for how agents talk via SendMessage — channel discipline, done-format, andon-cord escalation, role boundaries. | Every agent |
+| 🔌 `vibe-team-orchestration` | How the team-lead dispatches via a persistent named-agent team. Spawn, dispatch, context, teardown. | `/vibe:plan`, `/vibe:implement` |
+| 🔌 `vibe-review-discipline` | Reviewer method: read-only stance, three-pass review, what to check against, approve/findings formats. | `reviewer` |
 | 🔌 `vibe-product-critique` | Adversarial critique method: user-advocate stance, 8 attack lenses, findings format. | product-critic |
 | ⚠️ `vibe-manual-testing` | QA method: click-through via Playwright MCP, pre-auth session, pass/findings format. **Mostly 🔌 method, but hardcodes 📁 env** (`make api-run`/`web-run`, ports `:5601`/`:5600`, `make local-up`). | qa-engineer |
 

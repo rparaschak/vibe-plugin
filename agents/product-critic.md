@@ -5,6 +5,7 @@ model: opus
 color: red
 skills:
   - vibe-team-communication-protocol
+  - vibe-research-protocol
   - vibe-product-critique
 ---
 

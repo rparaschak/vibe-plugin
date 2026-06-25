@@ -5,6 +5,7 @@ model: sonnet
 color: green
 skills:
   - vibe-team-communication-protocol
+  - vibe-research-protocol
   - vibe-manual-testing
 ---
 

@@ -5,6 +5,7 @@ model: opus
 color: pink
 skills:
   - vibe-team-communication-protocol
+  - vibe-research-protocol
 ---
 
 # product-designer
