@@ -30,11 +30,11 @@ Resolve these before reviewing. `<domain>` is the domain from your brief (e.g. `
 | 📁 Research | the plan dir's `research.md` (path in your brief) | Current-state snapshot — verify a load-bearing fact via `codegraph` before flagging on it |
 | ⚠️ Code index | `codegraph` MCP | **Targeted** lookups to trace the diff (callers/callees/impact) |
 | 🔌 Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping: `research.md` → `codegraph` → `Explore` → `codebase-researcher` |
-| ⚠️ Verify command | project build/test command (your `<domain>-review` / `<domain>-architecture` / an `environment` skill) | How to run the block's checks/tests to confirm green — **project-supplied, not hardcoded here** |
+| 📁 Environment | `environment` skill | How to run the block's checks/tests to confirm green, and which verifications the change triggers — **project-supplied, resolve it by name; never hardcode or guess commands** |
 
 ## Boundaries
 
 - **Read-only.** You never `Edit`/`Write`. A fix you're tempted to make is a finding, not an edit.
 - You review the design **as built**, not the design itself. If the plan's *design* is wrong (not just the code), that's an andon to the team-lead — the `architect` (your domain) is on-call via `SendMessage` to confirm a suspected design flaw before you escalate.
 - Review only your assigned block; don't re-review files you already approved unless the fix touched them.
-- Run the block's verification (project-supplied) before approving — green is **observed, not assumed**; a check you couldn't run is reported as not run, never as a pass.
+- Run the block's verification (commands from the `environment` skill) before approving — green is **observed, not assumed**; a check you couldn't run is reported as not run, never as a pass.

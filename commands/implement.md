@@ -27,7 +27,7 @@ You are the **team-lead** for the implement phase. **You only orchestrate.** You
 - A block is **done** when its reviewer approves AND its tests are **green** — and **green means actually executed and passing**, not merely written, compiling, or `--list`-verified. Tests that could not be run (infra down, no DB, blocked image pulls, env limits) are **not green**. The next block doesn't start until the current one is green.
 - A plan is **Implemented** only when **every** block is done **and** the plan's tests were genuinely executed and passed at the levels its blocks require:
   - **BE / Platform** → the integration suite ran and passed.
-  - **FE / any user-facing block** → the Playwright **E2E suite ran green** (`make api-run` + `make web-run` (backgrounded) + `make e2e`) **and** the **`qa-engineer` manual click-through returned `QA pass`** against the running app.
+  - **FE / any user-facing block** → the **E2E suite ran green** (the test-engineer brings the app up and runs it per the `environment` skill) **and** the **`qa-engineer` manual click-through returned `QA pass`** against the running app.
 - A plan that builds clean and reviews clean but whose E2E and/or manual QA **did not run** is **NOT Implemented** — it is **`Blocked — Implement`** (see step 6, blocked variant), with the reason and the list of what was not verified spelled out. "Couldn't run the tests here" is never an Implemented plan.
 - One orchestration context per plan; torn down when the plan closes.
 - The **Tasks table** tracks every Task's status. You flip statuses; you read it to resume.
@@ -84,14 +84,14 @@ For each block in order:
 - Set the block's **test** task (owner `be-test` / `fe-test`) to `In Progress`.
 - **Dispatch to the `test-engineer`** (a fresh context): its **domain** (backend / frontend — so it resolves the matching `<domain>-testing` skill), the block's Test behaviors, and the plan path. It writes every test layer the domain defines against the implementation and reports green/red per layer.
 - **Platform**: drive the subsystem's real mechanism against real infra; use the engineer's fake only for the external edge — never test the installed package.
-- **FE**: the test engineer also writes Playwright **E2E specs** for the block's user-facing behaviors and **runs them green** via `make api-run` + `make web-run` (backgrounded) + `make e2e`. Report both layers with **verbatim run results** — component pass/fail counts AND the E2E run outcome. Writing the specs is not enough; an E2E layer that was not executed is reported as **not run**, and the block cannot be closed on it (it becomes a blocked-finalize reason in step 6).
+- **FE**: the test engineer also writes Playwright **E2E specs** for the block's user-facing behaviors and **runs them green** (bringing the app up and running E2E per the `environment` skill). Report both layers with **verbatim run results** — component pass/fail counts AND the E2E run outcome. Writing the specs is not enough; an E2E layer that was not executed is reported as **not run**, and the block cannot be closed on it (it becomes a blocked-finalize reason in step 6).
 - Wait for the reply. If red on an impl defect, route it as a finding in 5c.
 
 #### 5c. Review
 
 - Set the block's tasks to `In Review`.
 - **Dispatch to the reviewer**: review the block's diff against the plan + the constitution. Reply EITHER an approval naming files, OR findings (`file:line · issue · rule`). The reviewer does not edit.
-- **For a user-facing block (FE)**, also **dispatch to `qa-engineer`** (in parallel with the reviewer): bring the app up with `make api-run` + `make web-run` (backgrounded, then wait for `:5601` and `:5600`) and click through the block's Behaviors in the Playwright MCP browser. Reply EITHER `QA pass` OR behavior-level `QA findings`. It does not edit. If the app **cannot be brought up** (infra/env), `qa-engineer` reports `QA not run` with the reason — which is **not** a pass and feeds the blocked-finalize in step 6.
+- **For a user-facing block (FE)**, also **dispatch to `qa-engineer`** (in parallel with the reviewer): bring the app up per the `environment` skill and click through the block's Behaviors in the Playwright MCP browser. Reply EITHER `QA pass` OR behavior-level `QA findings`. It does not edit. If the app **cannot be brought up** (infra/env), `qa-engineer` reports `QA not run` with the reason — which is **not** a pass and feeds the blocked-finalize in step 6.
 - Wait for both replies.
 
 #### 5d. Fix loop
@@ -111,8 +111,8 @@ For each block in order:
 - **Testing gate (hard requirement — check before declaring Implemented).** A plan is **Implemented** only if **all** hold:
   1. Every task is `Done`.
   2. The **BE / Platform integration suite actually ran and passed** (not just compiled).
-  3. For a plan with any **FE / user-facing** block: the **Playwright E2E suite ran green** (`make api-run` + `make web-run` (backgrounded) + `make e2e`) **and** `qa-engineer` returned **`QA pass`** from a real click-through of the running app.
-  4. **Every touched project builds clean** (Constitution VIII): `api` via `make build-api`, `web` via `make build-web` (`tsc -b && vite build` — whole-project type-check including test files, plus the production bundle). A green test suite is **not** a green build.
+  3. For a plan with any **FE / user-facing** block: the **E2E suite ran green** (run per the `environment` skill) **and** `qa-engineer` returned **`QA pass`** from a real click-through of the running app.
+  4. **Every touched project builds clean** (the constitution's build gate): the build command for each touched project (from the `environment` skill) passed — a whole-project type-check plus production build, not just a green test suite. A green test suite is **not** a green build.
 
   Tests that were only written, that merely compile/typecheck/`--list`, or that "couldn't run in this environment" do **NOT** satisfy this gate. If any required level did not genuinely execute and pass, the plan is **not** Implemented — go to the **Blocked** variant.
 

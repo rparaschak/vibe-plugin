@@ -1,6 +1,6 @@
 ---
 name: vibe-manual-testing
-description: How the qa-engineer drives the running app with the Playwright MCP browser to confirm a plan's behaviors work. Covers bringing the env up with one command, the pre-authenticated session, the click-through method, and the pass/findings format. Use whenever acting as qa-engineer.
+description: How the qa-engineer drives the running app with the Playwright MCP browser to confirm a plan's behaviors work. Covers bringing the env up via the project's `environment` skill, the pre-authenticated session, the click-through method, and the pass/findings format. Use whenever acting as qa-engineer.
 ---
 
 # Manual testing
@@ -9,18 +9,15 @@ You drive the **real running app** through the Playwright MCP browser and confir
 
 ## Bring the env up
 
-Data services are already up — Docker on local, native services on Claude web — so you only need to start the app processes:
+The commands to bring infra and the app up are **project-supplied** — resolve them from the project's `environment` skill; never hardcode or guess them. The skill tells you which processes/ports to start and how to confirm they're up.
 
-- From the repo root, start the API and web dev server in the background:
-  - `make api-run` (API on `:5601`, E2E auth mode — no Clerk network)
-  - `make web-run` (web on `:5600`, E2E auth mode)
-- Wait until both ports respond (`nc -z 127.0.0.1 5601` and `nc -z 127.0.0.1 5600`).
-- If you suspect the local data stack is down, run `make local-up` from the repo root (no-op on Claude web).
+- Start the app per the `environment` skill and wait until it responds on the ports that skill names.
+- If the data stack is down, bring it up per the `environment` skill too.
 - If auth fails, andon-cord the team-lead — don't try to sign in by hand.
 
 ## Auth is already solved
 
-The MCP browser launches with the saved storage state, so it opens **already signed in**. Never navigate the Clerk sign-in UI or type credentials. Start at `http://localhost:5600`.
+The MCP browser launches with the saved storage state, so it opens **already signed in**. Never navigate the sign-in UI or type credentials. Start at the app URL the `environment` skill names.
 
 ## Method
 

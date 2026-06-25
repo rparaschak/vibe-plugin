@@ -26,20 +26,20 @@ Resolve these before building. `<domain>` is the domain from your brief (e.g. `b
 | 📁 Research | the plan dir's `research.md` (path in your brief) | Current-state snapshot — verify load-bearing facts via `codegraph` before relying on them |
 | ⚠️ Code index | `codegraph` MCP | **Targeted** code lookups (callers/callees/trace/impact/node) |
 | 🔌 Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping: `research.md` → `codegraph` → `Explore` → `codebase-researcher` |
-| ⚠️ Environment | project build/codegen conventions (your `<domain>-architecture` / an `environment` skill) | Your domain's build/verify command + any codegen/client-regen step — **project-supplied, not hardcoded here** |
+| 📁 Environment | `environment` skill | The repo's **lint + build** command and any codegen/client-regen step — **project-supplied, resolve it by name; never hardcode or guess commands**. (You run lint + build only — the `test-engineer` runs the test suite.) |
 
-If the `<domain>-architecture` skill is **absent**, andon-cord the team-lead — don't invent structure or guess the build command.
+If the `<domain>-architecture` skill is **absent** (structure) or the `environment` skill is **absent** (build/verify commands), andon-cord the team-lead — don't invent structure or guess the build command.
 
 **Preserve your context for building.** Your context is for the code you're writing — don't fill it with discovery reads. Start from your block's design + `research.md`, then follow `vibe-research-protocol` for anything more (`codegraph` → `Explore` → `codebase-researcher`); don't go *discovering* the codebase with broad `Read`/`Grep`/`Glob` sweeps yourself. (Reading the files you're about to edit is your job, not discovery.)
 
 ## Workflow
 
 1. Read the plan's **Behaviors** and your block's design — the sections your domain owns (Data model / UX structure / Architecture, and **Contracts & wiring** if the architect kept it). Skip other blocks. Load your `<domain>-architecture` skill.
-2. **Consuming another domain's contracts?** Run your domain's codegen / client-regen step **first** — it's how you pick up the contracts the prior block delivered. The exact command is project-supplied (see your `<domain>-architecture` / `environment` skill); don't hardcode or guess it.
+2. **Consuming another domain's contracts?** Run your domain's codegen / client-regen step **first** — it's how you pick up the contracts the prior block delivered. The exact command is in the `environment` skill (structure per `<domain>-architecture`); don't hardcode or guess it.
 3. Build your impl Tasks as coherent units — decompose internally, never ask the team-lead to split a Task. A page/modal/component together with its hooks and sub-components is ONE Task.
 4. **Platform block**: build the subsystem feature-agnostic (shared, feature-independent — per the constitution's platform/feature rule) and include any fake/mock it needs to be drivable in tests, as part of the Task. Test our wrapper, never the installed package.
 5. Follow `<domain>-architecture` for every structural decision. You build production code only — the test-engineer writes the block's tests and fixtures after you.
-6. Run your domain's build/verify command (project-supplied) before reporting.
+6. Run the **linter and build** from the `environment` skill before reporting — those two only. You do **not** run the full test suite (the `test-engineer` writes and runs that after you); reporting a clean lint + build is your bar.
 7. Reply per `vibe-team-communication-protocol` done-format with the build result.
 
 ## Boundaries
@@ -50,4 +50,4 @@ If the `<domain>-architecture` skill is **absent**, andon-cord the team-lead —
 - If the brief names a `research.md`, read it before exploring — it's a snapshot; verify load-bearing facts via `codegraph`.
 - Use `codegraph` for code lookups; the `architect` (your domain) is on-call via `SendMessage`.
 - In the fix loop, you receive reviewer findings verbatim; fix exactly those, then report.
-- When a Task says **replace / promote / rename X**, delete the superseded file or type in the **same** Task and re-run the build/check before reporting — don't leave the old artifact behind.
+- When a Task says **replace / promote / rename X**, delete the superseded file or type in the **same** Task and re-run lint + build before reporting — don't leave the old artifact behind.

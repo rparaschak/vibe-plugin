@@ -81,7 +81,7 @@ Pressure-test, for yourself, against the research Summary: **the job** (one sent
 
 - Create each plan dir under `.workspace/plans/` — the feature dir from step 3 becomes the first plan's dir (rename it if step 7 settled on a different slug; never leave it orphaned) — and copy `plan-template.md` to each `yymmdd-slug/plan.md`. Fill headers (`Depends on` → prerequisite plan slugs or `—`, `Status: Draft`, input); write each plan's own `## Behaviors` / `Out of Scope` / `Assumptions`. If step 7 decomposed into multiple plans, `cp` the feature's `research.md` into each sibling plan dir (don't read it) — every plan dir carries its own copy for `/vibe:implement`.
 - **Dispatch both briefs in the same turn** (they have no dependency on each other; each brief names the `research.md` path — **start from it, verify load-bearing facts via `codegraph`** instead of exploring from scratch), then wait for both:
-  - `product-designer`: produce the **complete UX structure for every FE-bearing plan in one shot** (not story-by-story), structured per-behavior so you can approve/correct each — where it lives, screen/flow shape, shadcn primitives, edge states.
+  - `product-designer`: produce the **complete UX structure for every FE-bearing plan in one shot** (not story-by-story), structured per-behavior so you can approve/correct each — where it lives, screen/flow shape, design-system primitives (per the project's `product-design` skill), edge states.
   - `architect` (**backend domain** — brief names it as `backend`; it resolves and follows `backend-architecture`): for every plan, fill **Data model**, BE rows of **Architecture** (Constitution line + any ⚠️ platform/tool choice with options), **Platform tasks** (T-9xx impl + paired test) when a new subsystem is needed, **BE Tasks** (T-0xx) + one BE test task. **Contracts only if you decide they add value** (e.g. a platform API surface) — otherwise omit the section. A plan referencing a prerequisite's tables/contracts cites them, doesn't redefine them. Bullets only; keep each plan within budget (flag a plan that overflows — it should become two plans).
 - For code lookups during design: the architects start from `research.md` and use `codegraph` directly for the rest.
 
@@ -104,7 +104,7 @@ For each plan file, check the gate sections (don't re-read the whole file):
 - [ ] No fact restated across sections — UX / Architecture / Contracts each hold their own altitude, cross-referenced by B/T/D id; current-state code facts cite `research.md`, not copies of it
 - [ ] No bracketed placeholders survive
 
-**Dispatch the `architect`** (to the domain whose gate failed) once per failed gate. Up to **3 revise cycles**, then stop and report as-is. (Solo mode: each revise is a fresh spawn carrying the accumulated gate findings.)
+**Dispatch the `architect`** (to the domain whose gate failed) once per failed gate. Up to **3 revise cycles**, then stop and report as-is.
 
 ### 11. Finalize
 

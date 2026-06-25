@@ -1,18 +1,18 @@
 # vibe
 
-A portable Claude Code **plugin** for feature planning, implementation, and knowledge distillation. `vibe` is the generic harness — a team-lead orchestrating a fixed cast of subagents through a research → plan → implement → distill flow. Each consuming project supplies its own stack conventions (architecture / testing / design skills) and its own `.workspace/` playbook.
+A portable Claude Code **plugin** for feature planning, implementation, and knowledge distillation. `vibe` is the generic, **stack-agnostic** harness — a team-lead orchestrating a fixed cast of subagents through a research → plan → implement → distill flow. Each consuming project supplies its own conventions as **named skills resolved at runtime** (`<domain>-architecture`, `<domain>-testing`, `<domain>-review`, a repo-level `environment`, and `product-design`) plus a `.workspace/` for its constitution and plans.
 
-The rest of this document is a complete inventory of everything the plugin is made of: commands, agents, skills, flows, and the project-supplied layer it binds to. Every item carries an **icon** showing where it lives / who owns it, so we can see at a glance what is reusable harness vs. what each consuming repo must provide.
+The rest of this document is a complete inventory of everything the plugin is made of: commands, agents, skills, flows, and the project-supplied layer it binds to. Every item carries an **icon** showing where it lives / who owns it, so we can see at a glance what is reusable harness vs. what each consuming repo must provide. For the actionable "what a new repo must supply" list, see [`CHECKLIST.md`](CHECKLIST.md).
 
 ## Legend
 
 | Icon | Meaning |
 |---|---|
 | 🔌 **Plugin** | Bundled with vibe. Lives in this repo. Stack-agnostic, reusable as-is across projects. |
-| 📁 **Project** | Supplied by the consuming repo (`.claude/skills/`, `.workspace/`). Not bundled. Encodes that repo's conventions. |
-| ⚠️ **Leak** | Currently lives in the plugin (🔌) but hardcodes project-specific values (commands, ports, stack names). Should become 📁 to be reusable. |
+| 📁 **Project** | Supplied by the consuming repo (`.claude/skills/`, `.workspace/`). Not bundled. Resolved **by name at runtime**; encodes that repo's conventions. |
+| ⚠️ **External** | Tooling the harness assumes is present (MCP servers / CLIs) but can't bundle — the consuming repo installs and connects it. |
 
-The core design intent: the **harness** (commands + orchestration discipline + agent roles) is 🔌 and never changes per project; the **conventions** (architecture / testing / design / environment) are 📁 and differ per project. The ⚠️ items are where that separation currently leaks.
+The core design intent: the **harness** (commands + orchestration discipline + agent roles) is 🔌 and never changes per project; the **conventions** (architecture / testing / review / design / environment) are 📁 named skills the harness resolves at runtime; the ⚠️ tooling is installed in the repo. Earlier versions leaked project-specific commands, ports, and stack names into the plugin — those are now extracted into the project `environment` skill and the per-domain skills, so the plugin itself dictates none of them.
 
 ---
 
@@ -22,161 +22,175 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 
 | Command | What it does |
 |---|---|
+| 🔌 `/vibe:adopt` | **Onboarding.** Reads the project-setup contract (`CHECKLIST.md`), detects what the repo already supplies vs. what's missing, records it in `.workspace/adoption-checklist.md`, then walks the gaps with the user — each project skill is authored by hand or drafted by exploring the repo. Goal: close the whole list. Resumable. |
 | 🔌 `/vibe:plan` | Team-lead for **planning**. Researches the codebase into a cited `research.md`, frames behaviors, gates them with an adversarial critic, sizes the work, decomposes into one-team-sized plans, then designs data model + architecture + tasks + tests. Produces `plan.md`. Never touches code. |
 | 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. |
-| 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
+| 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
 
 ---
 
 ## 2. Flows (phase algorithms) — 🔌 Plugin
 
-The flows are hardcoded in the command files. They reference 📁 artifacts (constitution, templates, plans) and dispatch 🔌 agents.
+The flows are hardcoded in the command files. They reference 📁 artifacts (constitution, plans) + 🔌 templates and dispatch 🔌 agents.
+
+### `/vibe:adopt` flow
+`read contract (CHECKLIST.md) → detect & confirm domains → probe what exists → write adoption-checklist.md → close gaps point-by-point → finalize`
+
+- Reads the plugin's `CHECKLIST.md` as the canonical required-item list (single source of truth — no hardcoded list to drift).
+- Per gap, the user chooses (via `AskUserQuestion`): **author it myself**, **explore & propose** (a `codebase-researcher` maps the repo's real conventions; the command drafts a `SKILL.md` from the matching `*-sample.md` seed + findings, for the user to approve), or **skip**.
+- Writes only `.workspace/adoption-checklist.md` (durable, resumable state) and — on approval — `.claude/skills/<name>/SKILL.md` / `.workspace/constitution.md`. Never touches code; never installs MCP tooling (it gives the steps).
 
 ### `/vibe:plan` flow
-`research → frame → draft behaviors → critic gate → size/decompose → [UX ‖ BE-arch] → FE-arch → self-review → finalize`
+`research → frame → draft behaviors → critic gate → size/decompose → [UX ‖ architecture(BE)] → architecture(FE) → self-review → finalize`
 
 | Step | Agent dispatched | Notes |
 |---|---|---|
-| Load context | — | Reads 📁 `constitution.md` + 📁 `templates/`. |
+| Load context | — | Reads 📁 `constitution.md` + the 🔌 `plan` / `research` templates (from the plugin's `workspace-starter/`). |
 | Research | `codebase-researcher` | Writes 📁 `research.md`; lead reads only `## Summary`. |
 | Frame | — (user) | `AskUserQuestion` on 2–3 high-leverage forks. |
 | Draft behaviors | — (lead) | Problem, Behaviors (B-NNN), Out of Scope, Assumptions. |
 | Critic gate | `product-critic` | Locks behaviors before any design. |
-| Size / decompose | (architects, rough count only) | Splits into separate dependent plans if too big. |
-| Design fan-out | `product-designer` ‖ `backend-architect` | Run in parallel (no dependency). |
-| Join | `frontend-architect` | Needs locked UX + BE design. |
-| Self-review | responsible architect | Gate-only, up to 3 revise cycles. |
+| Size / decompose | (`architect`, rough count only) | Splits into separate dependent plans if too big. |
+| Design fan-out | `product-designer` ‖ `architect` (backend domain) | Run in parallel (no dependency). |
+| Join | `architect` (frontend domain) | Needs locked UX + BE design (same persistent agent, re-dispatched per domain). |
+| Self-review | `architect` (responsible domain) | Gate-only, up to 3 revise cycles. |
 
-> **Reuse limit:** steps 8–9 hardcode a **Backend → Frontend** sequence and dispatch `backend-architect` / `frontend-architect` by name. A new domain (e.g. mobile) has no slot here.
+> **Domain note:** the `architect` is **domain-generic** — the domain (backend, frontend, …) comes from the dispatch brief and it resolves that domain's `<domain>-architecture` skill at runtime. The only stack-shaped part is the **backend → frontend design sequence**, which is hardcoded in the command (not in the agent). A new domain needs project skills, not a new agent.
 
 ### `/vibe:implement` flow
 `resolve plan → gate check → build run list → per-block loop → finalize`
 
 - **Block order (hardcoded): Platform → BE → FE.**
-- **Per-block loop:** engineer → test-engineer → reviewer → (fix → re-review)* → done.
+- **Per-block loop:** `engineer` → `test-engineer` → `reviewer` → (fix → re-review)* → done; user-facing blocks also run `qa-engineer`.
 - **"Done"** = reviewer approved AND tests green (actually executed).
-- **"Implemented"** = every block done AND E2E green AND manual QA passed; else `Blocked — Implement`.
+- **"Implemented"** = every block done AND tests ran green at the required levels AND (for user-facing blocks) E2E green + manual `QA pass` + build clean; else `Blocked — Implement`.
 - Finalize: Status → Implemented, move plan to `.workspace/plans/archive/`, commit.
 
-> **Reuse limit:** block order and the BE/FE engineer/test/reviewer roster are hardcoded; no mobile/other-domain slot.
+> **Domain note:** the block order is hardcoded in the command, but the roster is **domain-generic** — `engineer` / `test-engineer` / `reviewer` / `architect` are each dispatched **per domain** (the brief carries `backend` / `frontend`). There is no stack-specific engineer or reviewer agent.
 
 ### `/vibe:distill` flow
 `load inputs → verify staleness (codebase-researcher) → classify → approve (user) → apply & prune`
 
-- Encoding ladder: **mechanize → skill → constitution → template → keep → retire**.
-- Promotes into the 📁 consuming project's `.claude/skills` & `.claude/agents` — never into this plugin.
+- Encoding ladder: **mechanize → skill → constitution → template/brief → keep → retire**.
+- Promotes into the 📁 consuming project's `.claude/skills` & `.claude/agents` (and `.workspace/`) — never into this plugin.
 
 ---
 
 ## 3. Agents
 
-All 12 live in `agents/`. The agent **definitions** are 🔌. Each declares 🔌 skills in its `skills:` frontmatter, and most reference 📁 project skills **by name inline in the body** ("follow this project's own `X` skill"). The ⚠️ column flags agents that also hardcode environment commands/ports.
+All **8** live in `agents/`. The agent **definitions** are 🔌. Each declares its 🔌 skills in the `skills:` frontmatter; the four role agents also resolve 📁 project skills **by name at runtime** (the domain comes from the dispatch brief). No agent hardcodes environment commands or ports — those are resolved from the project's `environment` skill.
 
-| Agent | 🔌 Plugin skills | 📁 Project skills | ⚠️ Hardcoded env | What it does |
-|---|---|---|---|---|
-| 🔌 `codebase-researcher` (sonnet) | team-communication-protocol | — | — | Maps current code state around a feature into 📁 `research.md`, every claim cited `file:line`. Facts only; designs nothing. |
-| 🔌 `product-designer` (opus) | team-communication-protocol | product-design | — | Explores existing UI, proposes a pragmatic shadcn-based UX (read-only, no code). Iterates with invoker. |
-| 🔌 `product-critic` (opus) | team-communication-protocol, product-critique | — | — | Adversarial user-advocate review of draft Behaviors before any UX/architecture. Read-only findings. |
-| 🔌 `backend-architect` (opus, xhigh) | team-communication-protocol | backend-architecture | — | Designs BE sections of the plan — data model, BE architecture, Platform subsystems (Article V), BE tasks, test behaviors. No code. |
-| 🔌 `frontend-architect` (opus) | team-communication-protocol | frontend-architecture | — | Designs FE sections — UX wiring, FE architecture, components/hooks, FE tasks, test behaviors — against locked UX + BE design. No code. |
-| 🔌 `backend-engineer` (opus) | team-communication-protocol | backend-architecture, backend-testing | make check (api/) | Implements a Platform/BE block (entities, slices, routes, persistence). Does not write tests or redesign. |
-| 🔌 `backend-test-engineer` (opus) | team-communication-protocol | backend-architecture, backend-testing | make check | Writes BE integration tests against implemented code, real DB. No production code. |
-| 🔌 `backend-reviewer` (opus) | team-communication-protocol, review-discipline | backend-architecture, backend-testing | make check (api/) | Read-only three-pass review of a Platform/BE diff vs plan + architecture skill + constitution. |
-| 🔌 `frontend-engineer` (opus) | team-communication-protocol | frontend-architecture | make check (web/), npm run update-api-client | Implements the FE block (pages, components, hooks). Regenerates API client first. No tests/redesign. |
-| 🔌 `frontend-test-engineer` (opus) | team-communication-protocol | frontend-architecture, frontend-testing | make api-run/web-run, ports :5601/:5600, make e2e, make check | Writes component tests (Vitest + RTL) + Playwright E2E specs and runs them green. No production code. |
-| 🔌 `frontend-reviewer` (opus) | team-communication-protocol, review-discipline | frontend-architecture | make check (web/) | Read-only three-pass review of the FE diff vs plan + architecture skill + constitution. |
-| 🔌 `qa-engineer` (sonnet) | team-communication-protocol, manual-testing | — (env baked into manual-testing skill) | make api-run/web-run, ports :5601/:5600, make local-up | Manual QA: drives the running app via Playwright MCP, confirms Behaviors. No code/tests. |
+| Agent | 🔌 Plugin skills | 📁 Project skills (resolved by name) | What it does |
+|---|---|---|---|
+| 🔌 `architect` (opus, xhigh) | team-communication-protocol, research-protocol | `<domain>-architecture` | Designs ONE domain's plan sections — data model, architecture, platform subsystems, tasks, test behaviors — for the domain named in its brief. Re-dispatched per domain. No code. |
+| 🔌 `engineer` (opus, high) | team-communication-protocol, research-protocol | `<domain>-architecture`, `environment` | Implements ONE domain's block against the locked design, then runs **lint + build**. Does not write tests or redesign. |
+| 🔌 `test-engineer` (opus, high) | team-communication-protocol, research-protocol | `<domain>-testing`, `<domain>-architecture`, `environment` | Writes and **runs** every test layer the domain defines (e.g. integration / component / E2E) against the implemented code. No production code. |
+| 🔌 `reviewer` (opus) | team-communication-protocol, research-protocol, review-discipline | `<domain>-review` *(optional)*, `<domain>-architecture`, `<domain>-testing`, `environment` | Read-only three-pass review of ONE domain's block diff vs plan + project skills + constitution. Never edits. |
+| 🔌 `codebase-researcher` (sonnet) | team-communication-protocol, research-protocol | — | Maps current code state around a feature into 📁 `research.md`, every claim cited `file:line`. Facts only; designs nothing. |
+| 🔌 `product-designer` (opus) | team-communication-protocol, research-protocol | `product-design` | Explores existing UI, proposes a pragmatic UX (read-only, no code). Iterates with the invoker. |
+| 🔌 `product-critic` (opus) | team-communication-protocol, research-protocol, product-critique | — | Adversarial user-advocate review of draft Behaviors before any UX/architecture. Read-only findings. |
+| 🔌 `qa-engineer` (sonnet) | team-communication-protocol, research-protocol, manual-testing | `environment` | Manual QA: brings the app up (per the `environment` skill) and drives it via the Playwright MCP, confirming Behaviors. No code/tests. |
 
-> **Reuse limit:** the four roles **architect / engineer / test-engineer / reviewer** each exist as a hardcoded **backend-** and **frontend-** pair (8 of the 12 agents). A new domain requires 4 new agent files. The intended fix is one domain-generic agent per role that resolves `<domain>-architecture` / `<domain>-testing` at runtime.
+> **Domain-generic roles:** `architect`, `engineer`, `test-engineer`, and `reviewer` read their domain (backend, frontend, mobile, …) from the dispatch brief and resolve that domain's project skills at runtime. Admitting a new domain needs **new project skills, not new agent files.**
 
 ---
 
 ## 4. Skills
 
-### 4a. Bundled skills
+### 4a. Bundled skills — 🔌 Plugin
 
-Located in `skills/`. These are the harness itself: orchestration discipline and review/critique/QA **method**. Stack-agnostic.
+Located in `skills/`. These are the harness itself: orchestration discipline, the research ladder, and review/critique/QA **method**. Stack-agnostic.
 
 | Skill | What it does | Used by |
 |---|---|---|
-| 🔌 `vibe-team-communication-protocol` | Rules for how agents talk via SendMessage — channel discipline, done-format, andon-cord escalation, role boundaries. | Every agent |
-| 🔌 `vibe-team-orchestration` | How the team-lead dispatches via a persistent named-agent team. Spawn, dispatch, context, teardown. | `/vibe:plan`, `/vibe:implement` |
+| 🔌 `vibe-team-communication-protocol` | Rules for how agents talk via `SendMessage` — channel discipline, done-format, andon-cord escalation, role boundaries. | Every agent |
+| 🔌 `vibe-team-orchestration` | How the team-lead runs a persistent named-agent team: form, dispatch, context, teardown. | `/vibe:plan`, `/vibe:implement` |
+| 🔌 `vibe-research-protocol` | The research escalation ladder (`research.md` → `codegraph` → `Explore` → `codebase-researcher`) and the hard rule against wide file sweeps. | Every agent |
 | 🔌 `vibe-review-discipline` | Reviewer method: read-only stance, three-pass review, what to check against, approve/findings formats. | `reviewer` |
-| 🔌 `vibe-product-critique` | Adversarial critique method: user-advocate stance, 8 attack lenses, findings format. | product-critic |
-| ⚠️ `vibe-manual-testing` | QA method: click-through via Playwright MCP, pre-auth session, pass/findings format. **Mostly 🔌 method, but hardcodes 📁 env** (`make api-run`/`web-run`, ports `:5601`/`:5600`, `make local-up`). | qa-engineer |
+| 🔌 `vibe-product-critique` | Adversarial critique method: user-advocate stance, attack lenses, findings format. | `product-critic` |
+| 🔌 `vibe-manual-testing` | QA method: click-through via Playwright MCP, pre-auth session, pass/findings format. Resolves app bring-up from the project `environment` skill. | `qa-engineer` |
 
-### 4b. Project-supplied skills
+### 4b. Project-supplied skills — 📁 Project
 
-NOT bundled. Each consuming repo authors these under `.claude/skills/`. Agents reference them **by name**; if absent, the agent simply won't find it. These encode per-repo conventions.
+NOT bundled. Each consuming repo authors these under `.claude/skills/`. Agents resolve them **by name** at runtime; if one is absent the agent says so and falls back (or andon-cords). These encode per-repo conventions. The `<domain>-*` skills are **per-domain** (one set per stack the repo uses); `environment` and `product-design` are repo-level singletons.
 
-| Skill | What it should contain | Referenced by |
+| Skill | What it should contain | Resolved by |
 |---|---|---|
-| 📁 `backend-architecture` | Structural rules for the backend (slices, persistence, platform subsystems). | backend-architect / engineer / reviewer / test-engineer |
-| 📁 `frontend-architecture` | Structural rules for the frontend (components/hooks, data access, generated client + TanStack Query). | frontend-architect / engineer / reviewer / test-engineer |
-| 📁 `backend-testing` | Backend integration-test + fixture conventions (one file per slice, real DB). | backend-engineer / reviewer / test-engineer |
-| 📁 `frontend-testing` | E2E (Playwright) + component-test spec conventions. | frontend-test-engineer |
-| 📁 `product-design` | The app's UX/UI conventions (design system, shadcn usage). | product-designer |
-| 📁 `environment` *(does not exist yet)* | **Currently a ⚠️ leak.** The one place a repo declares how to run/build/test itself — run commands, ports, build/check/e2e targets, client-regen. Today these are hardcoded in `vibe-manual-testing` + agent bodies. | qa / test-engineers / engineers / reviewers |
+| 📁 `<domain>-architecture` | A domain's structural rules (module/slice layout, persistence, platform subsystems, error handling, the patterns that domain uses). | `architect` / `engineer` / `reviewer` / `test-engineer` (for that domain) |
+| 📁 `<domain>-testing` | A domain's test conventions (layers, file layout, mocking boundary, fixtures/factories, harness). | `test-engineer` / `reviewer` (for that domain) |
+| 📁 `<domain>-review` *(optional)* | A domain's review **checklist** — the concrete things the reviewer actively flags beyond architecture/testing. If absent, the reviewer falls back to architecture + testing + constitution. | `reviewer` (for that domain) |
+| 📁 `environment` | The **one repo-level** skill: how to run/build/test the repo — commands, ports, infra/app bring-up, codegen/client-regen, and the verification decision logic (which checks a change triggers). | `engineer` / `test-engineer` / `reviewer` / `qa-engineer` |
+| 📁 `product-design` | The app's UX/UI conventions (design system, component usage). | `product-designer` |
+
+See [`CHECKLIST.md`](CHECKLIST.md) for the authoring checklist and which starter seeds each one from.
 
 ---
 
-## 5. Environment / tooling assumptions — ⚠️ Leak → should be 📁 Project
+## 5. External tooling assumptions — ⚠️
 
-These are project-specific values currently hardcoded across the plugin (the `vibe-manual-testing` skill and several agent bodies). They are the third runtime category and the main thing blocking drop-in reuse.
+Not authored as files — installed/connected in the consuming repo's environment. The plugin can't bundle these; if absent, the agents that rely on them degrade (e.g. codegraph → plain `Read`/`Grep`, losing their context-preserving lookups).
 
-| Item | Where it's hardcoded | What it is |
+| Tool | What it is | Used by |
 |---|---|---|
-| ⚠️ `make api-run` → port `:5601` | vibe-manual-testing, frontend-test-engineer, qa-engineer | Start API (E2E auth mode). |
-| ⚠️ `make web-run` → port `:5600` | vibe-manual-testing, frontend-test-engineer, qa-engineer | Start web dev server (E2E auth mode). |
-| ⚠️ `make e2e` | frontend-test-engineer | Run Playwright E2E suite. |
-| ⚠️ `make check` (api/ and web/) | backend/frontend engineer / reviewer / test-engineer | Build + lint + type-check + tests for touched packages. |
-| ⚠️ `make build-api`, `make build-web` | constitution (Article VIII) | Clean-build gate. |
-| ⚠️ `make local-up` | vibe-manual-testing | Bring data stack up locally. |
-| ⚠️ `npm run update-api-client` | frontend-architect, frontend-engineer | Regenerate the typed API client before consuming BE contracts. |
-| ⚠️ `codegraph` MCP | all code-touching agents | Code-intelligence index the harness assumes is present. External tooling. |
-| ⚠️ Playwright MCP | qa-engineer, frontend-test-engineer | Browser automation the harness assumes is present. External tooling. |
+| ⚠️ `codegraph` MCP | Code-intelligence index for targeted lookups (callers/callees/trace/impact) instead of wide file reads. | `codebase-researcher`, `architect`, `engineer`, `reviewer`, `test-engineer` |
+| ⚠️ Playwright MCP | Browser automation for driving the running app. | `qa-engineer`, `test-engineer` (FE/E2E) |
+
+> All project **commands, ports, and build targets** that earlier versions hardcoded here (`make api-run`, ports, `make e2e`, `make check`, …) now live in the project's `environment` skill — the plugin dictates none of them, and the `environment-sample.md` seed deliberately uses a *different* command set to make that clear.
 
 ---
 
-## 6. Workspace (`.workspace/`) — 📁 Project
+## 6. Templates & workspace
 
-The per-repo playbook. Read/written by the commands; discovered at runtime relative to repo root (no absolute paths baked in). A 🔌 **starter** ships in `workspace-starter/`.
+### 6a. Plugin-bundled starter — 🔌 Plugin
+
+Everything in `workspace-starter/` ships with the plugin. Two kinds:
+
+- **Templates (`*-template.md`)** — the exact shapes the harness reads **straight from the plugin at runtime** (the commands resolve them via `$CLAUDE_PLUGIN_ROOT/workspace-starter` and pass the path in agent briefs). These are **not** project items.
+- **Samples (`*-sample.md`)** — seeds a repo copies and **adapts** into its own `.claude/skills/` or `.workspace/` (the "Adapt" step a `/vibe:adopt`-style setup walks through).
+
+| File | Kind | Seeds / defines |
+|---|---|---|
+| 🔌 `workspace-starter/plan-template.md` | template | The exact shape every `plan.md` must follow. |
+| 🔌 `workspace-starter/research-template.md` | template | The exact shape every `research.md` must follow. |
+| 🔌 `workspace-starter/architecture-sample.md` | sample | Seed for a `<domain>-architecture` skill (currently a Go/GORM backend). |
+| 🔌 `workspace-starter/backend-testing-sample.md` | sample | Seed for a backend `<domain>-testing` skill. |
+| 🔌 `workspace-starter/review-checklist-sample.md` | sample | Seed for a `<domain>-review` checklist. |
+| 🔌 `workspace-starter/environment-sample.md` | sample | Seed for the repo-level `environment` skill. |
+| 🔌 `workspace-starter/constitution-sample.md` | sample | Seed for `.workspace/constitution.md`. |
+
+> No `learnings-template.md` ships. The learnings format is described inline by `/vibe:implement` and `/vibe:distill` (one dated line per lesson; L-IDs assigned at distill). Add one only if that format ever needs to be enforced as a file.
+
+### 6b. Project workspace (`.workspace/`) — 📁 Project
+
+The per-repo playbook, read/written by the commands and discovered at runtime relative to the repo root (no absolute paths baked in).
 
 | Item | What it is |
 |---|---|
-| 📁 `.workspace/constitution.md` | Non-negotiable project rules (Articles I–VIII). Gated by `/vibe:plan`, checked by reviewers. |
-| 📁 `.workspace/templates/plan-template.md` | Exact shape every `plan.md` must follow. **(exists)** |
-| 📁 `.workspace/templates/research-template.md` | Exact shape every `research.md` must follow. **(exists)** |
-| 📁 `.workspace/templates/learnings-template.md` | Exact shape every per-run + curated `learnings.md` must follow. **⚠️ MISSING — should be added.** |
+| 📁 `.workspace/constitution.md` | Non-negotiable project rules, gated by `/vibe:plan`, checked by the `reviewer`. The harness binds to **concepts** (the platform-vs-feature split, the build/test gates) — not specific article numbers, so you number it your way. |
 | 📁 `.workspace/plans/yymmdd-slug/plan.md` | One plan per feature (spec + design + tasks). |
-| 📁 `.workspace/plans/yymmdd-slug/research.md` | Cited map of current codebase for that feature. |
+| 📁 `.workspace/plans/yymmdd-slug/research.md` | Cited map of the current codebase for that feature. |
 | 📁 `.workspace/plans/yymmdd-slug/learnings.md` | Per-run learnings (uncurated). |
 | 📁 `.workspace/plans/archive/` | Retired/implemented plans. |
 | 📁 `.workspace/learnings.md` | Curated holding pen (only `/vibe:distill` writes it). |
-| 🔌 `workspace-starter/` | Starter copies of the above, shipped in the plugin to scaffold a new repo. |
-
-> **Templates check:** the harness produces three durable artifacts — `plan.md`, `research.md`, `learnings.md`. Templates exist for the first two; **`learnings-template.md` is missing** even though both the per-run and curated learnings files have a defined structure the distill flow depends on. Add it to `workspace-starter/templates/`.
-
-> **Hard-referenced contract:** the harness hard-references constitution article *numbers* — **Article V** (Platform vs Feature), **VI–VII** (test/QA gates), **VIII** (build clean). The article *content* is 📁; the *slot numbers* are a 🔌 contract that must stay meaningful.
 
 ---
 
 ## 7. Summary — what's reusable vs. what each repo provides
 
 **🔌 Plugin (drop-in, never edited per project):**
-- 3 commands + their flows
-- 12 agent definitions
-- 6 bundled skills (5 clean + `vibe-manual-testing` with an env leak)
-- `workspace-starter/` scaffold
-- Hard-referenced constitution article numbers (V, VI–VII, VIII)
+- 4 commands + their flows (`adopt`, `plan`, `implement`, `distill`)
+- 8 agent definitions (4 domain-generic roles + 4 fixed roles)
+- 6 bundled skills (all clean — no hardcoded project specifics)
+- `workspace-starter/` scaffold: 2 runtime templates + 5 sample seeds
 
-**📁 Project (authored once per consuming repo):**
-- 5 convention skills: `backend-architecture`, `frontend-architecture`, `backend-testing`, `frontend-testing`, `product-design`
-- `.workspace/` (constitution content, templates, plans, learnings)
-- External tooling: codegraph MCP, Playwright MCP, the `make` targets
+**📁 Project (authored once per consuming repo — see [`CHECKLIST.md`](CHECKLIST.md)):**
+- Per-domain skills: `<domain>-architecture`, `<domain>-testing`, `<domain>-review` *(optional)*
+- Repo-level skills: `environment`, `product-design`
+- `.workspace/`: constitution content + plans + learnings
 
-**⚠️ Leaks & gaps blocking clean reuse:**
-- Environment commands + ports baked into `vibe-manual-testing` and agent bodies → should be one `environment` skill
-- The 4 role agents hardcoded as backend/frontend pairs → should be domain-generic roles resolving `<domain>-architecture` / `<domain>-testing` at runtime
-- The BE→FE flow in `plan.md` / `implement.md` → should be domain-driven to admit new domains (e.g. mobile)
-- `learnings-template.md` missing from `workspace-starter/templates/`
+**⚠️ External tooling (installed/connected in the repo):**
+- `codegraph` MCP, Playwright MCP
+
+**Remaining harness limits (in the command files, not the agents):**
+- The **Platform → BE → FE** block order and the **backend → frontend** design sequence are hardcoded in `plan.md` / `implement.md`. The role *agents* are domain-generic, but admitting a brand-new top-level domain (e.g. mobile) into the *flow* still needs a command edit.
+- A few residual constitution **article-number** references survive in the harness (`implement.md`, `plan-template.md`) and the `constitution-sample.md` header, even though the agents and skills are otherwise decoupled from article numbers.

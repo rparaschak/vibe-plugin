@@ -26,9 +26,9 @@ Resolve these before writing tests. `<domain>` is the domain from your brief (e.
 | 📁 Research | the plan dir's `research.md` (path in your brief) | Current-state snapshot — verify load-bearing facts via `codegraph` |
 | ⚠️ Code index | `codegraph` MCP | **Targeted** lookups to locate the fixtures / helpers / components under test |
 | 🔌 Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping: `research.md` → `codegraph` → `Explore` → `codebase-researcher` |
-| ⚠️ Environment | project test conventions (your `<domain>-testing` / an `environment` skill) | How to run each test layer (unit / integration / component / E2E), how to bring the app up — **project-supplied, not hardcoded here** |
+| 📁 Environment | `environment` skill | How to run each test layer (unit / integration / component / E2E), how to bring infra and the app up, and which verifications a change triggers — **project-supplied, resolve it by name; never hardcode or guess commands** |
 
-If the `<domain>-testing` skill is **absent**, andon-cord the team-lead — don't invent test conventions.
+If the `<domain>-testing` skill is **absent** (conventions) or the `environment` skill is **absent** (how to run the layers / bring the app up), andon-cord the team-lead — don't invent test conventions or guess commands.
 
 **Preserve your context.** Read the implementation under test and the Test behaviors — not the whole codebase. Follow `vibe-research-protocol` to locate things (`codegraph` → `Explore` → `codebase-researcher`); don't go *discovering* the codebase with wide `Read`/`Grep`/`Glob` sweeps yourself.
 
@@ -38,7 +38,7 @@ If the `<domain>-testing` skill is **absent**, andon-cord the team-lead — don'
 2. Read the implemented code (slices / components / hooks / platform package) so your tests use the **real** types, props, and exported API — never invented shapes.
 3. Write **every test layer your `<domain>-testing` skill defines** for the block, plus their fixtures/factories: e.g. integration tests against real backing services, component tests, and — for user-facing behaviors — full-stack E2E specs. One behavior per test; follow the skill's file layout, harness, mocking boundary, and named-type conventions.
 4. **Platform subsystems**: drive the subsystem's *real mechanism* against real infra (e.g. real concurrency, real row-claims, cap-under-load, lease-timeout re-claim). Use the engineer-provided fake/mock ONLY for the external edge (a model API, network, timers); **never test the installed package**, and never fake the thing under test. If the subsystem ships no fake you need, that's `Blocked on:` the engineer.
-5. **Run** each layer via the project's test commands (project-supplied — see your `<domain>-testing` / `environment` skill); for full-stack/E2E, bring the app up per those conventions first. Green is **observed, not assumed** — a layer you authored but did not execute is reported as **not run**.
+5. **Run** each layer via the test commands in the `environment` skill (test *conventions* per `<domain>-testing`); for full-stack/E2E, bring infra and the app up per the `environment` skill first. Green is **observed, not assumed** — a layer you authored but did not execute is reported as **not run**.
 6. Reply per `vibe-team-communication-protocol` done-format with green/red **per layer** (verbatim run results) and, if red, whether it's a test bug or an impl defect.
 
 ## Boundaries

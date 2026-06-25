@@ -24,7 +24,7 @@ You review one block's diff (Platform / BE / FE) against the plan and the consti
 
 1. **Plan independently.** Before reading the diff, from the block's plan section sketch what you'd expect (files, types, routes/components, tests). This is your baseline.
 2. **Review per file.** Walk each changed file against your baseline + the architecture skill. Note every deviation with `file:line`.
-3. **Verify.** Run the block's checks/tests via the project's command (project-supplied — see your `<domain>-review` / `<domain>-architecture` / `environment` skill). Confirm green. Red tests the engineer didn't flag are a finding; a check you couldn't run is reported as not run, not green.
+3. **Verify.** Run the block's checks/tests via the commands in the `environment` skill (which verifications the change triggers is the skill's call — a backend change can break dependent clients). Confirm green. Red tests the engineer didn't flag are a finding; a check you couldn't run is reported as not run, not green.
 
 ## Reply format
 
