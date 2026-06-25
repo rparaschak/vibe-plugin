@@ -4,6 +4,43 @@ A portable Claude Code **plugin** for feature planning, implementation, and know
 
 The rest of this document is a complete inventory of everything the plugin is made of: commands, agents, skills, flows, and the project-supplied layer it binds to. Every item carries an **icon** showing where it lives / who owns it, so we can see at a glance what is reusable harness vs. what each consuming repo must provide. For the actionable "what a new repo must supply" list, see [`CHECKLIST.md`](CHECKLIST.md).
 
+---
+
+## Quick start
+
+### 1. Install the plugin
+
+In Claude Code, add this repo as a plugin marketplace, then install the plugin:
+
+```
+/plugin marketplace add rparaschak/vibe-plugin
+/plugin install vibe@vibe
+```
+
+That registers the `/vibe:*` commands. (Or just run `/plugin`, browse to the **vibe** marketplace, and install from the menu.) Installing from a local clone instead of GitHub? Point the marketplace at the path: `/plugin marketplace add /path/to/vibe-plugin`.
+
+### 2. Adopt it in your repo
+
+The plugin ships the stack-agnostic harness; **your repo supplies its conventions** as named skills (see [`CHECKLIST.md`](CHECKLIST.md)). From the repo you want to use vibe in, run:
+
+```
+/vibe:adopt
+```
+
+It reads the setup contract, detects what your repo already has vs. what's missing, writes `.workspace/adoption-checklist.md`, and walks you through each gap — **reuse an existing guideline** the repo already has, **author a skill by hand**, or have it **explore your code and draft one** for your approval. It also points out which external tooling to connect (the `codegraph` and Playwright MCP servers). It never touches your application code, and it's resumable — re-run `/vibe:adopt` any time to continue.
+
+### 3. Plan and build
+
+Once adoption reports **vibe-ready**, the normal loop is:
+
+```
+/vibe:plan       # research the codebase → frame behaviors → design → writes plan.md
+/vibe:implement  # build ONE plan in one run: engineer → test → review → fix → done
+/vibe:distill    # fold what each run learned back into the playbook (run every ~2–3 plans)
+```
+
+See **§2. Flows** below for what each command does step by step.
+
 ## Legend
 
 | Icon | Meaning |
