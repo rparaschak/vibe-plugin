@@ -51,7 +51,7 @@ Critical path: **research → frame → draft behaviors → critic gate (behavio
 
 ### 2. Set up the roles
 
-Set up the planning roles (per the loaded orchestration skill — in team mode spawn each as a named `Agent` when the algorithm first needs it, on-call peers only once a design question arises; in solo mode just note the subagent types you'll spawn): **you** (lead), `codebase-researcher`, `product-designer`, `product-critic`, `backend-architect`, and `frontend-architect` (researcher and architects use `codegraph` for code lookups).
+Set up the planning roles (per the loaded orchestration skill — in team mode spawn each as a named `Agent` when the algorithm first needs it, on-call peers only once a design question arises; in solo mode just note the subagent types you'll spawn): **you** (lead), `codebase-researcher`, `product-designer`, `product-critic`, and `architect` (researcher and architect use `codegraph` for code lookups). The **`architect`** is domain-generic: dispatch it **per domain** — backend, then frontend — and each brief names the domain so the architect resolves and follows that domain's own `<domain>-architecture` skill (e.g. `backend-architecture`, `frontend-architecture`) at runtime. In team mode it's a single persistent agent re-dispatched per domain (it carries BE context into the FE pass); in solo mode it's re-spawned per domain.
 
 ### 3. Research the current state *(before framing — nothing downstream decides against a guess)*
 
@@ -77,23 +77,23 @@ Pressure-test, for yourself, against the research Summary: **the job** (one sent
 
 ### 7. Size & decompose into separate plans
 
-- Estimate the locked behaviors against one team's capacity (one coherent capability per stack, ~3–5 eng deliverables). Judge from the behavior list **and the research Summary** (what exists vs what must be built, per stack). The Summary predates the behaviors — if it can't support the sizing call, **re-dispatch `codebase-researcher`** with the locked behaviors for a targeted exists-vs-build pass (it updates the Summary); **dispatch to `backend-architect` / `frontend-architect`** for a rough count only if still borderline after that.
+- Estimate the locked behaviors against one team's capacity (one coherent capability per stack, ~3–5 eng deliverables). Judge from the behavior list **and the research Summary** (what exists vs what must be built, per stack). The Summary predates the behaviors — if it can't support the sizing call, **re-dispatch `codebase-researcher`** with the locked behaviors for a targeted exists-vs-build pass (it updates the Summary); **dispatch to the `architect`** (backend then frontend domain) for a rough count only if still borderline after that.
 - Fits one team → **one** plan. Larger → decompose into **separate plans** at a **seam: priority first (P1 first), then capability boundary** — each plan one-team-sized AND independently shippable, with a clean `Depends on` edge to whatever it builds on. A big new platform subsystem is its own plan, named as a dependency by its consumers. Assign each behavior to exactly one plan; **B-IDs restart at B-001 within each plan**.
 - Allocate one `yymmdd-slug` per plan (same date prefix, distinct slugs); the dependency edges form a DAG (no cycles).
 - Put any decomposition to the user via `AskUserQuestion` — the set of plans, their dependency edges, and which behaviors land in which plan. This is a scope decision the user owns.
 
-### 8. Parallel design fan-out *(designer ‖ backend-architect)*
+### 8. Parallel design fan-out *(designer ‖ architect — backend domain)*
 
 - Create each plan dir under `.workspace/plans/` — the feature dir from step 3 becomes the first plan's dir (rename it if step 7 settled on a different slug; never leave it orphaned) — and copy `plan-template.md` to each `yymmdd-slug/plan.md`. Fill headers (`Depends on` → prerequisite plan slugs or `—`, `Status: Draft`, input); write each plan's own `## Behaviors` / `Out of Scope` / `Assumptions`. If step 7 decomposed into multiple plans, `cp` the feature's `research.md` into each sibling plan dir (don't read it) — every plan dir carries its own copy for `/vibe:implement`.
 - **Dispatch both briefs in the same turn** (they have no dependency on each other; each brief names the `research.md` path — **start from it, verify load-bearing facts via `codegraph`** instead of exploring from scratch), then wait for both:
   - `product-designer`: produce the **complete UX structure for every FE-bearing plan in one shot** (not story-by-story), structured per-behavior so you can approve/correct each — where it lives, screen/flow shape, shadcn primitives, edge states.
-  - `backend-architect`: for every plan, fill **Data model**, BE rows of **Architecture** (Constitution line + any ⚠️ platform/tool choice with options), **Platform tasks** (T-9xx impl + paired test) when a new subsystem is needed, **BE Tasks** (T-0xx) + one BE test task. **Contracts only if you decide they add value** (e.g. a platform API surface) — otherwise omit the section. A plan referencing a prerequisite's tables/contracts cites them, doesn't redefine them. Bullets only; keep each plan within budget (flag a plan that overflows — it should become two plans).
+  - `architect` (**backend domain** — brief names it as `backend`; it resolves and follows `backend-architecture`): for every plan, fill **Data model**, BE rows of **Architecture** (Constitution line + any ⚠️ platform/tool choice with options), **Platform tasks** (T-9xx impl + paired test) when a new subsystem is needed, **BE Tasks** (T-0xx) + one BE test task. **Contracts only if you decide they add value** (e.g. a platform API surface) — otherwise omit the section. A plan referencing a prerequisite's tables/contracts cites them, doesn't redefine them. Bullets only; keep each plan within budget (flag a plan that overflows — it should become two plans).
 - For code lookups during design: the architects start from `research.md` and use `codegraph` directly for the rest.
 
 ### 9. Join — UX review & FE architecture
 
 - **Holistic UX review (one pass).** Review the designer's whole UX draft for flow coherence; correct only the screens that are off (one revise message if needed). Merge the accepted UX into the FE-bearing plans.
-- **Dispatch to `frontend-architect`** once — it now has the locked UX **and** the BE design (brief names the `research.md` path — start from it, verify via `codegraph`): for every plan, fill **FE Tasks** (T-1xx) + one FE test task, FE rows of **Architecture**, and (if the architect chose to keep a Contracts section) the FE hooks/wiring. **Append — do not edit BE-authored content.** `product-designer` on-call for UX sanity checks.
+- **Dispatch the `architect` to the frontend domain** once — brief names it as `frontend`, so it resolves and follows `frontend-architecture`; it now has the locked UX **and** the BE design (brief names the `research.md` path — start from it, verify via `codegraph`): for every plan, fill **FE Tasks** (T-1xx) + one FE test task, FE rows of **Architecture**, and (if the architect chose to keep a Contracts section) the FE hooks/wiring. **Append — do not edit BE-authored content.** `product-designer` on-call for UX sanity checks.
 
 ### 10. Self-review *(gate-only, per plan)*
 
@@ -109,7 +109,7 @@ For each plan file, check the gate sections (don't re-read the whole file):
 - [ ] No fact restated across sections — UX / Architecture / Contracts each hold their own altitude, cross-referenced by B/T/D id; current-state code facts cite `research.md`, not copies of it
 - [ ] No bracketed placeholders survive
 
-**Dispatch to the responsible architect** once per failed gate. Up to **3 revise cycles**, then stop and report as-is. (Solo mode: each revise is a fresh spawn carrying the accumulated gate findings.)
+**Dispatch the `architect`** (to the domain whose gate failed) once per failed gate. Up to **3 revise cycles**, then stop and report as-is. (Solo mode: each revise is a fresh spawn carrying the accumulated gate findings.)
 
 ### 11. Finalize
 

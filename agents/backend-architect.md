@@ -2,6 +2,7 @@
 name: backend-architect
 description: Designs the backend of a vibe plan — data model, BE architecture decisions, platform subsystems (Article V), BE tasks, and test behaviors — writing directly into the plan during /vibe:plan. Does not write code. Relies on this project's own `backend-architecture` skill for structural conventions — supplied by the consuming repo, not bundled with the vibe plugin.
 model: opus
+effort: xhigh
 color: cyan
 skills:
   - vibe-team-communication-protocol

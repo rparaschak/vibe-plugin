@@ -67,8 +67,8 @@ That skill defines how you **dispatch a unit of work to a role** and how each wo
 
 The roles the plan's blocks need (per the loaded orchestration skill — in team mode spawn each as a named `Agent` when its block is first reached, on-call peers only once a design question arises; in solo mode just note which subagent types you'll spawn):
 
-- **Platform / BE blocks** — `backend-engineer`, `backend-test-engineer`, `backend-reviewer`; plus `backend-architect` (on-call in team mode). Workers use `codegraph` for code lookups.
-- **FE block** — `frontend-engineer`, `frontend-test-engineer` (component **and** Playwright E2E specs), `frontend-reviewer`, `qa-engineer` (manual click-through of the running app); plus `frontend-architect` (on-call in team mode).
+- **Platform / BE blocks** — `backend-engineer`, `backend-test-engineer`, `backend-reviewer`; plus the `architect` (backend domain — on-call in team mode). Workers use `codegraph` for code lookups.
+- **FE block** — `frontend-engineer`, `frontend-test-engineer` (component **and** Playwright E2E specs), `frontend-reviewer`, `qa-engineer` (manual click-through of the running app); plus the `architect` (frontend domain — on-call in team mode).
 
 Include only the stacks the plan actually uses. A genuinely wrong design is an andon to you, not an edit.
 
