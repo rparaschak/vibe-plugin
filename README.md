@@ -59,7 +59,7 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 
 | Command | What it does |
 |---|---|
-| 🔌 `/vibe:adopt` | **Onboarding.** Reads the project-setup contract (`CHECKLIST.md`), detects what the repo already supplies vs. what's missing, records it in `.workspace/adoption-checklist.md`, then walks the gaps with the user — each project skill is reused from an existing guideline (the repo may already have one under another name), authored by hand, or drafted by exploring the repo. Goal: close the whole list. Resumable. |
+| 🔌 `/vibe:adopt` | **Onboarding (orchestration command).** Reads the project-setup contract (`CHECKLIST.md`), detects what the repo already supplies vs. what's missing — via a read-only **scout subagent per item**, so repo exploration stays off the orchestrator's context — records it in `.workspace/adoption-checklist.md`, then walks the gaps with the user: each project skill is reused from an existing guideline (the repo may already have one under another name), authored by hand, or drafted by a scout exploring the repo. Goal: close the whole list. Resumable. |
 | 🔌 `/vibe:plan` | Team-lead for **planning**. Researches the codebase into a cited `research.md`, frames behaviors, gates them with an adversarial critic, sizes the work, decomposes into one-team-sized plans, then designs data model + architecture + tasks + tests. Produces `plan.md`. Never touches code. |
 | 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. |
 | 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
@@ -71,10 +71,11 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 The flows are hardcoded in the command files. They reference 📁 artifacts (constitution, plans) + 🔌 templates and dispatch 🔌 agents.
 
 ### `/vibe:adopt` flow
-`read contract (CHECKLIST.md) → detect & confirm domains → probe what exists → write adoption-checklist.md → close gaps point-by-point → finalize`
+`read contract (CHECKLIST.md) → detect & confirm domains → scout each item (one subagent per point, parallel) → write adoption-checklist.md → close gaps point-by-point → finalize`
 
+- **Orchestration command.** The main agent never explores the repo itself — for each contract item it dispatches a read-only **scout subagent** that probes what exists, finds reusable guidelines, maps the repo's conventions (using `Explore` for broad areas), and hands back a compact report + a drafted `SKILL.md`. Exploration cost stays in the scouts, so the orchestrator's context stays clean on any size repo.
 - Reads the plugin's `CHECKLIST.md` as the canonical required-item list (single source of truth — no hardcoded list to drift).
-- Per gap, the user chooses (via `AskUserQuestion`): **reuse an existing guideline** (when the repo already has one under another name — as a shallow pointer skill or compacted into a skill), **author it myself**, **explore & propose** (a `codebase-researcher` maps the repo's real conventions; the command drafts a `SKILL.md` from the matching `*-sample.md` seed + findings, for the user to approve), or **skip**.
+- Per gap, the user chooses (via `AskUserQuestion`): **accept the scout's drafted proposal** (reuse an existing guideline as a shallow pointer or compacted into a skill, or drafted from the codebase when there's no candidate), **use a different method**, **author it myself**, or **skip**.
 - Writes only `.workspace/adoption-checklist.md` (durable, resumable state) and — on approval — `.claude/skills/<name>/SKILL.md` / `.workspace/constitution.md`. Never touches code; never installs MCP tooling (it gives the steps).
 
 ### `/vibe:plan` flow
