@@ -90,8 +90,7 @@ For each block in order:
 #### 5c. Review
 
 - Set the block's tasks to `In Review`.
-- **Dispatch to the reviewer**, naming its **domain** (backend / frontend — so it resolves the `<domain>-architecture` / `<domain>-testing` baseline) **and the review checklist skill it resolves** — `<domain>-review` by default; supply the name explicitly in the brief so a custom flow can swap or add one (e.g. `security-review`). It reviews the block's diff against that checklist + the plan + the constitution. Reply EITHER an approval naming files, OR findings (`file:line · issue · rule`). The reviewer does not edit.
-  - *(Extension point — base flow uses one reviewer. A custom flow can dispatch several reviewers over the same block in parallel, each with its own checklist, and close the block only when **all** approve; the gate logic lives in that flow command, not the agent.)*
+- **Dispatch to the reviewer**, naming its **domain** (backend / frontend — so it resolves its `<domain>-review` / `<domain>-architecture` / `<domain>-testing` skills): review the block's diff against the plan + the constitution. Reply EITHER an approval naming files, OR findings (`file:line · issue · rule`). The reviewer does not edit.
 - **For a user-facing block (FE)**, also **dispatch to `qa-engineer`** (in parallel with the reviewer): bring the app up per the `environment` skill and click through the block's Behaviors in the Playwright MCP browser. Reply EITHER `QA pass` OR behavior-level `QA findings`. It does not edit. If the app **cannot be brought up** (infra/env), `qa-engineer` reports `QA not run` with the reason — which is **not** a pass and feeds the blocked-finalize in step 6.
 - Wait for both replies.
 
