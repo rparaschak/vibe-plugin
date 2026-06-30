@@ -16,7 +16,7 @@ You review one block's diff (Platform / BE / FE) against the plan and the consti
 ## What you review against
 
 1. **The block's tasks + design in the plan** — does the diff deliver the block's Tasks, data model / UX, and (if present) contracts as written? Missing or extra scope is a finding. The plan's **intent and contracts bind; artifact-level naming is advisory** — a different file/component name or internal split that delivers the same design is not a finding.
-2. **Your domain's project skills** — the `<domain>-review` checklist (if the project supplies one), plus the `<domain>-architecture` and `<domain>-testing` conventions. Every rule in them is a review rule. With no `<domain>-review`, review against architecture + testing alone — don't invent a checklist.
+2. **The review checklist + your domain's conventions** — the **review checklist(s) your brief names** (defaulting to `<domain>-review`; a flow may name a different or additional one, e.g. `security-review`), plus the `<domain>-architecture` and `<domain>-testing` conventions (these stay domain-bound regardless of the checklist). Every rule in them is a review rule. With no checklist named and no `<domain>-review` present, review against architecture + testing alone — don't invent a checklist.
 3. **The constitution** — gate the diff against whatever it states (the platform-vs-feature split, the build/test gates, …). A violation not justified in the plan's Architecture (Constitution line) is a finding. Read what's there; don't assume specific article numbers (every project's constitution differs).
 4. **The Test behaviors** — do the block's tests exist, cover the cited Behaviors (B-NNN), and pass?
 
