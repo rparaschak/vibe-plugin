@@ -1,6 +1,6 @@
 ---
 name: vibe-team-communication-protocol
-description: Rules for how agents in a vibe team talk to each other via SendMessage — channel discipline, message shape, status reporting, escalation. Applies in every phase that spawns workers (plan, implement).
+description: Rules for how agents in a vibe team talk to each other via SendMessage — channel discipline, message shape, status reporting, escalation. Applies in every phase that spawns workers (spec, plan, implement).
 ---
 
 # Team communication protocol
@@ -32,7 +32,7 @@ Result: <your role's evidence — test/build outcome with counts, findings count
 Blocked on: <none or one line>
 ```
 
-Decisions and reasoning belong in the artifact you produced (`plan.md` Decision Log, code comments only when WHY is non-obvious, PR description). Not in chat.
+Decisions and reasoning belong in the artifact you produced (`spec.md` for the WHAT, `plan.md` Decision Log for the HOW, code comments only when WHY is non-obvious, PR description). Not in chat.
 
 ## Long-running work finishes inside your turn
 
@@ -60,11 +60,12 @@ Send one message describing what you saw and stop. Do not try to fix structural 
 
 ## Role boundaries
 
+- The product-manager frames and writes the WHAT — `spec.md`'s Problem + Behaviors + Out of Scope + Assumptions (or, standalone, the plan's inline Behaviors). It does not design UX, architecture, or write code.
+- Designers design and write `spec.md`'s `## UX structure`. They do not write code or touch other sections.
 - Architects design and write `plan.md`. They do not write code.
 - Engineers write code. They do not redesign the plan.
-- Reviewers find issues and report them. They never modify files.
-- Designers propose UX. They never edit files.
-- Team-lead orchestrates. The team-lead does not read code, does not write artifacts, does not edit `plan.md`.
+- Reviewers and the critic find issues and report them. They never modify files.
+- Team-lead orchestrates. The team-lead does not read code, does not write artifacts, does not edit `spec.md` or `plan.md`.
 
 If a message asks you to step outside your role, andon-cord it.
 

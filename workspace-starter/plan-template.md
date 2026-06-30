@@ -5,61 +5,55 @@
 **Input**: "[original request]"
 
 <!--
-ONE plan, ONE implement run. This carries both the WHAT (Problem, Behaviors, UX) and the
-HOW (Data model, Architecture, Tasks) — there is no separate spec.
+The HOW for one feature: Current State, Data model, Architecture, Tasks, Test behaviors.
+The WHAT — Problem, Behaviors (B-NNN), UX — lives in this dir's spec.md (produced by /vibe:spec,
+this command's companion). This plan references behaviors by id; it never restates them. Spec and plan
+are SEPARATE documents. (For a purely technical run with no spec, the Behaviors section below is
+filled inline with a lightweight Goal + B-NNN — see its note.)
 
 A plan is sized for ONE team to build in one pass: roughly one coherent capability per stack
-(~3–5 engineering deliverables; test tasks don't count). Work too big for one pass is NOT split
-into "parts" — it becomes SEPARATE plans, each its own `.workspace/plans/yymmdd-slug/plan.md` dir and its own run,
-wired by `Depends on`. A plan that needs another plan's output names it in `Depends on`; that
-prerequisite must be `Implemented` before this plan runs.
+(~3–5 engineering deliverables; test tasks don't count). Sizing/decomposition is /vibe:spec's job —
+work too big became SEPARATE specs, each fed to its own plan, wired by `Depends on`. A prerequisite
+named in `Depends on` must be `Implemented` before this plan runs.
 
 Status lifecycle: Draft → Ready for Implement → (Blocked — Open Questions | Blocked — Implement)
-→ Implemented. Two side states: `Superseded — by <yymmdd-slug>` (retired by a later plan — set it,
-or QA/review findings against this plan are false) and `Parked — Stub` (intent + Open Questions
-captured; designed later in its own /vibe:plan pass).
+→ Implemented. Two side states: `Superseded — by <yymmdd-slug>` (retired by a later plan) and
+`Parked — Stub`.
 
 Vocabulary:
-- Behavior (B-NNN) — one testable WHAT. IDs are LOCAL to this plan, starting at B-001.
+- Behavior (B-NNN) — one testable WHAT, defined in spec.md (or inline, standalone). LOCAL to this
+  feature, starting at B-001. Tasks and Test behaviors reference these by id.
 - Task (T-NNN) — one coherent deliverable. Platform T-9xx, BE T-0xx, FE T-1xx. May span files; the
   engineer decomposes internally — never pre-split by artifact.
 - Block — Platform / BE / FE. One team builds them in that order, each made green before the next.
 
 Rules:
 - Everything is a 1–2 line bullet. No prose paragraphs.
-- Each fact has exactly ONE home (UX = user-visible shape · Architecture = decisions ·
+- Each fact has exactly ONE home (Current State = what exists · Architecture = decisions ·
   Contracts = the API surface) — cross-reference by B/T/D id, never restate.
-- Current-state facts about the code (what exists, where it lives, signatures) belong in this
-  dir's research.md — cite it, don't copy it. The plan carries decisions and contracts.
+- Behaviors and UX live in spec.md — reference by B-id, never copy them here.
 -->
 
 ---
 
-## Problem
-
-<!-- 2–3 bullets: what we're solving + who for. No solution. -->
-
-- 
-
 ## Behaviors
 
 <!--
-The WHAT for this plan — replaces stories + FRs + acceptance scenarios + success criteria.
-One observable, testable line each. Priority P1/P2/P3 justified by USER VALUE, not build ease.
+The WHAT this plan delivers — defined elsewhere, referenced here:
+- Spec-fed: a single reference line to the locked spec, e.g. `→ spec.md B-001…B-007`. Do NOT copy.
+- Standalone (no spec): the product-manager writes a lightweight Goal + inline B-NNN here —
+  observable lines for test traceability; priorities optional. No UX, no Out-of-Scope ceremony.
 -->
 
-- **B-001** (P1): [observable, testable behavior]
-- **B-002** (P2): …
+→ spec.md B-001…B-NNN
 
-## UX structure *(FE — else omit)*
+## Current State *(technical research — written by codebase-researcher)*
 
-<!-- Designer altitude ONLY: where it lives, screen/flow shape, primitives, edge states.
-No hooks, no client calls, no file paths — wiring is the FE Architecture's job. -->
+<!-- The technical landscape for building this: module/slice structure, data model, integration
+points, patterns + platform subsystems to build on, constraints + migration landmines. Facts only,
+every claim cited `file:line`. This is the architects' window into the code — they start here. -->
 
-- **Lives in**: [page / section / nav entry]
-- **Screens**: [per screen — shape + primary action + key edge state]
-- **Components**: reuse […]; new […]
-- **States**: empty / loading / error — [one line]
+- 
 
 ## Data model *(BE — else omit)*
 
@@ -78,8 +72,7 @@ constitution deviation) — give options + a recommendation. Any ⚠️ left ope
 Platform (the constitution's platform/feature split):
 - A NEW subsystem/wrapper → its own Platform task (T-9xx) + a paired platform test task, built and
   green before the BE/FE blocks. Test OUR wrapper, never the installed package. A NEW tool/library
-  is ⚠️ (you decide). If it's big enough to blow this plan's budget, it becomes its OWN separate
-  plan (a dependency this plan names in `Depends on`).
+  is ⚠️ (you decide). If it's big enough to blow this plan's budget, it should have been its OWN spec.
 - A small EXTENSION of an existing subsystem (new method/field/event) → fold inline into the BE/FE
   task that needs it; no separate task, architect decides.
 -->
@@ -106,20 +99,17 @@ Platform (the constitution's platform/feature split):
 
 - [what's verified] · B-002
 
-## Out of Scope
+## Out of Scope *(optional — standalone plans; else lives in spec.md)*
 
-<!-- Things that sound related but are excluded — the scope-creep guard. 1 bullet each.
-A capability deferred to a separate plan goes here, naming that plan. -->
+<!-- Technical exclusions for a standalone run. Spec-fed plans leave this out — Out of Scope is in spec.md. -->
 
 - [excluded thing]
 
-## Assumptions
+## Assumptions *(optional — technical assumptions; product/scope ones live in spec.md)*
 
-<!-- Scope/data/environment assumptions. Mark ⚠️ high-impact ones (if wrong, the plan changes) — those
-should have been put to the user, or be flagged unconfirmed. -->
+<!-- Architecture/environment assumptions this design rests on. Mark ⚠️ high-impact ones. -->
 
-- ⚠️ [high-impact assumption — confirmed with user, or flagged unconfirmed]
-- [ordinary assumption that shapes the plan]
+- ⚠️ [high-impact technical assumption — confirmed, or flagged unconfirmed]
 
 ## Open Questions *(gate — must be "None" before `/vibe:implement`)*
 
@@ -144,7 +134,7 @@ is the ONLY thing /vibe:implement mutates.
   (the engineer owns naming, same rule as Architecture).
 - One test task per block, owned by the test engineer (a fresh context) — NOT counted toward budget.
 - Owner ∈ { platform, be-eng, be-test, fe-eng, fe-test }. Status ∈ { Todo, In Progress, In Review, Done, Blocked }.
-- Budget ≈ 3–5 engineering deliverables per stack. Over budget → carve the overflow into a SEPARATE plan.
+- Budget ≈ 3–5 engineering deliverables per stack. Over budget → it should have been a separate spec.
 -->
 
 | ID | Block | Task | Delivers | Owner | Status |

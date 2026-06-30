@@ -36,13 +36,13 @@ You are the **team-lead** for the implement phase. **You only orchestrate.** You
 
 - **Never** read code or the plan's design body. Read only: the header (Status, Depends on), `## Open Questions`, and `## Tasks`.
 - Each engineer reads its **own** block from the plan file — you give it the path and its Task IDs, not the content.
-- If the plan dir contains `research.md` (the plan phase's cited map of the codebase), include its **path** in every worker brief: *"read it before exploring; it's a snapshot — verify load-bearing facts via `codegraph`."* You never read it yourself.
+- If the plan dir contains `research.md` (the spec phase's product map) and/or the plan's `## Current State` (its technical map), include their **paths** in every worker brief: *"read before exploring; a snapshot — verify load-bearing facts via `codegraph`."* If a `spec.md` is present, include its path too — it holds the **Behaviors (B-NNN)** and **UX** the Tasks/Test behaviors reference by id (the test engineer especially needs it for behavior traceability). You never read any of them yourself.
 
 ## Outline
 
 ### 1. Resolve the plan
 
-- Plans live under `.workspace/plans/` (retired ones in `.workspace/plans/archive/`), each in its own `yymmdd-slug/` dir. Resolve the plan dir from `$ARGUMENTS`, or list `.workspace/plans/*/` and take the most recent (the highest `yymmdd` prefix sorts last), and **confirm with the user via `AskUserQuestion`** before proceeding. Each dir holds exactly one `plan.md`. **Ignore `.workspace/plans/archive/` when listing** — implemented plans are moved there at finalize and are not run candidates.
+- Plans live under `.workspace/plans/` (retired ones in `.workspace/plans/archive/`), each in its own `yymmdd-slug/` dir. Resolve the plan dir from `$ARGUMENTS`, or list `.workspace/plans/*/` and take the most recent (the highest `yymmdd` prefix sorts last), and **confirm with the user via `AskUserQuestion`** before proceeding. Each dir holds exactly one `plan.md` (and, for a spec-fed feature, its `spec.md`). **Ignore `.workspace/plans/archive/` when listing** — implemented plans are moved there at finalize and are not run candidates.
 - `Grep -n '^## ' <plan file>` to map sections (don't read the whole file). Read **only** the header, `## Open Questions`, and `## Tasks`.
 
 ### 2. Gate check
@@ -118,7 +118,7 @@ For each block in order:
 
 - **All Done AND the testing gate passes** → set the plan `Status: Implemented`, and directly under the Status line write one **`Verified`** line with the evidence: date + what ran green (e.g. `**Verified**: 2026-06-09 · BE integration 34 green · FE component 18 green · E2E 5 green · QA pass · build clean`). This is what later supersession/QA checks audit — chat reports die with the session. Then, in this order:
   1. **Capture learnings first** (the bullet below) so `learnings.md` is written while the plan dir is still in place.
-  2. **Archive the plan.** Move the entire plan dir (`plan.md`, `research.md`, `learnings.md`, anything alongside) from `.workspace/plans/<plan>/` to `.workspace/plans/archive/<plan>/` (create `.workspace/plans/archive/` if absent; use `git mv` so history is preserved). The dir keeps its `yymmdd-slug` name. Do this only on a true Implemented finalize — never archive a `Blocked — Implement` plan.
+  2. **Archive the plan.** Move the entire plan dir (`spec.md`, `plan.md`, `research.md`, `learnings.md`, anything alongside) from `.workspace/plans/<plan>/` to `.workspace/plans/archive/<plan>/` (create `.workspace/plans/archive/` if absent; use `git mv` so history is preserved). The dir keeps its `yymmdd-slug` name. Do this only on a true Implemented finalize — never archive a `Blocked — Implement` plan.
   3. **Commit the run's work** on the current branch — `git add -A` + one descriptive message naming the plan slug and what was implemented. The commit captures the status flip, the learnings, and the archive move together. Commit only: never push, never open a PR.
   4. **Shut down the team** per `vibe-team-orchestration` — no teammate left running.
 

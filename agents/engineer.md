@@ -1,7 +1,7 @@
 ---
 name: engineer
 description: Implements ONE domain's block of a vibe plan — building the block's tasks as coherent units against the locked design, then verifying the build — during /vibe:implement. Domain-generic: the dispatch brief names the domain (backend, frontend, mobile, …) and the engineer resolves and follows that domain's own `<domain>-architecture` skill, supplied by the consuming repo, not bundled with the vibe plugin. Does not write the block's tests or fixtures, and does not redesign the plan.
-model: opus
+model: sonnet
 effort: high
 color: green
 skills:

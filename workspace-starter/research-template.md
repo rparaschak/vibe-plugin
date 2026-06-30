@@ -4,9 +4,16 @@
 **Question**: "[the feature request researched]"
 
 <!--
-Facts about the CURRENT state of the codebase, written by `codebase-researcher` at the start of
-/vibe:plan and consumed by everyone downstream: the team-lead reads ## Summary ONLY; the critic,
-the architects, and every implement-phase worker read the whole file BEFORE exploring.
+PRODUCT research: facts about what the feature's area ALREADY DOES, written by `codebase-researcher`
+at the start of /vibe:spec and consumed downstream: the team-lead reads ## Summary ONLY; the
+product-manager and the critic read the whole file BEFORE framing/critiquing; /vibe:plan workers read
+it too. The angle is product — what functionality exists, the user-facing surface, the gaps — NOT the
+technical build structure. (Technical/architectural research lives in plan.md's `## Current State`,
+written during /vibe:plan — not here.)
+
+Mine the behaviour-based tests: the test suite documents what the system already does. Inventory those
+existing behaviors in the same B-NNN-style language so the product-manager frames NEW behaviors as
+deltas against them, not from scratch.
 
 Rules:
 - FACTS ONLY — no design proposals, no recommendations, no "we should".
@@ -18,16 +25,24 @@ Rules:
 
 ## Summary
 
-<!-- ≤10 bullets, 1–2 lines each. The ONLY section the team-lead reads — structure it for the
-lead's two decisions: per stack (BE / FE / platform), what EXISTS vs what MUST BE BUILT for this
-feature; then the sharpest risks/unknowns. Vague bullets are worse than none — be concrete. -->
+<!-- ≤10 bullets, 1–2 lines each. The ONLY section the team-lead reads — structure it for framing:
+what the feature's area ALREADY DOES vs what's MISSING for this feature; then the sharpest
+risks/unknowns. Vague bullets are worse than none — be concrete. -->
+
+-
+
+## Existing behaviors *(mined from the test suite)*
+
+<!-- What the system already does around this feature, inventoried in B-NNN-style language so the
+product-manager frames new behaviors as deltas. Cite the test `file:line` that documents each. -->
 
 -
 
 ## Current state
 
-<!-- What exists today around this feature: slices, entities, routes, components, jobs, migrations.
-Cite everything. Note explicitly what does NOT exist where a reader might assume it does. -->
+<!-- What exists today around this feature, from the product angle: the user-facing surface,
+flows, entities the user touches, what's reachable in the UI. Cite everything. Note explicitly what
+does NOT exist where a reader might assume it does. -->
 
 -
 

@@ -1,6 +1,6 @@
 ---
 name: vibe-team-orchestration
-description: How a vibe team-lead dispatches work using a persistent agent team — forming it, dispatching via SendMessage, how workers get code context, and teardown. Use in /vibe:plan and /vibe:implement. Pairs with vibe-team-communication-protocol. Owns dispatch mechanics only, never the phase algorithm.
+description: How a vibe team-lead dispatches work using a persistent agent team — forming it, dispatching via SendMessage, how workers get code context, and teardown. Use in /vibe:spec, /vibe:plan, and /vibe:implement. Pairs with vibe-team-communication-protocol. Owns dispatch mechanics only, never the phase algorithm.
 ---
 
 # Team orchestration
@@ -21,7 +21,7 @@ You run a **persistent named-agent team**. You already know how agent teams work
 
 ## Context
 
-You stay out of the code. Each worker starts from the feature's `research.md` (path in its brief), then its own plan section, resolving the rest per `vibe-research-protocol`. The matching architect is on-call for design-intent questions; in `/vibe:plan`, `codebase-researcher` is the context oracle. A blocked worker andon-cords you — you never read code to answer.
+You stay out of the code. Each worker starts from the cited map in its brief — the feature's `research.md` (product) and/or the plan's `## Current State` (technical) — then its own spec/plan section, resolving the rest per `vibe-research-protocol`. The matching architect is on-call for design-intent questions; in `/vibe:spec` and `/vibe:plan`, `codebase-researcher` is the context oracle. A blocked worker andon-cords you — you never read code to answer.
 
 ## Teardown
 

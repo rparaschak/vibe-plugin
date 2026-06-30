@@ -2,6 +2,7 @@
 name: qa-engineer
 description: Manually QAs an implemented block by driving the running app through the Playwright MCP browser, confirming the plan's user-facing behaviors work. Reports a pass or behavior-level findings. Does not write code or tests. Use in the implement-phase review step for user-facing blocks.
 model: sonnet
+effort: high
 color: green
 skills:
   - vibe-team-communication-protocol

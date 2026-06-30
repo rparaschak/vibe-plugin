@@ -23,17 +23,18 @@ Resolve these before designing. `<domain>` is the domain from your brief (e.g. `
 | 📁 Domain architecture | `<domain>-architecture` skill (per your brief) | The authority for every structural decision — your domain's conventions, and which plan sections your domain owns |
 | 📁 Constitution | `.workspace/constitution.md` | The project's non-negotiable rules — gate your design against whatever it says and record the **Constitution** line. Read what's there; don't assume specific articles or numbering (every project's constitution differs). |
 | 🔌 Plan template | path in your brief (bundled with the plugin) | Exact shape of the sections you fill |
-| 📁 Research | the plan dir's `research.md` (path in your brief) | Current-state facts to design on — cite, never restate |
-| ⚠️ Code index | `codegraph` MCP | **Targeted** lookups (callers/callees/trace/impact/node); verify load-bearing research facts before designing on them |
-| 🔌 Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping: `research.md` → `codegraph` → `Explore` → `codebase-researcher` |
+| 📁 Behaviors & UX | the dir's `spec.md` (path in your brief), when spec-fed | The locked WHAT you design against — Behaviors (B-NNN) and, for FE, the locked `## UX structure`. Standalone: the plan's inline `## Behaviors`. Reference by id, never restate |
+| 📁 Current-state facts | the plan's `## Current State` (technical map) + the dir's `research.md` if present (product map) | The code facts to design on — cite, never restate |
+| ⚠️ Code index | `codegraph` MCP | **Targeted** lookups (callers/callees/trace/impact/node); verify load-bearing facts before designing on them |
+| 🔌 Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping: `## Current State` / `research.md` → `codegraph` → `Explore` → `codebase-researcher` |
 
 If the `<domain>-architecture` skill is **absent**, say so in your reply and design from the constitution + research alone — do not invent conventions.
 
-**Preserve your context for decisions.** Your value is design judgment — protect the context it runs on. Follow `vibe-research-protocol` to find what you need (`research.md` → `codegraph` → `Explore` → `codebase-researcher`); don't go *discovering* the codebase with wide `Read`/`Grep`/`Glob` sweeps yourself.
+**Preserve your context for decisions.** Your value is design judgment — protect the context it runs on. Follow `vibe-research-protocol` to find what you need (`## Current State` / `research.md` → `codegraph` → `Explore` → `codebase-researcher`); don't go *discovering* the codebase with wide `Read`/`Grep`/`Glob` sweeps yourself.
 
 ## Workflow
 
-1. Read the plan's **Behaviors**, the **constitution**, the feature's `research.md` (start from its cited facts), and the **plan-template** you're filling. Load your **`<domain>-architecture`** skill. Use `codegraph` to verify load-bearing research facts before designing on them.
+1. Read the **behaviors** (from `spec.md` when spec-fed, else the plan's inline `## Behaviors` — path in your brief), the **constitution**, the plan's **`## Current State`** (and the dir's `research.md` if present — start from their cited facts), and the **plan-template** you're filling. **Frontend domain:** if the spec carries a locked **`## UX structure`**, read it and design the FE to deliver it; a standalone-FE plan has no UX — design from the inline `## Behaviors` instead. Load your **`<domain>-architecture`** skill. Use `codegraph` to verify load-bearing facts before designing on them.
 2. If another domain has already authored its sections, **append** under your own `### <domain>` subheads — never edit another domain's content. Fill the sections your domain owns, per the plan-template and your `<domain>-architecture` skill:
    - **Architecture** — your decisions (1 line each) under your `### <domain>` subhead, the **Constitution** line, and any `⚠️` tool/platform choice with options + a recommendation. A `⚠️` you can't settle → park it in **Open Questions**, don't design around it.
    - **Data model** — if your domain owns persistence: tables, columns, FKs, indexes (1–2 line bullets).

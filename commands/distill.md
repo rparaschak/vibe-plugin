@@ -27,7 +27,7 @@ Route each entry to the **highest rung that fits** — stronger means less for a
 1. **Mechanize** — hook, make target, script, lint rule, test. The environment enforces it; no one needs to recall it.
 2. **Skill** — a convention agents apply while working (`.claude/skills/*/SKILL.md`).
 3. **Constitution** — acceptance-gate-grade rules only. Respect its own admission bar: violated more than once or clearly principled, ≤10 lines, one-sentence why.
-4. **Template / agent brief** — when the lesson is "the plan / research / brief should have asked for X." The plan/research templates and the role agents live in the vibe **plugin** (`workspace-starter/*-template.md`, the plugin's `agents/*`), which is installed read-only/shared from a consuming repo — so record this as a **follow-up plugin change**, not an in-place edit. Edit it directly only when developing the plugin itself, or when the repo keeps its own local override under `.claude/agents/`.
+4. **Template / agent brief** — when the lesson is "the spec / plan / research / brief should have asked for X." The spec/plan/research templates and the role agents live in the vibe **plugin** (`workspace-starter/*-template.md` — `spec-template`, `plan-template`, `research-template` — and the plugin's `agents/*`), which is installed read-only/shared from a consuming repo — so record this as a **follow-up plugin change**, not an in-place edit. Edit it directly only when developing the plugin itself, or when the repo keeps its own local override under `.claude/agents/`.
 5. **Keep** — seen once, may recur; stays in learnings (the holding pen).
 6. **Retire** — stale (cites dead files / superseded plans / fixed env), already encoded elsewhere, or actually a bug to fix (→ follow-up item).
 
@@ -41,7 +41,7 @@ Route each entry to the **highest rung that fits** — stronger means less for a
 - `.workspace/learnings.md` — the curated holding pen (only this command writes it). Every entry is a candidate too (old "keep" entries get re-checked for staleness each pass). Note the `Last distilled:` watermark in its header; L-IDs already assigned here are stable.
 - `.workspace/constitution.md` — the articles and the admission bar.
 - Skill inventory — list `.claude/skills/*/SKILL.md`, read **frontmatter descriptions only**; open a skill's body only when drafting an edit to it.
-- Decision Logs — for each non-archived plan dir under `.workspace/plans/` whose `yymmdd` prefix is **newer than the watermark**, read only its `## Decision Log` (and `## Learnings`-like notes if present). A decision with cross-plan force (a rejected pattern, a tool choice rationale) is a candidate too.
+- Decision Logs — for each non-archived plan dir under `.workspace/plans/` whose `yymmdd` prefix is **newer than the watermark**, read only its plan `## Decision Log` (and the `spec.md` `## Open Questions` / decision notes, if present). A decision with cross-plan force (a rejected pattern, a tool choice rationale) is a candidate too.
 
 **Cross-run recurrence is detected here, not by the runs.** When two or more per-run files (or a per-run file and a curated entry) carry the same lesson, collapse them into one entry and mark it `(seen 2x · yymmdd)` — this is the recurrence signal the implement runs can no longer compute themselves, and it clears the promotion bar below.
 

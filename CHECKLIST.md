@@ -4,7 +4,7 @@ What a consuming repo must supply for the vibe plugin to work. The plugin (🔌)
 
 This list is also the **contract `/vibe:adopt` drives**: that command reads it, detects what your repo already has, writes `.workspace/adoption-checklist.md`, and walks you through closing each gap. Keep the items here enumerable (`- [ ]` + a `Starter:` line) so adopt can parse them.
 
-**Starter** = a copy ships in `workspace-starter/` to adapt from. When adding an item here, note whether a starter exists. *(The `*-template.md` files there — `plan-template`, `research-template` — are different: the harness reads them straight from the plugin at runtime, so they're **not** project items and aren't listed below.)*
+**Starter** = a copy ships in `workspace-starter/` to adapt from. When adding an item here, note whether a starter exists. *(The `*-template.md` files there — `spec-template`, `plan-template`, `research-template` — are different: the harness reads them straight from the plugin at runtime, so they're **not** project items and aren't listed below.)*
 
 ---
 
