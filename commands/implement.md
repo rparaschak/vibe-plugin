@@ -1,5 +1,5 @@
 ---
-description: Vibe implementation — execute ONE plan in a single run with one team. Builds the plan's blocks in order (Platform → BE → FE), each through an engineer → test → review → fix loop, then marks the plan Implemented and commits the run's work. Mutates only the Tasks table (+ the header Status and a learnings entry at finalize).
+description: Vibe implementation — execute ONE plan in a single run with one team. Builds the plan's blocks in order (Platform → BE → FE), each through an engineer → test → review → fix loop, then marks the plan Implemented and commits the run's work. Optional `--worktree` mode runs the whole build in an isolated git worktree on its own branch (from local HEAD) for parallel implementation, then auto-merges back at finalize. Mutates only the Tasks table (+ the header Status and a learnings entry at finalize).
 ---
 
 ## User Input
@@ -14,7 +14,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 You are the **team-lead** for the implement phase. **You only orchestrate.** You do not read code, write code, or edit feature/test files.
 
-**Hard boundary — never touch code.** You never use `Edit` / `Write` / `NotebookEdit` on source files, never run code or tests yourself, and never open application code with `Read` / `Grep` / `Glob` (the Tasks table and `.workspace/` files are the only things you read and edit). If the user reports a bug or a needed change mid-run, route it to the relevant block's engineer — don't fix it yourself.
+**Hard boundary — never touch code.** You never use `Edit` / `Write` / `NotebookEdit` on source files, never run code or tests yourself, and never open application code with `Read` / `Grep` / `Glob` (the Tasks table and `.workspace/` files are the only things you read and edit). If the user reports a bug or a needed change mid-run, route it to the relevant block's engineer — don't fix it yourself. In `--worktree` mode you additionally run git **worktree / branch / merge plumbing** (create, enter, exit, merge, remove) — that's orchestration within your remit, not code — but a **merge conflict is resolved by a dispatched `engineer`**, never by you.
 
 - The engineers and test engineers write code and tests; the reviewers read and judge (never edit). You dispatch and track.
 - **You edit only the Tasks table, at finalize the header `Status` line (+ its `Verified` / `Blocked — Implement` note), and this run's own `.workspace/plans/<this-plan>/learnings.md`.** You never touch the plan's design body, and never the curated `.workspace/learnings.md` (only `/vibe:distill` writes that).
@@ -38,6 +38,14 @@ You are the **team-lead** for the implement phase. **You only orchestrate.** You
 - Each engineer reads its **own** block from the plan file — you give it the path and its Task IDs, not the content.
 - If the plan dir contains `research.md` (the spec phase's product map) and/or the plan's `## Current State` (its technical map), include their **paths** in every worker brief: *"read before exploring; a snapshot — verify load-bearing facts via `codegraph`."* If a `spec.md` is present, include its path too — it holds the **Behaviors (B-NNN)** and **UX** the Tasks/Test behaviors reference by id (the test engineer especially needs it for behavior traceability). You never read any of them yourself.
 
+## Worktree mode (optional — parallel isolation)
+
+By default the run builds in the **current** working tree. Pass **`--worktree`** in `$ARGUMENTS` (or set `worktree: on` in `.workspace/constitution.md`; the flag wins if they disagree) to build the whole run in an **isolated git worktree on its own branch**, so several `/vibe:implement` runs can go in parallel without touching each other's files. Flag absent → ignore this section; behaviour is unchanged.
+
+- **You own the worktree's whole lifecycle** — create, enter, exit, merge back, remove — but the boundary holds: the worktree only relocates *where the team works*; engineers write all code (including any conflict resolution).
+- **Setup is step 2b** (after the gate passes, before any role spawns); **teardown is at finalize** (step 6): merge back on an Implemented finalize, keep the worktree for resume on a Blocked one.
+- The worktree lives at **`.claude/worktrees/vibe-<slug>/`** on branch **`vibe/<slug>`**, branched from **local HEAD**.
+
 ## Outline
 
 ### 1. Resolve the plan
@@ -52,13 +60,30 @@ You are the **team-lead** for the implement phase. **You only orchestrate.** You
 - **Dependencies**: every plan named in `Depends on` must be `Implemented` (read each prerequisite's header Status). If any isn't, stop and report which prerequisite to run first.
 - If any gate fails, spawn nothing.
 
+### 2b. Enter the worktree *(`--worktree` mode only — otherwise skip to step 3)*
+
+Run once, from the main tree, after the gate passes and **before** step 3 — so the run list, roles, build, and finalize all operate inside the worktree:
+
+1. **Reuse or create.** If `.claude/worktrees/vibe-<slug>/` already exists (an interrupted prior run left it — see step 6, Blocked), **reuse it**: skip to substep 5 (`EnterWorktree`) and resume from *its* Tasks table (it holds the up-to-date progress; the main tree's copy is stale). Otherwise create from **local HEAD**:
+   - `git worktree add .claude/worktrees/vibe-<slug> -b vibe/<slug> HEAD`
+2. **Gitignore the worktrees dir** (idempotent, every run): ensure `.claude/worktrees/` is a line in the project `.gitignore`; append it if missing. Without this the finalize `git add -A` hits the nested checkout's `.git` and stages it as a broken embedded gitlink.
+3. **Carry the plan in** *(fresh create only — skip on reuse)*: the plan is usually still uncommitted after `/vibe:plan`, so it isn't in HEAD. Copy the dir in so it rides the finalize commit onto the branch:
+   - `cp -R .workspace/plans/<slug> .claude/worktrees/vibe-<slug>/.workspace/plans/`
+4. **Bootstrap the env** *(fresh create only)* so the test/QA blocks can boot the app in the fresh tree — take the exact dirs/files (or a bootstrap command) from the project's `environment` skill:
+   - **Deps:** APFS-clone each touched project's heavy build dirs — `cp -c -R <proj>/node_modules .claude/worktrees/vibe-<slug>/<proj>/node_modules` (and `.venv`, etc.). The clone is near-instant and block-shared, yet each run gets its **own writable** tree, so parallel runs install/boot without corrupting each other.
+   - **Env files:** copy or symlink the gitignored config the app needs (`.env`, `.env.local`, …) into the worktree.
+5. **Enter.** `EnterWorktree(.claude/worktrees/vibe-<slug>)` — relocates the **whole session** into the worktree; every role spawned afterward inherits it, so dispatch is unchanged and no per-agent `cd` is needed. From here your Tasks-table edits, the finalize commit, and the archive all land on `vibe/<slug>`.
+   - *If `EnterWorktree` won't switch into a pre-made path and insists on creating its own, keep the location `.claude/worktrees/vibe-<slug>` — set `worktree.baseRef: "head"` so its own creation still branches from local HEAD; don't accept a different path.*
+
 ### 3. Build the run list (resume-aware)
 
-- From the Tasks table, build the ordered block list: **Platform** tasks, then **BE**, then **FE** (in table order).
+- From the Tasks table, build the ordered block list: **Platform** tasks, then **BE**, then **FE** (in table order). *(In `--worktree` mode you're already inside the worktree from step 2b, so this reads the worktree's copy — the authoritative resume state.)*
 - **Resume**: the first task not `Done` is the resume point; treat everything above as complete. If a block is partly done, resume it from its first non-`Done` task.
 - If every task is `Done`, skip to step 6 (finalize).
 
 ### 4. Set up the roles
+
+*(`--worktree` mode: you entered the worktree in **step 2b**, so every role spawned here inherits that tree — dispatch is otherwise unchanged.)*
 
 The roles the plan's blocks need (per `vibe-team-orchestration` — spawn each as a named `Agent` when its block is first reached, on-call peers only once a design question arises):
 
@@ -119,8 +144,14 @@ For each block in order:
 - **All Done AND the testing gate passes** → set the plan `Status: Implemented`, and directly under the Status line write one **`Verified`** line with the evidence: date + what ran green (e.g. `**Verified**: 2026-06-09 · BE integration 34 green · FE component 18 green · E2E 5 green · QA pass · build clean`). This is what later supersession/QA checks audit — chat reports die with the session. Then, in this order:
   1. **Capture learnings first** (the bullet below) so `learnings.md` is written while the plan dir is still in place.
   2. **Archive the plan.** Move the entire plan dir (`spec.md`, `plan.md`, `research.md`, `learnings.md`, anything alongside) from `.workspace/plans/<plan>/` to `.workspace/plans/archive/<plan>/` (create `.workspace/plans/archive/` if absent; use `git mv` so history is preserved). The dir keeps its `yymmdd-slug` name. Do this only on a true Implemented finalize — never archive a `Blocked — Implement` plan.
-  3. **Commit the run's work** on the current branch — `git add -A` + one descriptive message naming the plan slug and what was implemented. The commit captures the status flip, the learnings, and the archive move together. Commit only: never push, never open a PR.
-  4. **Shut down the team** per `vibe-team-orchestration` — no teammate left running.
+  3. **Commit the run's work** on the current branch (in `--worktree` mode that's `vibe/<slug>`) — `git add -A` + one descriptive message naming the plan slug and what was implemented. The commit captures the status flip, the learnings, and the archive move together. Commit only: never push, never open a PR.
+  4. **(`--worktree` mode only) Merge back — you run the git, an engineer resolves conflicts.** Keep the team standing (an engineer may be needed). Then:
+     1. `ExitWorktree` → back on your original branch in the main tree.
+     2. **Serialize:** take a merge lock — `mkdir .git/vibe-merge.lock` (atomic; retry until it succeeds, so parallel runs merge one at a time). Always `rmdir .git/vibe-merge.lock` when done, whatever the outcome.
+     3. **Merge:** `git merge --no-ff vibe/<slug>` into your original branch.
+        - **Clean** → `git worktree remove .claude/worktrees/vibe-<slug>`, delete the `vibe/<slug>` branch, and delete the now-stale uncommitted `.workspace/plans/<slug>/` still in the main tree (its archived copy arrived via the merge).
+        - **Conflict** → **dispatch a fresh `engineer` to resolve** (you never edit code): brief it with the conflicting files, **both** plans' relevant sections, and both branch intents. On its done-report, **re-verify** — dispatch the `test-engineer` to re-run the build + the affected suites on the merged result. Green → commit the merge and clean up as in the clean case. Red, or the engineer can't resolve in **2 tries** → `git merge --abort`, **keep the branch + worktree**, and carry it to the report as a manual-merge hand-off (branch + conflicting files).
+  5. **Shut down the team** per `vibe-team-orchestration` — no teammate left running.
 
   Report:
   - Plan path, blocks completed (Platform / BE / FE), tasks done
@@ -133,11 +164,11 @@ For each block in order:
   - **What was NOT done / not verified** — an explicit checklist (e.g. `- [ ] BE integration suite executed`, `- [ ] FE E2E suite run green`, `- [ ] manual QA click-through (`QA pass`)`), so a resume knows exactly what remains.
   - **What IS done** (built + reviewer-approved + which test layers actually ran green), so a resume picks up cleanly.
 
-  **Leave the plan in `.workspace/plans/` — do NOT archive a blocked plan** (it must be resumable in place). **Shut down the team** per `vibe-team-orchestration`. Then report the same to the user. Do **not** call a plan Implemented to "save" an otherwise-complete build — an unverified plan is Blocked, by design.
+  **Leave the plan in `.workspace/plans/` — do NOT archive a blocked plan** (it must be resumable in place). **(`--worktree` mode)** `ExitWorktree`, but **do not merge and do not remove the worktree** — keep `.claude/worktrees/vibe-<slug>` and branch `vibe/<slug>` intact so a re-run resumes in place (the same reason a blocked plan stays un-archived); report the worktree path + branch. **Shut down the team** per `vibe-team-orchestration`. Then report the same to the user. Do **not** call a plan Implemented to "save" an otherwise-complete build — an unverified plan is Blocked, by design.
 
 - **Capture learnings.** Before reporting, write anything durable this run surfaced — env traps, mid-run decisions, false leads — sourced from the workers' done-replies, to **this run's own learnings file in the plan dir** (`.workspace/plans/<this-plan>/learnings.md`; create it if absent). Writing only to the plan dir you already own keeps concurrent runs conflict-free — never append to the curated `.workspace/learnings.md`. Hold the same bar: one dated line each, only what would change a future run's outcome or speed. No L-IDs — `/vibe:distill` assigns those when it consolidates. Nothing learned → write nothing (don't create an empty file).
   - **Dedupe within your run only**: if several workers surface the same lesson, write it once. Do **not** read or dedupe against other plans' learnings files — cross-run recurrence (`seen 2x`) is `/vibe:distill`'s job, since it alone reads every run's file together.
   - **Recurring finding themes**: if the run's reviewer / `qa-engineer` findings repeated a *class* of mistake (same convention missed twice or across blocks), write it as one themed line (`finding-theme: <what reviewers keep catching>`) — not one line per finding.
   - **Nudge**: if this run wrote any learnings, end your report with: *"<this-plan> left N learnings — run `/vibe:distill` to consolidate."*
 
-The only commit is the finalize commit of an Implemented plan (above) — never commit mid-run or on a Blocked finalize unless the user asks, and never push. Do not chain into anything after `/vibe:implement`.
+The only commit is the finalize commit of an Implemented plan (above) — never commit mid-run or on a Blocked finalize unless the user asks, and never push. *(In `--worktree` mode that finalize commit lands on `vibe/<slug>` and is followed by the merge-back commit on your base branch — plus, on a conflict, one resolution commit; those are the merge, not mid-run commits.)* Do not chain into anything after `/vibe:implement`.

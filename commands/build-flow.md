@@ -36,7 +36,7 @@ Every custom flow is a subsequence of these stages. Map the user's sketch onto t
 | **product critic gate** | `spec.md` | `critic` (product lens) | — |
 | size / decompose | `spec.md` | `product-manager` | — |
 | UX design | `spec.md` | `product-designer` | — (user-facing only) |
-| resolve behaviors | `plan.md` step 2 | spec-ref *or* `product-manager` (standalone) | domain surface |
+| resolve behaviors | `plan.md` step 2 | spec-ref *or* team-lead (standalone) | domain surface |
 | technical research → `## Current State` | `plan.md` step 4 | `codebase-researcher` | domain(s) |
 | architecture | `plan.md` steps 5–6 | `architect` (per domain) | domain; BE before FE |
 | **architecture critic gate** | `plan.md` step 7 | `critic` (architecture lens) | — |

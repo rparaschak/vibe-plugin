@@ -12,6 +12,7 @@ You run a **persistent named-agent team**. You already know how agent teams work
 - Spawn each role as a **named** `Agent` **when the algorithm first needs it**, and keep it standing so it retains context across messages — never re-spawn a role you already have.
 - On-call peers (the architects a command marks "on-call") wait until a design question actually arises — don't pre-spawn idle teammates; keep the live set near 3–5.
 - Give each a self-contained first brief; teammates load their own project context (`CLAUDE.md`, skills, codegraph).
+- **Worktree mode (`/vibe:implement --worktree`).** If the lead moved the session into a git worktree (`EnterWorktree`) **before** forming the team — as implement's step 2b does — every role spawns into that worktree and shares its tree, so dispatch is unchanged and no per-agent `cd` is needed. The lead must enter before spawning the first role; on teardown it exits and merges back (the command owns that lifecycle, not this skill).
 
 ## Dispatch
 

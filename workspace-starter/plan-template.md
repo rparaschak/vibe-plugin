@@ -41,7 +41,7 @@ Rules:
 <!--
 The WHAT this plan delivers — defined elsewhere, referenced here:
 - Spec-fed: a single reference line to the locked spec, e.g. `→ spec.md B-001…B-007`. Do NOT copy.
-- Standalone (no spec): the product-manager writes a lightweight Goal + inline B-NNN here —
+- Standalone (no spec): the team-lead writes a lightweight Goal + inline B-NNN here —
   observable lines for test traceability; priorities optional. No UX, no Out-of-Scope ceremony.
 -->
 

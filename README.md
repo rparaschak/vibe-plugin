@@ -37,11 +37,13 @@ Once adoption reports **vibe-ready**, the normal loop is:
 /vibe:spec       # define the WHAT: research → frame behaviors → critic gate → [design UX] → spec.md
 /vibe:plan       # design the HOW: technical research → architecture → critic gate → plan.md (spec-optional)
 /vibe:feature    # run spec then plan end-to-end, no approval pause between
-/vibe:implement  # build ONE plan in one run: engineer → test → review → fix → done
+/vibe:implement  # build ONE plan in one run: engineer → test → review → fix → done  (--worktree = isolated branch, for parallel runs)
 /vibe:distill    # fold what each run learned back into the playbook (run every ~2–3 plans)
 ```
 
 For a **full feature**, run `/vibe:spec` (review the spec), then `/vibe:plan` — or `/vibe:feature` to do both in one shot. For **purely technical** work (a refactor, migration, backend change) with no product/design question, run `/vibe:plan` directly — it needs no spec and skips the product/design steps. See **§2. Flows** below for what each command does step by step.
+
+To build several plans **in parallel**, run each `/vibe:implement --worktree` (in its own session/tab): each gets its own git worktree + branch off local HEAD, so the runs never touch each other's files, and each auto-merges back to your branch when it finishes. See the `/vibe:implement` flow in §2 for the full lifecycle.
 
 ## Legend
 
@@ -65,7 +67,7 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 | 🔌 `/vibe:spec` | Team-lead for the **WHAT**. Researches the codebase into a cited `research.md` (mining the behaviour-based tests for what already exists), then via the `product-manager` frames + drafts behaviors, gates them with an adversarial critic, sizes/decomposes the work, and — for UI features — designs the UX. Produces `spec.md`. Thin orchestrator: drafting is delegated; design is auto-skipped for technical work. Never touches code. |
 | 🔌 `/vibe:plan` | Team-lead for the **HOW**. **Spec-optional.** Reads behaviors from a Ready-for-Plan `spec.md` (or, standalone, captures a lightweight Goal + Behaviors inline), researches the technical landscape into the plan's `## Current State`, designs data model + architecture (BE → FE) + tasks + tests, and gates the design with an adversarial architecture critic. Produces `plan.md`. Never touches code. |
 | 🔌 `/vibe:feature` | Thin sequencer: runs `/vibe:spec` then `/vibe:plan` end-to-end against one feature, with **no manual approval pause** between (the framing forks and both critic gates still fire). Use for a full feature when you don't need to lock the spec before architecture. Owns no algorithm of its own. |
-| 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. |
+| 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. Optional **`--worktree`** runs the build in an isolated git worktree on its own branch (from local HEAD) for **parallel implementation**, then auto-merges back at finalize. |
 | 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
 
 ---
@@ -102,7 +104,7 @@ The flows are hardcoded in the command files. They reference 📁 artifacts (con
 | Step | Agent dispatched | Notes |
 |---|---|---|
 | Load context | — | Reads 📁 `constitution.md` + the 🔌 `plan` template. |
-| Resolve behaviors | (`product-manager`, standalone only) | **Spec-fed:** read locked `spec.md` behaviors by id. **Standalone (no spec):** PM writes a lightweight Goal + Behaviors inline — no critic, no UX. |
+| Resolve behaviors | — (team-lead, standalone only) | **Spec-fed:** read locked `spec.md` behaviors by id. **Standalone (no spec):** the lead writes a lightweight Goal + Behaviors inline — no PM, no critic, no UX. |
 | Technical research | `codebase-researcher` (technical brief) | Writes the plan's `## Current State` (structure, data model, integration points); folded into `plan.md`. |
 | Architecture (BE) | `architect` (backend domain) | Data model, BE architecture, platform/BE tasks, BE test behaviors. |
 | Architecture (FE) | `architect` (frontend domain) | Reads the locked `## UX structure` (spec-fed) or the inline `## Behaviors` (standalone-FE) + BE design; FE tasks/architecture/tests. Skipped only for plans with no frontend surface. |
@@ -115,13 +117,14 @@ The flows are hardcoded in the command files. They reference 📁 artifacts (con
 > **Domain note:** the `architect` and `critic` are **domain-generic** — the domain (backend, frontend, …) or the critique mode (product, architecture) comes from the dispatch brief, and the agent resolves the matching skill/lens-set at runtime. The only stack-shaped part is the **backend → frontend design sequence** in `/vibe:plan`, hardcoded in the command (not the agent). A new domain needs project skills, not a new agent.
 
 ### `/vibe:implement` flow
-`resolve plan → gate check → build run list → per-block loop → finalize`
+`resolve plan → gate check → [enter worktree] → build run list → per-block loop → finalize [→ merge back]`
 
 - **Block order (hardcoded): Platform → BE → FE.**
 - **Per-block loop:** `engineer` → `test-engineer` → `reviewer` → (fix → re-review)* → done; user-facing blocks also run `qa-engineer`.
 - **"Done"** = reviewer approved AND tests green (actually executed).
 - **"Implemented"** = every block done AND tests ran green at the required levels AND (for user-facing blocks) E2E green + manual `QA pass` + build clean; else `Blocked — Implement`.
 - Finalize: Status → Implemented, move plan to `.workspace/plans/archive/`, commit.
+- **`--worktree` mode (opt-in, for parallel runs).** After the gate, the lead creates a worktree at `.claude/worktrees/vibe-<slug>/` on branch `vibe/<slug>` **from local HEAD**, gitignores `.claude/worktrees/`, carries the (usually uncommitted) plan in, APFS-clones `node_modules` (isolated writable tree per run), and `EnterWorktree`s so the whole team shares it. At an **Implemented** finalize the lead `ExitWorktree`s and **merges back itself** (a merge lock serializes parallel merges; a conflict is resolved by a dispatched `engineer` then re-verified). A **Blocked** finalize keeps the worktree + branch for in-place resume. The lead still never touches code — it owns only the git plumbing. See the command file for the full step-by-step.
 
 > **Domain note:** the block order is hardcoded in the command, but the roster is **domain-generic** — `engineer` / `test-engineer` / `reviewer` / `architect` are each dispatched **per domain** (the brief carries `backend` / `frontend`). There is no stack-specific engineer or reviewer agent.
 
@@ -143,7 +146,7 @@ All **9** live in `agents/`. The agent **definitions** are 🔌. Each declares i
 | 🔌 `engineer` (sonnet, high) | team-communication-protocol, research-protocol | `<domain>-architecture`, `environment` | Implements ONE domain's block against the locked design, then runs **lint + build**. Does not write tests or redesign. |
 | 🔌 `test-engineer` (opus, high) | team-communication-protocol, research-protocol | `<domain>-testing`, `<domain>-architecture`, `environment` | Writes and **runs** every test layer the domain defines (e.g. integration / component / E2E) against the implemented code. No production code. |
 | 🔌 `reviewer` (opus) | team-communication-protocol, research-protocol, review-discipline | `<domain>-review` *(optional)*, `<domain>-architecture`, `<domain>-testing`, `environment` | Read-only three-pass review of ONE domain's block diff vs plan + project skills + constitution. Never edits. |
-| 🔌 `product-manager` (opus, xhigh) | team-communication-protocol, research-protocol | — | Owns the WHAT in `/vibe:spec`: frames the request and drafts Problem + Behaviors (B-NNN) + Out of Scope + Assumptions into `spec.md`. Proposes framing forks for the lead to relay. Standalone `/vibe:plan`: a lightweight inline Goal + Behaviors. No UX/architecture/code. |
+| 🔌 `product-manager` (opus, xhigh) | team-communication-protocol, research-protocol | — | Owns the WHAT in `/vibe:spec`: frames the request and drafts Problem + Behaviors (B-NNN) + Out of Scope + Assumptions into `spec.md`. Proposes framing forks for the lead to relay. Scoped to `/vibe:spec` only. No UX/architecture/code. |
 | 🔌 `codebase-researcher` (sonnet) | team-communication-protocol, research-protocol | — | Maps current code state to the **target its brief names** (a feature's 📁 `research.md`, or a plan's `## Current State`), every claim cited `file:line`; mines the behaviour tests when inventorying what exists. Generic across briefs — the orchestrator sets angle + target. Facts only; designs nothing. |
 | 🔌 `product-designer` (opus) | team-communication-protocol, research-protocol | `product-design` | Designs the UX for a feature and writes it into `spec.md`'s `## UX structure`. Iterates with the invoker. No code; touches no other section. |
 | 🔌 `critic` (opus, xhigh) | team-communication-protocol, research-protocol, critique | — | Adversarial review before work is built on a draft. Generic — the brief names the **artifact + lens-set** (a spec's Behaviors, or a plan's design + tasks); the lens-sets live in `vibe-critique`. Read-only findings. |

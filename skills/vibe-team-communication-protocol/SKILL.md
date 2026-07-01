@@ -60,7 +60,7 @@ Send one message describing what you saw and stop. Do not try to fix structural 
 
 ## Role boundaries
 
-- The product-manager frames and writes the WHAT — `spec.md`'s Problem + Behaviors + Out of Scope + Assumptions (or, standalone, the plan's inline Behaviors). It does not design UX, architecture, or write code.
+- The product-manager frames and writes the WHAT — `spec.md`'s Problem + Behaviors + Out of Scope + Assumptions. It does not design UX, architecture, or write code. (Standalone `/vibe:plan` has no product-manager — the team-lead captures the inline Behaviors.)
 - Designers design and write `spec.md`'s `## UX structure`. They do not write code or touch other sections.
 - Architects design and write `plan.md`. They do not write code.
 - Engineers write code. They do not redesign the plan.
