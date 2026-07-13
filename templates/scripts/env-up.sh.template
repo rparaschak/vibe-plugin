@@ -6,19 +6,20 @@
 # Self-verifying: after starting services it polls each for readiness and exits
 # non-zero with a NAMED failure if anything is not ready within the timeout.
 set -euo pipefail
+trap 'echo "env-up: FAILED — a start command exited non-zero (see output above)" >&2' ERR
 
-# {{READY_TIMEOUT}} — max seconds to wait for any one service to become ready.
+# READY_TIMEOUT — max seconds to wait for any one service to become ready.
 # Discover: time a cold start of the slowest dependency locally; round up.
 # e.g. 60
 READY_TIMEOUT="{{READY_TIMEOUT}}"
 
-# {{INFRA_UP_CMD}} — starts backing infra (db, queue, containers). MUST be
+# INFRA_UP_CMD — starts backing infra (db, queue, containers). MUST be
 # idempotent. Discover: the compose file / Makefile target for dependencies.
 # e.g. docker compose up -d      (or: make local-infra)
 echo "env-up: starting infra…"
 {{INFRA_UP_CMD}}
 
-# {{APP_UP_CMD}} — starts the app/server in the background so this script can poll.
+# APP_UP_CMD — starts the app/server in the background so this script can poll.
 # Discover: the local dev run target; background it and redirect its logs.
 # e.g. make start >/tmp/app.log 2>&1 &
 echo "env-up: starting app…"
@@ -50,7 +51,7 @@ wait_http() {
   echo "env-up: ready — $name ($url)"
 }
 
-# {{READINESS_CHECKS}} — one wait_port/wait_http call per service a test needs up.
+# READINESS_CHECKS — one wait_port/wait_http call per service a test needs up.
 # Discover: the ports/health URLs infra and the app listen on (compose port maps,
 # app config, the frontend's API base URL). Name each so its failure is legible.
 # e.g. wait_port 127.0.0.1 5432 postgres

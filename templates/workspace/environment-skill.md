@@ -2,7 +2,6 @@
 name: environment
 description: {{DESCRIPTION}}
 ---
-
 <!-- vibe-template: templates/workspace/environment-skill.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 <!-- Fill `description:` above with one line: what this brings up + that these two scripts are the ONLY sanctioned way to run it, e.g.
      "The sanctioned way to bring the local environment up and run verification for <project>: two self-verifying scripts, no improvised commands."
@@ -20,6 +19,7 @@ Run this before any test that needs infra or the app. It is **idempotent** (safe
 {{ENV_UP_PATH}}
 ```
 <!-- Discover: the repo-relative path env-up.sh was written to. e.g. ./scripts/env-up.sh -->
+- App URL (what a browser opens): {{APP_URL}} <!-- Discover: the base URL a browser opens, from env-up's wait_http checks. e.g. http://127.0.0.1:8080 -->
 
 ## Run verification
 

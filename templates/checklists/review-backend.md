@@ -17,12 +17,12 @@ The `reviewer` agent loads this as the `backend-review` checklist. Every line is
 ## Stack rules
 {{STACK_RULES}}
 <!-- BUILDER: the framework/ORM/query failure modes your audit found for THIS stack — one `- [ ]` each, `[mech]` where grep-able. Example:
-- [ ] No N+1 query — batch/`.Preload()`, never one query per row. [mech]
+- [ ] No N+1 query — batch/`.Preload()`, never one query per row.
 - [ ] No raw string-built SQL — parameterize every query. [mech]
 - [ ] Handlers return a typed error, not a bare 500. -->
 
 ## Architecture gotchas
-When in doubt, prefer {{STACK_RULES}}.
+When in doubt, prefer the Stack rules above.
 {{ARCH_GOTCHAS}}
 <!-- BUILDER: the layering/boundary traps specific to this codebase's backend — one `- [ ]` each. Example:
 - [ ] No business logic in the transport/handler layer.

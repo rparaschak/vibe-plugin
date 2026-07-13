@@ -22,7 +22,7 @@ The `reviewer` agent loads this as the `frontend-review` checklist. Every line i
 - [ ] No inline literal that belongs in the design-token/theme system. -->
 
 ## Architecture gotchas
-When in doubt, prefer {{STACK_RULES}}.
+When in doubt, prefer the Stack rules above.
 {{ARCH_GOTCHAS}}
 <!-- BUILDER: the component/data-flow traps specific to this codebase's frontend — one `- [ ]` each. Example:
 - [ ] No data fetching inside a presentational component.

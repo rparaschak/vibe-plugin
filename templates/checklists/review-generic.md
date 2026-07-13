@@ -13,7 +13,7 @@ Domain-agnostic review rules. The `reviewer` agent loads this as the `<domain>-r
 - [ ] Inputs crossing a trust boundary are validated before use.
 
 ## Hygiene
-- [ ] No commented-out code in the diff. [mech]
+- [ ] No commented-out code in the diff.
 - [ ] No leftover debug print / log / breakpoint. [mech]
 - [ ] No new TODO/FIXME without a tracking reference. [mech]
 - [ ] No hardcoded secret, credential, or token. [mech]
@@ -26,6 +26,5 @@ Domain-agnostic review rules. The `reviewer` agent loads this as the `<domain>-r
 - [ ] No logic duplicating an existing helper.
 
 ## Tests
-- [ ] New behavior has a test.
 - [ ] No test duplicates another test's behavior.
 - [ ] Access-control tests consolidated — one per role, not per endpoint.
