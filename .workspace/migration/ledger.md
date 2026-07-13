@@ -15,13 +15,16 @@
 | D2 | 2026-07-13 | Ledger lives at `.workspace/migration/ledger.md`, committed | Not gitignored; user asked for visible progress file | docs/ location |
 | D3 | 2026-07-13 | Model policy: scouts/cross-checkers = sonnet; authors/cold reviewers = opus; no fable | Per migration plan §2 orchestration table + standing constraint | — |
 | D4 | 2026-07-13 | `distill.md` reclassified `shrink`→`rewrite`: user wrote it by hand, unsure it follows best practices; rewrite against course learning-loop practices (L10/L12: feedback promotion, mechanization ladder, golden rules) before adding the template-promotion rung | User instruction mid-migration; goal = effective learning flywheel | Porting user's version + patching rung on top |
+| D5 | 2026-07-13 | WIP=1 scope in task-ledger = **per ledger**: parallel worktrees each carry their own ledger and their own single active leaf | Cold review flagged ambiguity; per-ledger matches vibe's existing `--worktree` isolation model | Global single active leaf (would forbid parallel worktree runs) |
+| D6 | 2026-07-13 | Idle-teammate procedure in team-protocol = ORCH's sequence: re-ping once, THEN verify ground truth | Scout found CP:10 vs ORCH:21 contradiction; ORCH version is more actionable | CP's immediate-verify version |
+| D7 | 2026-07-13 | User additions to scope: (a) per-component code-review checklists — already leaf 2.10 + build-harness gap rows, confirmed; (b) **architecture doc/skill per component** — NEW leaf 2.11; build-harness checklist must pre-seed one `<component>-architecture` skill row per detected component; (c) **deterministic environment scripts** — NEW leaf 2.12: `scripts/` templates for env-up + test-run, self-verifying (course P06 init.sh pattern), wrapped in an environment skill template; build-harness pre-seeds these rows; review-protocol's Pass 3 already runs verification "via the environment skill" so it plugs in directly | User instruction 2026-07-13 mid-Phase-1 | — |
 
 ## Handoff block
 
-- **Verified now:** Phase 0 complete — all 5 leaves passing. Standards shipped: command-standard.md (39 lines), agent-standard.md (39 lines), both cold-reviewed (1 revise round each). README drift fixed. SIMPLIFICATION-LOG seeded.
-- **Changed this session:** Phase 0 artifacts committed.
-- **Broken / unverified:** —
-- **Next best step:** Phase 1 kernel extraction: 1.1 task-ledger (greenfield author), 1.2 research-protocol (verbatim move), scouts on team-communication+orchestration (for 1.3) and review-discipline (for 1.4).
+- **Verified now:** Phase 0 complete (commit bad6b8d). Phase 1: 1.1 task-ledger passing (65 lines), 1.2 research-protocol passing (verbatim, 28 lines), 1.3 team-protocol DRAFTED at 70 lines + cross-checked + 2 lost rules restored — **cold review not yet run**.
+- **Changed this session:** Phase 0 + Phase 1 partial; dispositions for team-protocol and review-protocol persisted under `.workspace/migration/dispositions/`; D5–D7 recorded; leaves 2.11/2.12 added per user (architecture skill per component, deterministic env scripts); plan doc Phase 2 synced.
+- **Broken / unverified:** 1.3 lacks cold review; 1.4 review-protocol not started (its disposition file is ready); 1.5 workspace move not started.
+- **Next best step (resume here):** (1) dispatch cold reviewer for `templates/kernel/team-protocol.md` (opus, fresh context; rubric = complete/unambiguous/checkable/minimal/consistent-with-siblings/correct; verify verbatim contracts present); (2) then author 1.4 review-protocol from `.workspace/migration/dispositions/review-protocol.md` (same pipeline: author → cross-check vs `skills/vibe-review-discipline/SKILL.md` → cold review); (3) then 1.5 move workspace-starter → templates/workspace + rewrite plan-template Tasks section to ledger schema; (4) commit Phase 1; real-task contact test; Phase 2 next (now 12 leaves incl. 2.11/2.12). Execution protocol: migration-plan.md §2 (orchestrator never authors/reviews; scouts sonnet, authors+cold reviewers opus, no fable; WIP=1 authoring).
 
 ---
 
@@ -39,9 +42,9 @@
 
 | ID | Behavior | Verification | State | Evidence |
 |---|---|---|---|---|
-| 1.1 | `templates/kernel/task-ledger.md`: leaf schema, closed enum, WIP=1, evidence-gated transitions, stop conditions, round log, decision log + handoff, two-level verification | cold review Accept; within budget | not_started | — |
-| 1.2 | `templates/kernel/research-protocol.md`: near-verbatim from skill (verbatim tag justified) | cross-check: no content lost; cold review Accept | not_started | — |
-| 1.3 | `templates/kernel/team-protocol.md`: comm+orchestration merged, dupes killed, consolidation rule single-sourced | ≤70 lines; cross-check: no protocol lost; cold review Accept | not_started | — |
+| 1.1 | `templates/kernel/task-ledger.md`: leaf schema, closed enum, WIP=1, evidence-gated transitions, stop conditions, round log, decision log + handoff, two-level verification | cold review Accept; within budget | passing | 65 lines; cold review Revise 10/12 (hostile-lawyer pass found 3 gate holes) → 5 fixes applied → grep-verified; decisions D5 recorded; round log: 1 revise round |
+| 1.2 | `templates/kernel/research-protocol.md`: near-verbatim from skill (verbatim tag justified) | cross-check: no content lost; cold review Accept | passing | verbatim copy + v1 header; `diff` (header excluded) = identical; verbatim tag pre-justified in plan §2 Step 0 |
+| 1.3 | `templates/kernel/team-protocol.md`: comm+orchestration merged, dupes killed, consolidation rule single-sourced | ≤70 lines; cross-check: no protocol lost; cold review Accept | active | drafted 70 lines from disposition; cross-check found 2 high-severity losses (fan-out collapse-back, standalone-plan carve-out) → both restored, grep-verified; **cold review still pending — dispatch it first on resume** |
 | 1.4 | `templates/kernel/review-protocol.md`: three-pass + 0–2×6 rubric → Accept/Revise/Block + what/why/fix | cold review Accept | not_started | — |
 | 1.5 | `templates/workspace/` populated from workspace-starter; plan-template Tasks section = ledger schema | files present; plan-template references closed enum | not_started | — |
 
@@ -58,7 +61,9 @@
 | 2.7 | `templates/agents/codebase-researcher.md` | audit pass; cold review Accept | not_started | — |
 | 2.8 | `templates/agents/product-manager.md` | audit pass; cold review Accept | not_started | — |
 | 2.9 | `templates/agents/product-designer.md` | audit pass; cold review Accept | not_started | — |
-| 2.10 | `templates/checklists/`: review-generic + backend/frontend skeletons | files exist; cold review Accept | not_started | — |
+| 2.10 | `templates/checklists/`: review-generic + backend/frontend skeletons (per-component checklists per D7a) | files exist; cold review Accept | not_started | — |
+| 2.11 | `templates/workspace/architecture-skill.md`: per-component architecture doc/skill template (D7b); build-harness pre-seeds one `<component>-architecture` row per detected component | template exists; cold review Accept | not_started | — |
+| 2.12 | `templates/scripts/`: deterministic env-up + test-run script templates, self-verifying (D7c), + environment skill template that names them; agents never improvise env commands | templates exist; cold review Accept; review-protocol Pass 3 references resolve | not_started | — |
 
 ## Phase 3 — Skeletons + presets
 

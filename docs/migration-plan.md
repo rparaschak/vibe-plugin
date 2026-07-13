@@ -139,7 +139,9 @@ The existing `skills/` directory is **not deleted yet** — current commands sti
 - [ ] Audit each against `standards/agent-standard.md`; delete the restated stance paragraphs in `critic.md` and `qa-engineer.md` (near-verbatim duplicates of their skills — the kernel reference replaces them).
 - [ ] Inline `vibe-manual-testing` skill into the `qa-engineer` template (single consumer).
 - [ ] `reviewer.md` template: point verdict format at `kernel/review-protocol.md`; add "run mechanized checks before prose review" step (P6).
-- [ ] Author `templates/checklists/`: `review-generic.md` (from `workspace-starter/review-checklist-sample.md`), plus `review-backend.md` and `review-frontend.md` skeletons the builder fills with stack findings from its audit step.
+- [ ] Author `templates/checklists/`: `review-generic.md` (from `workspace-starter/review-checklist-sample.md`), plus `review-backend.md` and `review-frontend.md` skeletons the builder fills with stack findings from its audit step. Per-component: the builder emits one review checklist per detected component, not one global pair.
+- [ ] Author `templates/workspace/architecture-skill.md` — per-component architecture doc/skill template; the builder pre-seeds one `<component>-architecture` row per detected component (user addition, D7b).
+- [ ] Author `templates/scripts/` — deterministic environment scripts: env-up + test-run templates, self-verifying (course P06 `init.sh` pattern), plus an environment skill template that names them. Agents get ONE sanctioned way to spin the env and run tests; review-protocol's Pass 3 verification runs through it (user addition, D7c).
 
 **Verify:** every agent template passes the agent-standard audit (this audit procedure is itself the one build-harness will run — write it once, reuse it); no agent references a skill slated for deletion except via kernel paths.
 
