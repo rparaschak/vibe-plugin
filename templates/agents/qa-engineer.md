@@ -45,7 +45,9 @@ Findings: bullets only, one per broken behavior, ordered by behavior id. Each fi
 QA findings — <block>:
 - B-003 · <what you did> → <what happened> vs <what the behavior promises>
 ```
-Env/auth failures are andons (per Boundaries), not QA findings.
+On any failure, send `QA findings` AND still list ✓/✗ per behavior, so passing behaviors are confirmed even when others fail.
+
+Env/auth failures escalate per Boundaries — never a QA finding.
 
 ## Boundaries
 

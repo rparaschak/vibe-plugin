@@ -12,8 +12,9 @@ The HOW — data model, architecture, tasks — lives in this dir's plan.md, wri
 Spec is the artifact you LOCK (`Status: Ready for Plan`) before any architecture is designed.
 
 A spec is sized so the plan it feeds fits ONE team in one pass: roughly one coherent capability
-per stack. Work too big is NOT split into "parts" — it becomes SEPARATE specs, each its own
-`.workspace/plans/yymmdd-slug/` dir, wired by `Depends on`. B-IDs are LOCAL to this spec (B-001).
+per stack (~3–5 engineering deliverables per stack). Work too big is NOT split into "parts" — it
+becomes SEPARATE specs, each its own `.workspace/plans/yymmdd-slug/` dir, wired by `Depends on`.
+B-IDs are LOCAL to this spec (B-001).
 
 Status lifecycle: Draft → Ready for Plan → (Blocked — Open Questions). Side states:
 `Superseded — by <yymmdd-slug>` (retired by a later spec) and `Parked — Stub` (intent + Open

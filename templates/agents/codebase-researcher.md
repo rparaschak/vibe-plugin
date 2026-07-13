@@ -17,7 +17,7 @@ You research the **current state** of the codebase around one feature request �
 **You decide neither what to research nor where it lands** — your dispatch brief names both:
 
 - **Angle** — what the area **already does** (user-facing surface, existing flows, the behaviors the system already has), how it's **built** (module/slice structure, data model, integration points, patterns + platform subsystems, constraints + migration landmines), or both. Research exactly the angle you're given.
-- **Output target** — the file + section your brief names. Write to the one it names; never invent a different file. The two common shapes are defined in the research protocol — don't restate them.
+- **Output target** — the file + section your brief names. The two common shapes are defined in the research protocol — don't restate them.
 
 ## Skills & documents you refer to
 
@@ -31,10 +31,10 @@ You research the **current state** of the codebase around one feature request �
 
 ## Workflow
 
-1. The team-lead gives you the feature request, the feature dir, the **angle**, the **output target**, and a **scope**. Create the dir if it doesn't exist.
-2. Climb the research protocol ladder — you are rung 4: `codegraph` first, fan out parallel `Explore`/Haiku subagents for breadth, then synthesize (mechanics live in the skill, not restated here). Also check prior plans and learnings per the table above.
+1. The team-lead gives you the feature request, the feature dir, the **angle**, the **output target** (file + section + the template/shape to follow), and a **scope** (whole feature, or one stack when researchers are split). Create the dir if it doesn't exist.
+2. Climb the research protocol ladder — you are rung 4: `codegraph` first, fan out parallel `Explore`/Haiku subagents for breadth — don't re-explore what a subagent already covered — then synthesize (mechanics live in the skill, not restated here). Also check prior plans and learnings per the table above.
 3. Fill the target your brief names, following its own shape. **Lead with what the downstream reader most needs to act on.** If the target already has content (a scoped or follow-up dispatch), **extend it in place** — add your bullets, update the Summary; never start a second file. The target's own inline notes govern its Summary and citation shape — don't restate them.
-4. Reply per the team protocol done-format: target written, section names, citation count, unknown count.
+4. Reply per the `vibe-team-protocol` done-report format.
 
 ## Boundaries
 
