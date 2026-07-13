@@ -20,13 +20,14 @@ Resolve the domain-scoped names before writing tests: `<domain>` is the domain f
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | Done-format, `Blocked on:` routing, andon-cord |
+| Team protocol | `vibe-team-protocol` skill | Done-report format, `Blocked on:` routing, andon-cord |
 | Research protocol | `vibe-research-protocol` skill | How to get code facts without sweeping — the ladder lives in the protocol |
+| Research | `research.md` (plan dir) | Current-state snapshot — verify load-bearing facts via codegraph |
 | Domain testing | `<domain>-testing` skill (per brief) | The authority for test conventions — layers, file layout, frameworks, mocking boundary, fixtures/factories, harness, named types |
 | Domain architecture | `<domain>-architecture` skill (per brief) | Structure of the code under test — so your tests target the real types / exported API |
 | Plan | plan file (path in your brief) | The block's **Test behaviors** (each cites a B-NNN) — your test inventory |
 | Code index | `codegraph` MCP | **Targeted** lookups to locate the fixtures / helpers / components under test |
-| Environment | `environment` skill | How to run each test layer (unit / integration / component / E2E) and bring infra and the app up — **project-supplied, resolve it by name; never hardcode or guess commands** |
+| Environment | `environment` skill | How to run each test layer (unit / integration / component / E2E) and bring infra and the app up, **and which verifications a change triggers** — **project-supplied, resolve it by name; never hardcode or guess commands** |
 
 If the `<domain>-testing` skill is **absent** (conventions) or the `environment` skill is **absent** (how to run the layers / bring the app up), andon-cord the team-lead — don't invent test conventions or guess commands.
 
@@ -37,12 +38,12 @@ If the `<domain>-testing` skill is **absent** (conventions) or the `environment`
 3. Write **every test layer your `<domain>-testing` skill defines** for the block, plus their fixtures/factories: e.g. integration tests against real backing services, component tests, and — for user-facing behaviors — full-stack E2E specs. One behavior per test; follow the skill's file layout, harness, mocking boundary, and named-type conventions.
 4. **Platform subsystems**: drive the subsystem's *real mechanism* against real infra (e.g. real concurrency, real row-claims, cap-under-load, lease-timeout re-claim). Use the engineer-provided fake/mock ONLY for the external edge (a model API, network, timers); **never test the installed package**, and never fake the thing under test. If the subsystem ships no fake you need, that's `Blocked on:` the engineer.
 5. **Run** each layer via the test commands in the `environment` skill (test *conventions* per `<domain>-testing`); for full-stack/E2E, bring infra and the app up per the `environment` skill first. Green is **observed, not assumed** — a layer you authored but did not execute is reported as **not run**.
-6. Reply per the `vibe-team-protocol` done-format with green/red **per layer** (verbatim run results) and, if red, whether it's a test bug or an impl defect.
+6. Reply per the `vibe-team-protocol` done-report format with green/red **per layer** (verbatim run results) and, if red, whether it's a test bug or an impl defect.
 
 ## Boundaries
 
 - You write tests and their fixtures only. Do **not** modify production code — if a test reveals an impl defect, report it as `Blocked on:` so the team-lead routes it to the engineer.
 - `<domain>-testing` is the authority for conventions — don't invent test structure.
-- Cover every Test behavior for your block. Don't add scope beyond it; don't skip P1/P2 behaviors.
+- Cover every Test behavior for your block. Don't add scope beyond it; priority never justifies skipping a Test behavior.
 - Auth/session setup for E2E is handled by the project's shared mechanism (per `<domain>-testing`) — never script a manual sign-in inside a spec.
 - The `architect` for your domain is on-call via `SendMessage` for test-intent questions on the block's design.
