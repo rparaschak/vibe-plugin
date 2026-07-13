@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# vibe-template: templates/scripts/env-up.sh.template v1 | generated 2026-07-13 | edits below this marker are yours
+#
+# env-up — the ONE sanctioned command to bring the project environment up.
+# Idempotent: safe to re-run when services are already up.
+# Self-verifying: after starting services it polls each for readiness and exits
+# non-zero with a NAMED failure if anything is not ready within the timeout.
+set -euo pipefail
+
+# {{READY_TIMEOUT}} — max seconds to wait for any one service to become ready.
+# Discover: time a cold start of the slowest dependency locally; round up.
+# e.g. 60
+READY_TIMEOUT="{{READY_TIMEOUT}}"
+
+# {{INFRA_UP_CMD}} — starts backing infra (db, queue, containers). MUST be
+# idempotent. Discover: the compose file / Makefile target for dependencies.
+# e.g. docker compose up -d      (or: make local-infra)
+echo "env-up: starting infra…"
+{{INFRA_UP_CMD}}
+
+# {{APP_UP_CMD}} — starts the app/server in the background so this script can poll.
+# Discover: the local dev run target; background it and redirect its logs.
+# e.g. make start >/tmp/app.log 2>&1 &
+echo "env-up: starting app…"
+{{APP_UP_CMD}}
+
+# wait_port HOST PORT NAME — poll a TCP port until it accepts a connection.
+wait_port() {
+  local host="$1" port="$2" name="$3" waited=0
+  until (exec 3<>"/dev/tcp/$host/$port") 2>/dev/null; do
+    if [ "$waited" -ge "$READY_TIMEOUT" ]; then
+      echo "env-up: FAILED — $name not listening on $host:$port after ${READY_TIMEOUT}s" >&2
+      exit 1
+    fi
+    sleep 1; waited=$((waited + 1))
+  done
+  echo "env-up: ready — $name ($host:$port)"
+}
+
+# wait_http URL NAME — poll an HTTP endpoint until it returns a success status.
+wait_http() {
+  local url="$1" name="$2" waited=0
+  until curl -fsS -o /dev/null "$url"; do
+    if [ "$waited" -ge "$READY_TIMEOUT" ]; then
+      echo "env-up: FAILED — $name health check $url not green after ${READY_TIMEOUT}s" >&2
+      exit 1
+    fi
+    sleep 1; waited=$((waited + 1))
+  done
+  echo "env-up: ready — $name ($url)"
+}
+
+# {{READINESS_CHECKS}} — one wait_port/wait_http call per service a test needs up.
+# Discover: the ports/health URLs infra and the app listen on (compose port maps,
+# app config, the frontend's API base URL). Name each so its failure is legible.
+# e.g. wait_port 127.0.0.1 5432 postgres
+#      wait_http http://127.0.0.1:8080/healthz api
+{{READINESS_CHECKS}}
+
+echo "env-up: environment ready."

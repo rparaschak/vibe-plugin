@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# vibe-template: templates/scripts/test-run.sh.template v1 | generated 2026-07-13 | edits below this marker are yours
+#
+# test-run — the ONE sanctioned command to run verification.
+# Usage: test-run [LAYER] [args…]
+#   LAYER  one of: unit | integration | e2e | all   (default: all)
+#   args…  passed VERBATIM to the underlying runner, so a single file/test can
+#          be run, e.g.  test-run unit models/user_test
+# Prints which layer ran and the verbatim command; exits with the underlying
+# test command's exit code (for `all`, the first non-zero layer's code).
+set -uo pipefail
+
+LAYER="${1:-all}"
+[ "$#" -gt 0 ] && shift   # remaining "$@" are passthrough args for the runner
+
+# {{UNIT_CMD}} — runs the unit layer (fast, no infra). Set to `:` if none exist.
+# Discover: the quickest test target with no infra dependency.
+# e.g. go test ./...      (or: yarn test:unit)
+UNIT_CMD="{{UNIT_CMD}}"
+
+# {{INTEGRATION_CMD}} — runs the integration layer (needs env-up). `:` if none.
+# Discover: the target that hits real infra/db.
+# e.g. make test          (or: yarn test:integration)
+INTEGRATION_CMD="{{INTEGRATION_CMD}}"
+
+# {{E2E_CMD}} — runs the end-to-end layer (needs env-up + app). `:` if none.
+# Discover: the headless browser/e2e target.
+# e.g. yarn test:e2e
+E2E_CMD="{{E2E_CMD}}"
+
+# run_layer NAME CMD [args…] — echo the layer + verbatim command, then run it.
+run_layer() {
+  local name="$1" cmd="$2"; shift 2
+  [ "$cmd" = ":" ] && { echo "test-run: layer=$name → (none)"; return 0; }
+  echo "test-run: layer=$name → $cmd $*"
+  # shellcheck disable=SC2086 — $cmd is a command string that must word-split.
+  $cmd "$@"
+}
+
+case "$LAYER" in
+  unit)        run_layer unit        "$UNIT_CMD"        "$@" ;;
+  integration) run_layer integration "$INTEGRATION_CMD" "$@" ;;
+  e2e)         run_layer e2e         "$E2E_CMD"         "$@" ;;
+  all)         run_layer unit        "$UNIT_CMD"        "$@" && \
+               run_layer integration "$INTEGRATION_CMD" "$@" && \
+               run_layer e2e         "$E2E_CMD"         "$@" ;;
+  *) echo "test-run: unknown layer '$LAYER' (use: unit|integration|e2e|all)" >&2; exit 2 ;;
+esac
+
+exit $?
