@@ -2,7 +2,7 @@
 description: Drive a plan's task ledger to Implemented — dispatch each block's engineer, test-engineer, and reviewer, gate every leaf on cited review evidence, commit per reviewed block, and run the domain's tests green.
 ---
 <!-- vibe-template: templates/skeletons/command-skeleton.md v1 | generated 2026-07-13 | edits below this marker are yours -->
-<!-- vibe:regen preset=plan-implement · flow-spec=presets/plan-implement/implement.md — builder re-derives every FIXED section from these on --regen -->
+<!-- vibe:regen preset=spec-plan-implement · flow-spec=presets/spec-plan-implement/implement.md — builder re-derives every FIXED section from these on --regen -->
 ## User Input
 ```text
 $ARGUMENTS

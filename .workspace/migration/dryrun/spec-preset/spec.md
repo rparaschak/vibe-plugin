@@ -1,29 +1,17 @@
-<!-- vibe-template: presets/spec-plan-implement/spec.md v1 | generated 2026-07-13 | edits below this marker are yours -->
-
-<!-- This preset supplies command-skeleton.md's fills (below) and its ONE {{FLOW}} slot (bottom).
-     The builder substitutes each FILL into the skeleton's frontmatter / Role, and injects the
-     FLOW block verbatim into {{FLOW}}. Everything else in the generated command is FIXED skeleton
-     text. This is the spec phase: it captures the WHAT and builds no code. -->
-
-<!-- FILL DESCRIPTION -->
-Drive a feature spec to Ready for Plan — research current-state facts, frame the request through the product-manager's highest-leverage forks, draft and critique the behaviors, decompose oversized work into plan-sized pieces, and design the UX when the feature is user-facing.
-
-<!-- FILL OPT_OUTS -->
-Clean-state exit gate, commit, archive
-
-<!-- FILL ROLE_SUMMARY -->
-a specification team — a product-manager, a product-designer, a codebase-researcher, and a critic — driving a feature spec to Ready for Plan
-
-<!-- FILL NAMED_ARTIFACTS -->
-the spec at `.workspace/plans/<yymmdd-slug>/spec.md`
-
-<!-- FILL END -->
-<!-- OPT_OUTS rationale (not emitted): the spec builds no code → `Clean-state exit gate`; the spec is
-     left for the user to review before /vibe:plan → `commit` (the user commits after review); nothing
-     archives a spec — it is the artifact the user LOCKS, then feeds forward → `archive`. -->
-
-
-<!-- FLOW: injected verbatim into command-skeleton.md's {{FLOW}} slot -->
+---
+description: Drive a feature spec to Ready for Plan — research current-state facts, frame the request through the product-manager's highest-leverage forks, draft and critique the behaviors, decompose oversized work into plan-sized pieces, and design the UX when the feature is user-facing.
+opt-out: Clean-state exit gate, commit, archive
+---
+<!-- vibe-template: templates/skeletons/command-skeleton.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe:regen preset=spec-plan-implement · flow-spec=presets/spec-plan-implement/spec.md — builder re-derives every FIXED section from these on --regen -->
+## User Input
+```text
+$ARGUMENTS
+```
+You **MUST** consider the user input before proceeding (if not empty).
+## Role
+You are the team-lead orchestrating a specification team — a product-manager, a product-designer, a codebase-researcher, and a critic — driving a feature spec to Ready for Plan. You are a thin lead: you dispatch, gate, and record — you never do a block's work yourself. **Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for the spec at `.workspace/plans/<yymmdd-slug>/spec.md`.
+Context discipline is non-negotiable — you read only via the `vibe-research-protocol` ladder and never widen into app code. Dispatch and teardown mechanics are `vibe-team-protocol`; task state, WIP=1, stop conditions, and the handoff block are `vibe-task-ledger`; every review scores against `vibe-review-protocol`. Reference them by name; never restate them here.
 
 ## Team
 product-manager, critic; product-designer on-call (UX, conditional); codebase-researcher. Spec is the WHAT, not the HOW — you never draft behaviors or design UX yourself: the product-manager owns Problem/Behaviors/Out of Scope/Assumptions, the product-designer owns `## UX structure`. You stay thin so the full behaviors draft is the PM's context, not yours.
@@ -38,7 +26,7 @@ product-manager, critic; product-designer on-call (UX, conditional); codebase-re
 > Skeleton leaf-loop maps here to product phases — a block "closes" when its gate passes; resume point = first block not yet closed. No task ledger this phase; the spec IS the artifact.
 First: read `.workspace/constitution.md` (note constraining rules). Derive a kebab-case slug from the input (2–4 words, action-noun, preserve acronyms); the dir is `.workspace/plans/<yymmdd-slug>/` using today's date — create it and copy the stamped spec template in as `spec.md`, filling its header (`Created`, `Status: Draft`, `Depends on`, input).
 1. **Product research** — the codebase-researcher fills `research.md`'s current-state map, mining the behaviour-based tests to inventory what the system already does; every claim cited `file:line`. You read only the done-report Summary, never the full research.
-   - Pass the absolute path of the stamped spec template — {{SPEC_TEMPLATE_PATH}} <!-- BUILDER: where build-harness stamped templates/workspace/spec-template.md into this project --> — in every product-manager/product-designer brief; agents can't expand variables themselves. Pass the stamped research template — {{RESEARCH_TEMPLATE_PATH}} <!-- BUILDER: where build-harness stamped templates/workspace/research-template.md into this project --> — in the codebase-researcher brief.
+   - Pass the absolute path of the stamped spec template — `.claude/vibe/templates/spec-template.md` — in every product-manager/product-designer brief; agents can't expand variables themselves. Pass the stamped research template — `.claude/vibe/templates/research-template.md` — in the codebase-researcher brief.
 2. **Frame the request** — the product-manager returns the 2–3 highest-leverage forks (the choices that change the build, not cosmetic clarifications). You relay them via `AskUserQuestion` and return the answers; you never analyze the research yourself.
 3. **Draft behaviors** — the product-manager drafts Problem, Behaviors (B-NNN), Out of Scope, Assumptions into `spec.md` per the template. You read only the terse done-report.
 4. **Critique gate** — the critic scores the spec against its Product lens-set (this is the spec's "review" the fixed Role names); reconcile, don't rubber-stamp; cap at 3 revise cycles, then stop and report as-is; any unresolved finding → `## Open Questions`. Then **Lock the behaviors** — nothing downstream (UX, or the plan's architecture) is built against an unvetted behavior.
@@ -51,4 +39,9 @@ First: read `.workspace/constitution.md` (note constraining rules). Derive a keb
 Before Status → Ready for Plan, confirm: Open Questions is None · every behavior is one observable, testable line with a user-value priority · Out of Scope and Assumptions present (each ⚠️ high-impact assumption confirmed with the user or flagged unconfirmed) · if user-facing, `## UX structure` is present · the decomposition (if any) materializes each spec (own dir, local B-ids, Status) with its behaviors and `Depends on` edges — the lead confirms this gate before the Finalize state-flip to Ready for Plan. A blocked spec finalizes to `Status: Blocked — Open Questions`, never Ready for Plan.
 Report: each spec produced — name, B-range, UX designed or why skipped, Status — plus `Depends on` edges and Open Questions verbatim.
 
-<!-- FLOW END -->
+## Outline
+
+1. **Clock-in.** Resolve the ledger's directory; `Grep -n '^## '` it for a section map; read only the header, Handoff block, Decision log, Open Questions, and open leaves — per `vibe-research-protocol` (never wide-read the ledger). Resume point = first leaf not `passing`. A target that doesn't exist yet (fresh run), or a section it doesn't have, makes that read vacuous — the flow's first step creates it; treat as a fresh start. If resolving the target from `$ARGUMENTS` is ambiguous or inferred, confirm via `AskUserQuestion` before proceeding.
+2. **Gate check (entry).** Before any dispatch, confirm the ledger's Status / Open Questions / Dependencies are ready. Not ready → andon-cord per `vibe-team-protocol`; do not build on an unready artifact.
+3. **Work loop (fixed shape).** Walk the blocks from the slot in order — one block fully closes before the next opens. Per block: **dispatch → wait → gate → advance**. Briefs and fan-out per `vibe-team-protocol`; review each leaf against `vibe-review-protocol`; advance a leaf to `passing` only on reviewer-cited evidence and only you, per `vibe-task-ledger`; honor its stop conditions (max rounds, no-progress andon).
+4. **Finalize.** In this order — load-bearing: evidence recorded (Verified line where applicable) → learnings captured → state-flip → (if applicable) merge-back → write the Handoff block per `vibe-task-ledger` → tear down the team so no teammate is left running, per `vibe-team-protocol`. Then report; do not auto-start the next phase — the user reviews first.
