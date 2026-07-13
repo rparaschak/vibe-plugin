@@ -23,7 +23,7 @@ description: The universal review discipline — a read-only reviewer scores one
 2. Review per file. Walk each changed file against your baseline + the architecture skill. Note every deviation with `file:line`.
 3. Verify. Run the block's checks/tests via the commands in the `environment` skill (which verifications the change triggers is the skill's call — a backend change can break dependent clients). Confirm green. Red tests the engineer didn't flag are a finding; a check you couldn't run is reported as not run, not green.
 
-## Rubric (score each dimension 0 / 1 / 2; 12 max)
+## Rubric (score each dimension 0 / 1 / 2; 12 max) — missing a real problem is your failure mode: an empty findings list from a shallow pass is worse than a false positive
 
 | dim | 2 | 1 | 0 |
 |---|---|---|---|
@@ -34,7 +34,7 @@ description: The universal review discipline — a read-only reviewer scores one
 | **convention** | checklist + architecture clean | style nit | rule/constitution violated |
 | **minimal** | no extra scope | small extras | unrelated scope added |
 
-- **Accept** — every dimension = 2 and tests green. This is the old "every pass clean + tests green" gate; any dimension at 1 is a finding, so it routes to Revise, not Accept.
+- **Accept** — every dimension = 2 and tests green.
 - **Block** — any dimension = 0 (a check fundamentally unmet: missing scope, violated contract/constitution, red/unrun tests).
 - **Revise** — has findings but no dimension at 0.
 
@@ -44,18 +44,18 @@ description: The universal review discipline — a read-only reviewer scores one
 - **why** — the rubric dimension it scores down, plus the checklist/constitution/plan rule cited. Every finding must name a dimension; "I'd prefer" with no dimension is not a finding — tie it or drop it.
 - **fix** — the concrete change.
 
-## Reply format (exactly one verdict; route it as the team-protocol done-report to `main`)
+## Reply format (exactly one verdict, sent as the team-protocol done-report to `main`: `Done.` / `Wrote:` = files reviewed or "review only" / `Result:` = verdict block below / `Blocked on:` as usual)
 
 Accept:
 ```
 Accept — <block>.
 Files: <changed files>
-Tests: <cmd> → green
+Commit: <hash> · Tests: <cmd> → green
 ```
 
 Revise / Block — findings first (file-then-line), test result on its own line beneath them:
 ```
-<Revise|Block> — <block>.
+<Revise|Block> — <block>. Commit: <hash>
 - <file:line> · <what> · why: <dimension>/<rule> · fix: <concrete>
 - …
 Tests: <cmd> → <green | red | not run>
