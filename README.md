@@ -59,7 +59,7 @@ The core design intent: the **harness** (commands + orchestration discipline + a
 
 ## 1. Commands (slash commands)
 
-Located in `commands/`. These own the phase algorithms (the flows). All three read/write the 📁 `.workspace/` and dispatch 🔌 agents.
+Located in `commands/`. These own the phase algorithms (the flows). All commands read/write the 📁 `.workspace/` and dispatch 🔌 agents.
 
 | Command | What it does |
 |---|---|
@@ -69,6 +69,7 @@ Located in `commands/`. These own the phase algorithms (the flows). All three re
 | 🔌 `/vibe:feature` | Thin sequencer: runs `/vibe:spec` then `/vibe:plan` end-to-end against one feature, with **no manual approval pause** between (the framing forks and both critic gates still fire). Use for a full feature when you don't need to lock the spec before architecture. Owns no algorithm of its own. |
 | 🔌 `/vibe:implement` | Team-lead for **implementation**. Executes ONE plan in one run: builds blocks Platform → BE → FE, each through engineer → test → review → fix, then marks the plan Implemented and commits. Never writes code/tests itself. Optional **`--worktree`** runs the build in an isolated git worktree on its own branch (from local HEAD) for **parallel implementation**, then auto-merges back at finalize. |
 | 🔌 `/vibe:distill` | Curator of the playbook. Classifies `learnings.md` entries, verifies staleness, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief), retires stale ones. Writes only to 📁 `.workspace/**` and `.claude/**`. |
+| 🔌 `/vibe:build-flow` | Flow builder. Recomposes vibe's base phase algorithms (spec / plan / implement) per an interactive interview into ONE custom orchestration command written to the consuming repo's `.claude/commands/`, validating the requested flow keeps vibe's load-bearing guarantees. Never runs the flow or touches project code. |
 
 ---
 
@@ -143,11 +144,11 @@ All **9** live in `agents/`. The agent **definitions** are 🔌. Each declares i
 | Agent | 🔌 Plugin skills | 📁 Project skills (resolved by name) | What it does |
 |---|---|---|---|
 | 🔌 `architect` (opus, xhigh) | team-communication-protocol, research-protocol | `<domain>-architecture` | Designs ONE domain's plan sections — data model, architecture, platform subsystems, tasks, test behaviors — for the domain named in its brief. Re-dispatched per domain. No code. |
-| 🔌 `engineer` (sonnet, high) | team-communication-protocol, research-protocol | `<domain>-architecture`, `environment` | Implements ONE domain's block against the locked design, then runs **lint + build**. Does not write tests or redesign. |
+| 🔌 `engineer` (opus, high) | team-communication-protocol, research-protocol | `<domain>-architecture`, `environment` | Implements ONE domain's block against the locked design, then runs **lint + build**. Does not write tests or redesign. |
 | 🔌 `test-engineer` (opus, high) | team-communication-protocol, research-protocol | `<domain>-testing`, `<domain>-architecture`, `environment` | Writes and **runs** every test layer the domain defines (e.g. integration / component / E2E) against the implemented code. No production code. |
 | 🔌 `reviewer` (opus) | team-communication-protocol, research-protocol, review-discipline | `<domain>-review` *(optional)*, `<domain>-architecture`, `<domain>-testing`, `environment` | Read-only three-pass review of ONE domain's block diff vs plan + project skills + constitution. Never edits. |
 | 🔌 `product-manager` (opus, xhigh) | team-communication-protocol, research-protocol | — | Owns the WHAT in `/vibe:spec`: frames the request and drafts Problem + Behaviors (B-NNN) + Out of Scope + Assumptions into `spec.md`. Proposes framing forks for the lead to relay. Scoped to `/vibe:spec` only. No UX/architecture/code. |
-| 🔌 `codebase-researcher` (sonnet) | team-communication-protocol, research-protocol | — | Maps current code state to the **target its brief names** (a feature's 📁 `research.md`, or a plan's `## Current State`), every claim cited `file:line`; mines the behaviour tests when inventorying what exists. Generic across briefs — the orchestrator sets angle + target. Facts only; designs nothing. |
+| 🔌 `codebase-researcher` (sonnet, high) | team-communication-protocol, research-protocol | — | Maps current code state to the **target its brief names** (a feature's 📁 `research.md`, or a plan's `## Current State`), every claim cited `file:line`; mines the behaviour tests when inventorying what exists. Generic across briefs — the orchestrator sets angle + target. Facts only; designs nothing. |
 | 🔌 `product-designer` (opus) | team-communication-protocol, research-protocol | `product-design` | Designs the UX for a feature and writes it into `spec.md`'s `## UX structure`. Iterates with the invoker. No code; touches no other section. |
 | 🔌 `critic` (opus, xhigh) | team-communication-protocol, research-protocol, critique | — | Adversarial review before work is built on a draft. Generic — the brief names the **artifact + lens-set** (a spec's Behaviors, or a plan's design + tasks); the lens-sets live in `vibe-critique`. Read-only findings. |
 | 🔌 `qa-engineer` (sonnet, high) | team-communication-protocol, research-protocol, manual-testing | `environment` | Manual QA: brings the app up (per the `environment` skill) and drives it via the Playwright MCP, confirming Behaviors. No code/tests. |
@@ -242,7 +243,7 @@ The per-repo playbook, read/written by the commands and discovered at runtime re
 ## 7. Summary — what's reusable vs. what each repo provides
 
 **🔌 Plugin (drop-in, never edited per project):**
-- 6 commands + their flows (`adopt`, `spec`, `plan`, `feature`, `implement`, `distill`)
+- 7 commands + their flows (`adopt`, `spec`, `plan`, `feature`, `implement`, `distill`, `build-flow`)
 - 9 agent definitions (4 domain-generic roles + the mode-generic `critic` + 4 fixed roles)
 - 6 bundled skills (all clean — no hardcoded project specifics)
 - `workspace-starter/` scaffold: 3 runtime templates + 6 sample seeds
