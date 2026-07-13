@@ -4,7 +4,7 @@ opt-out: {{OPT_OUTS}}
 ---
 <!-- vibe-template: templates/skeletons/command-skeleton.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 <!-- vibe:regen preset={{PRESET}} · flow-spec={{FLOW_SPEC}} — builder re-derives every FIXED section from these on --regen -->
-<!-- BUILDER: DESCRIPTION = one line ≤80 words (command + state artifact), e.g. "Drive a plan to Implemented." OPT_OUTS = comma-separated FIXED-section headings legitimately omitted (e.g. `opt-out: Clean-state exit gate`); a FIXED section absent without being named here is a generation bug, never silent deletion. Fill PRESET with the preset dir name, FLOW_SPEC with the flow file it was generated from. Hand-edits below the marker are preserved; this line is not. -->
+<!-- BUILDER: DESCRIPTION = one line ≤80 words (command + state artifact), e.g. "Drive a plan to Implemented." OPT_OUTS = comma-separated FIXED-section headings (or the Finalize `commit` item) legitimately omitted (e.g. `opt-out: Clean-state exit gate`); a FIXED section absent without being named here is a generation bug, never silent deletion. Fill PRESET with the preset dir name, FLOW_SPEC with the flow file it was generated from. Hand-edits below the marker are preserved; this line is not. -->
 ## User Input
 ```text
 $ARGUMENTS
