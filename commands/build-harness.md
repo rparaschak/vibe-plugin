@@ -66,19 +66,8 @@ Every template class stamps to a fixed target so two builders never diverge on p
 - doc templates `templates/workspace/{spec,plan,research}-template.md` → `.claude/templates/<name>.md` (the paths `{{SPEC_TEMPLATE_PATH}}` / `{{PLAN_TEMPLATE_PATH}}` / `{{RESEARCH_TEMPLATE_PATH}}` resolve to).
 - command `presets/<preset>/<cmd>.md` → `.claude/commands/<cmd>.md`, compiled through `command-skeleton.md`.
 
-## Composition spec (build determinism — apply exactly on every command/flow stamp)
-Presets live at `presets/<preset>/*.md`; each supplies the skeleton's fills (`DESCRIPTION`, `OPT_OUTS`, `ROLE_SUMMARY`, `NAMED_ARTIFACTS`) and one FLOW block (between `<!-- FLOW … -->` and `<!-- FLOW END -->`), injected into `command-skeleton.md`'s single `{{FLOW}}` slot. When stamping:
-- **W-A** — inject the FLOW block verbatim (no summarizing/re-authoring) but still resolve every embedded `{{PLACEHOLDER}}` inside it at stamp time: `{{SPEC_TEMPLATE_PATH}}`, `{{PLAN_TEMPLATE_PATH}}`, `{{RESEARCH_TEMPLATE_PATH}}` → the stamped-template paths (`.claude/templates/<name>.md`). "Verbatim" is exemption from re-authoring, not from placeholder resolution.
-- **W-B** — every resolved file path substituted into generated text is backtick-wrapped.
-- **W-C** — when a FIXED skeleton section is opted out, renumber the remaining `## Outline` steps sequentially — leave no gap at the removed step's old number.
-- **W-D** — when `archive` is opted out, drop the exact clause "and never archive a Blocked ledger" — including the joining "and" — from the Finalize ordering line, not only the `archive` arrow item; the resulting text reads exactly "— load-bearing:".
-- **W-E** — strip **every** builder-facing annotation from output in ALL cases (opted out or not): the `(Opt-out-able: …)` parenthetical, every `<!-- BUILDER… -->` / `<!-- FILL… -->` / rationale comment. These are authoring-time notes, never runtime text.
-- **W-F** — `opt-out:` names may target a full section heading **or** a Finalize sub-item (`archive`, `commit`); recognize both levels. Emit the frontmatter `opt-out:` line only when non-empty; omit the line entirely when empty.
-- **W-G** — on every stamp, **including doctor re-runs of a section you actually re-emit**, rewrite that file's header `generated <date>` to today. (An idempotent re-run re-emits nothing, so no date moves — see Doctor.)
-- **W-H** — emit exactly one blank line immediately above and below the injected `{{FLOW}}` content, regardless of the source file's blank lines.
-- **`<named artifacts>`** — the angle-bracket slot in the boundary sentence is distinct from `{{PLACEHOLDER}}`; fill it from the preset's `FILL NAMED_ARTIFACTS`, comma-joined into prose — resolved, not left as a literal token.
-- **Regen stamp** — fill the `<!-- vibe:regen preset={{PRESET}} · flow-spec={{FLOW_SPEC}} -->` line with the actual preset dir name (`plan-implement` / `spec-plan-implement`) in `PRESET`; leave `FLOW_SPEC` exactly empty — `flow-spec=` — never `n-a` (build-flow fills the inverse). This makes `--regen` re-derivable.
-- **Generated-command header** — the generated command's `vibe-template:` header names `presets/<preset>/<cmd>.md` and its version — never the skeleton; doctor drift-detection diffs FIXED sections against `templates/skeletons/command-skeleton.md` and the FLOW middle against the preset file.
+## Composition spec
+Composition is governed by `standards/composition-standard.md` — every stamp obeys it in full (W-A..W-H, `<named artifacts>`, Regen stamp, generated-command header).
 
 Presets stamped: `plan-implement` (backend, plan→implement) and `spec-plan-implement` (fullstack, spec→plan→implement) — selected from parsed intent. Structural inheritance is not judged: skeleton kernel sections are fixed text the builder cannot omit; only an explicit `opt-out:` drops one.
 
