@@ -41,7 +41,7 @@ This skill is the **structural authority** for the {{COMPONENT}} component. The 
 <!-- (backend example) Event topics in modules/core/events.go; consume another component's contracts via a generated client — regenerate with `make gen-client`. -->
 
 ## Forbidden patterns
-<!-- Discover: list structural/boundary prohibitions only, e.g. no cross-module JOIN, layering violations — grep the component's guidelines for "never/don't/avoid" rules that break architecture. Exclude style/lint-shaped rules; those belong in the `<domain>-review` checklist. -->
+<!-- Discover: list structural/boundary prohibitions only, e.g. no cross-module JOIN, layering violations — grep the component's guidelines for "never/don't/avoid" rules that break architecture. Exclude style/lint-shaped rules; those belong in the domain's review checklist (`<domain>-review`). -->
 {{FORBIDDEN}}
 <!-- (backend example) Never JOIN/PRELOAD across modules (use batch usecases); no DB queries inside loops (use WHERE id IN (?)); never fmt.Errorf — return predefined errors. -->
 
