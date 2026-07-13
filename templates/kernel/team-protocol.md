@@ -15,15 +15,16 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 
 ## Messaging the lead (workers)
 
-- Message the lead **ONLY** when: **done / blocked / andon cord**. Do not send progress updates, micro-status, or running commentary. The team-lead does not respond to those by design.
+- Message the lead **ONLY** when: **done (with `Blocked on:` for reportable blockers) / andon cord**. Do not send progress updates, micro-status, or running commentary. The team-lead does not respond to such updates by design.
 - Idle after reporting is not broken: you sent done/blocked and are waiting — you will not be respawned for it.
-- Done-report — send it, don't just emit it. Your last action is `SendMessage` to `main`:
+- Done-report — send it, don't just emit it. Your last action is `SendMessage` to the team-lead (agent name `main`):
   ```
   Done.
   Wrote: <artifacts or sections>
   Result: <role's evidence — test/build outcome with counts, findings count, or "Open Questions added: N">
   Blocked on: <none or one line>
   ```
+- Blocker split: a reportable blocker (task still progressing) → done-report with `Blocked on:` populated (header stays `Done.`); an unresolvable/structural blocker → andon cord (below).
 - Decisions/reasoning live in the artifact (spec.md WHAT, plan.md Decision Log HOW, non-obvious WHY in code comments, PR description) — never in chat.
 - Never `SendMessage`: long source dumps (cite `file:line`), decisions belonging in the Decision Log, reasoning meant for the user, or internal deliberation — decide first, then send.
 
@@ -35,12 +36,11 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 ## Orchestrator: form & dispatch
 
 - Spawn each role **named** when first needed; keep it standing to retain context — never re-spawn a held role. On-call peers spawn lazily when a question arises; keep the live set near **3–5**.
-- The first brief is self-contained; teammates load their own project context (CLAUDE.md, skills, codegraph). Never paste stale context.
 - Worktree mode: **`EnterWorktree` BEFORE spawning the first role**; all roles share the one tree; teardown exits/merges it.
-- **Dispatch to <role>** = ONE `SendMessage` with the command's brief, then wait. Briefs are short + self-contained: what to do, scope (paths/plan section/IDs), what's known. Workers read their own plan section and source themselves — never paste code. Every brief ends by telling the worker to `SendMessage` its done-report to `main`.
+- **Dispatch to <role>** = ONE `SendMessage` with the command's brief, then wait. Briefs are short + self-contained: what to do, scope (paths/plan section/IDs), what's known. Teammates load their own project context (CLAUDE.md, skills, codegraph) and read their own plan section, sourcing from the cited map — never paste stale context or code. Every brief ends by telling the worker to `SendMessage` its done-report to `main`.
 - **Standing vs fresh**: re-dispatch = `SendMessage` the STANDING instance; a fresh instance = tear down the standing one, then spawn new. **"Fresh replaces, never adds"** — one-instance-per-role and live-set limits still hold; the new instance rebuilds from brief + cited map.
 - **Parallel fan-out**: one role across N concurrent instances, each a different checklist lens — the sanctioned bounded exception to one-instance-per-role. Gather ALL replies, then apply the command's combine rule: a block review = all-clear (passes only when no reviewer has open findings after consolidation + fix), **not a vote**; the consolidation owner (architect, per on-call) gets the gathered findings before the fix. Once every reply is gathered, the expanded live set collapses back: tear down the fan-out instances then, not at end-of-invocation.
-- Workers start from the cited map, not lead-pasted source; the matching architect is on-call for design-intent; the codebase-researcher is the context oracle in spec/plan. A blocked worker andon-cords.
+- The matching architect is on-call for design-intent; the codebase-researcher is the context oracle in spec/plan. A blocked worker andon-cords.
 
 ## Orchestrator: teardown
 
