@@ -69,7 +69,7 @@
 
 | ID | Behavior | Verification | State | Evidence |
 |---|---|---|---|---|
-| 3.1 | `templates/skeletons/command-skeleton.md`: fixed kernel sections, opt-out frontmatter, flow slot | cold review Accept | not_started | — |
+| 3.1 | `templates/skeletons/command-skeleton.md`: fixed kernel sections, opt-out frontmatter, flow slot | cold review Accept | passing | 30 lines; disposition `dispositions/skeletons.md` (30 rows, 7 contracts, 4 contradictions — all resolved per recs: no runtime `--worktree` [generation-time decision], one-line header + separate regen line, clean-state gate = opt-out target, block ordering lives in {{FLOW}} slot); cross-check **2 HIGH** (softened `never merely written, compiling, or --list-verified` enumeration; ambiguous-target `AskUserQuestion` confirm never dispositioned → orchestrator ruled into Clock-in) + 5 low → all fixed; cold review **Accept 11/12** incl. generative thought-experiment (plan-shaped + implement-shaped stampings both coherent); post-Accept: header split into version/regen/BUILDER lines, fix-routing prompt added to {{FLOW}} guidance (test-code fixes → test-engineer); grep-verified: {{FLOW}}=1, constraints at lines 14-15 of 30; reviewer note: skeleton targets state-mutating commands only — a read-only Report-terminal command needs a different spine; round log: 2 fix rounds |
 | 3.2 | `templates/skeletons/flow-skeleton.md` | cold review Accept | not_started | — |
 | 3.3 | `presets/plan-implement/{plan,implement}.md`: ledger-native; implement ≤80 lines | `wc -l` ≤80; cross-check vs old files; cold review Accept | not_started | — |
 | 3.4 | `presets/spec-plan-implement/{spec,plan,implement}.md` | cold review Accept | not_started | — |
