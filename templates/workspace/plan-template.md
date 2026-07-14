@@ -162,3 +162,10 @@ IS the task ledger — the ONLY thing /vibe:implement mutates.
 ## Decision Log *(optional — non-obvious choices not already captured in Architecture)*
 
 - **D-001** — [decision] · [driver] · [alternative rejected]
+
+## Handoff *(written at Finalize by whichever command drives this ledger, per `vibe-task-ledger`)*
+
+- **Verified now** — 
+- **Changed this session** — 
+- **Broken or unverified** — 
+- **Next best step** — 

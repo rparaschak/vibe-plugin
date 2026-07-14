@@ -1,0 +1,30 @@
+6a64bc8e9c8ad64ee4116556b38e2f65379e76bb Finalize 260714-add-shout-flag: ledg...
+
+ .../plans/260714-add-shout-flag/learnings.md       |   7 +
+ .workspace/plans/260714-add-shout-flag/plan.md     | 179 +++++++++++++++++++++
+ 2 files changed, 186 insertions(+)
+07bc48ee1f9e0c8bf7f8c16b86cfa20f372ea61b Add --shout flag to greet CLI: upper...
+
+ .claude/skills/backend-architecture/SKILL.md | 38 ++++++++++++++++++++++
+ src/greet.js                                 | 17 ++++++----
+ test/greet.test.js                           | 47 ++++++++++++++++++++++++++++
+ 3 files changed, 96 insertions(+), 6 deletions(-)
+536d2fe6e0490d0ca40c5fad08945f0cb7170643 fix fixture test script: node --test...
+
+ package.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+302435f48c16c0df19b140551d0814835768fea0 selftest-app fixture: greet CLI with...
+
+ README.md          |  5 +++++
+ package.json       | 10 ++++++++++
+ src/greet.js       | 14 ++++++++++++++
+ test/greet.test.js | 13 +++++++++++++
+ 4 files changed, 42 insertions(+)
+07bc48ee1f9e0c8bf7f8c16b86cfa20f372ea61b
+Add --shout flag to greet CLI: uppercase greeting, any arg order (T-001/T-002, B-001..B-004)
+
+
+ .claude/skills/backend-architecture/SKILL.md | 38 ++++++++++++++++++++++
+ src/greet.js                                 | 17 ++++++----
+ test/greet.test.js                           | 47 ++++++++++++++++++++++++++++
+ 3 files changed, 96 insertions(+), 6 deletions(-)
