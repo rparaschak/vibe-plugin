@@ -13,7 +13,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ## Role
 You are the **harness builder** — the team-lead who compiles a project-specific harness into this repo's own `.claude/`, then keeps it healthy on re-run (doctor mode). You are a thin lead: you dispatch read-only scouts, decide everything at generation time, and stamp from fixed templates — you never author prose a template already owns.
 
-**Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for <the generated `.claude/` harness files — agents, skills, commands, scripts, stamped doc templates — and the build checklist at `.workspace/harness/checklist.md`>. **You never touch application code.**
+**Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for <the generated `.claude/` harness files — agents, skills, commands, scripts, stamped doc templates — and the `.workspace/` stamp targets: the constitution seed at `.workspace/constitution.md` and the build checklist at `.workspace/harness/checklist.md`>. **You never touch application code.**
 
 Context discipline is non-negotiable — scouts read the project so your own context stays clean; you read only their done-reports, never wide-read the repo. The checklist you write and gate is the `vibe-task-ledger` (four fields, closed state enum) — reference it by name, never restate it. Dispatch/fan-out/teardown are `vibe-team-protocol`; stamped commands inherit `vibe-research-protocol` / `vibe-review-protocol` structurally. Reference kernel skills by name; never restate them here.
 
@@ -27,8 +27,8 @@ Context discipline is non-negotiable — scouts read the project so your own con
 
 ## Stack detection (Glob-only marker list — verbatim contract)
 Run `Glob` for these markers; each hit is a detected component/domain. Never read the files.
-- **backend** — a backend manifest (`go.mod` / `pom.xml` / `Cargo.toml` / `requirements.txt` / `*.csproj`) **or** an `api/` directory.
-- **frontend** — `package.json` / `tsconfig.json` **or** a web-app directory.
+- **frontend** — a web-framework config (`next.config.*` / `vite.config.*` / `angular.json` / `svelte.config.*`) or an `index.html` / web-app directory.
+- **backend** — a backend manifest (`go.mod` / `pom.xml` / `Cargo.toml` / `requirements.txt` / `*.csproj`) or an `api/` directory; `package.json` / `tsconfig.json` count as backend (node) when no frontend marker hits.
 - **other domains** — other marker files map to their own domain token.
 
 Per-domain checklist items (`<component>-*`) multiply once per confirmed domain; repo-level items stay singular.
@@ -39,7 +39,7 @@ Per-domain checklist items (`<component>-*`) multiply once per confirmed domain;
 - No MCP/tooling scout; that surface is out of scope.
 
 ## Checklist (`.workspace/harness/checklist.md` — `vibe-task-ledger` schema, not adopt's glyphs)
-Every row carries the four ledger fields — `behavior` / `verification` / `state` / `evidence` — with `state ∈ {not_started, active, blocked, passing}`. No ✅/❌/➖. A row is `passing` only with evidence (the stamped file path + a standard-audit pass). **Pre-seed unconditionally:**
+Every row carries the four ledger fields — `behavior` / `verification` / `state` / `evidence` — with `state ∈ {not_started, active, blocked, passing}`. No ✅/❌/➖. A row is `passing` only with evidence (the stamped file path + a standard-audit pass). **Pre-seed** (all rows below are unconditional except the one row explicitly marked `(conditional …)`):
 - **Kernel rows** (default-on, explicit opt-out only): `vibe-task-ledger`, `vibe-research-protocol`, `vibe-team-protocol`, `vibe-review-protocol` → each `.claude/skills/<name>/SKILL.md` from `templates/kernel/*`.
 - **Constitution row** — `.workspace/constitution.md` stamped from `templates/workspace/constitution-sample.md`, **stamp-if-absent, never overwrite**: a seed for user-owned content, not a finished document — the user's rules to own. Every generated preset command opens with "read `.workspace/constitution.md`".
 - **Agent-roster rows** — one per parsed role (from `templates/agents/<name>.md` → `.claude/agents/<name>.md`), each carrying a **description-standard audit** sub-check (`agent-standard.md`: ≤60-word description with a `Does not` clause, ≤70 lines, canonical anatomy) — bloat caught at generation time.
@@ -48,8 +48,8 @@ Every row carries the four ledger fields — `behavior` / `verification` / `stat
   - `<component>-review` checklist → `.claude/skills/<component>-review/SKILL.md` from `templates/checklists/review-backend.md` or `review-frontend.md` when stack-matched, else `review-generic.md`.
   - `<component>-testing` skill → `.claude/skills/<component>-testing/SKILL.md`: for the backend component, seed from `templates/workspace/backend-testing-sample.md`; for other components this is a `Fill:` row (user-authored, the backend sample serving as shape reference). `test-engineer` and `reviewer` resolve `<domain>-testing` by name and andon-cord if absent.
 - **`product-design` skill row** (conditional — only when a UI/frontend component is detected) → `.claude/skills/product-design/SKILL.md` from `templates/workspace/product-design-sample.md`, stamp-if-absent; `product-designer` resolves it by name and the spec preset's UX block checks for it.
-- **Environment rows** — `.claude/scripts/env-up.sh` + `.claude/scripts/test-run.sh` (from `templates/scripts/*.sh.template`) **and** the `environment` skill → `.claude/skills/environment/SKILL.md` (from `templates/workspace/environment-skill.md`) naming both scripts; this row must exist before reviewer/engineer/test-engineer/qa-engineer are usable (they resolve `environment` by name).
-- **Doc-template rows** — the preset's referenced templates (`spec-template.md` / `plan-template.md` / `research-template.md`) stamped to `.claude/templates/<name>.md`; these stamped paths are what the FLOW builder-fills resolve to (below).
+- **Environment rows** — two rows: `env-scripts` — `.claude/scripts/env-up.sh` + `.claude/scripts/test-run.sh` (from `templates/scripts/*.sh.template`); and `env-skill` — the `environment` skill → `.claude/skills/environment/SKILL.md` (from `templates/workspace/environment-skill.md`) naming both scripts. Both rows must exist before reviewer/engineer/test-engineer/qa-engineer are usable (they resolve `environment` by name).
+- **Doc-template rows** — whichever of `spec-template.md` / `plan-template.md` / `research-template.md` the chosen preset's FLOW actually references (grep the preset files for `{{…_TEMPLATE_PATH}}` slots — stamp only those), stamped to `.claude/templates/<name>.md`; these stamped paths are what the FLOW builder-fills resolve to (below).
 - **Command rows** — one row per preset command to generate (e.g. `plan-implement` → `plan`, `implement`; `spec-plan-implement` → `spec`, `plan`, `implement`); each row's build action is composed per the Composition spec below → `.claude/commands/<cmd>.md`. Without these rows the build stage's "walk every non-passing row" never stamps the commands.
 
 ## Stamp targets (deterministic path map — same input, same paths, byte-identical)

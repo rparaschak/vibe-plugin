@@ -2,7 +2,7 @@
 name: vibe-team-protocol
 description: How a vibe team communicates and how the team-lead runs it — what to SendMessage (done/blocked/andon only) and how, plus forming, dispatching, and tearing down named agents. Turn-based; one team per invocation.
 ---
-<!-- vibe-template: kernel/team-protocol v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/team-protocol.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Team protocol
 

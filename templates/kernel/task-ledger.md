@@ -2,7 +2,7 @@
 name: vibe-task-ledger
 description: The task state discipline every command and agent gates on — plans are a feature→leaf hierarchy where each leaf is evidence-gated through a closed state enum and only the orchestrator advances states, never on a self-claim of done.
 ---
-<!-- vibe-template: kernel/task-ledger v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/task-ledger.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Task ledger
 

@@ -8,6 +8,10 @@
 set -euo pipefail
 trap 'echo "env-up: FAILED — a start command exited non-zero (see output above)" >&2' ERR
 
+# No infra/server for this project (e.g. a library or CLI)? Fill
+# INFRA_UP_CMD / APP_UP_CMD / READINESS_CHECKS below with `:` (a no-op) —
+# the script must still run and exit 0.
+
 # READY_TIMEOUT — max seconds to wait for any one service to become ready.
 # Discover: time a cold start of the slowest dependency locally; round up.
 # e.g. 60
