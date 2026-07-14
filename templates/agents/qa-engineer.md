@@ -33,7 +33,7 @@ You drive the **real running app** through the project's browser automation tool
 **Auth is already solved.** Your browser tooling launches with the saved storage state, so it opens **already signed in**. Start at the app URL the `environment` skill names.
 
 **Method.**
-1. Read the plan's **Behaviors** (B-NNN) for the block under test. Those are your test cases.
+1. Read the **Behaviors** (B-NNN) for the block under test — spec-fed: follow the plan's pointer to the dir's `spec.md`; standalone: the plan's inline `## Behaviors`. Those are your test cases.
 2. Navigate to the app, then per behavior: read the rendered state, click/type to act, read state again to verify the outcome the behavior promises.
 3. Test the real happy path plus the obvious user-facing edge the behavior names (empty state, validation error, etc.).
 

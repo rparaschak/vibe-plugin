@@ -24,9 +24,9 @@ That registers the three `/vibe:*` commands. (Or run `/plugin`, browse to the **
 From the repo you want a harness for, describe the roster and commands you want:
 
 ```
-/vibe:build-harness Implementation: architect, critic, engineer, test-engineer, manual QA.
+/vibe:build-harness Implementation: architect, critic, engineer, test-engineer, reviewer, manual QA.
 PM + product designer for specs. Two commands: planning (design + product + technical)
-and implementing (cold reviews, task split).
+and implementing (per-block reviews, task split).
 ```
 
 vibe parses that intent, audits your repo (read-only, via scout subagents), and emits a checklist at `.workspace/harness/checklist.md` — the gap analysis **is** the roadmap and your control point. It then stamps the harness into `.claude/` and `.workspace/`. When it finishes, your repo is self-sufficient: the generated commands and agents run entirely from your own files.

@@ -26,7 +26,7 @@ the spec at `.workspace/plans/<yymmdd-slug>/spec.md`
 <!-- FLOW: injected verbatim into command-skeleton.md's {{FLOW}} slot -->
 
 ## Team
-product-manager, critic; product-designer on-call (UX, conditional); codebase-researcher. Spec is the WHAT, not the HOW — you never draft behaviors or design UX yourself: the product-manager owns Problem/Behaviors/Out of Scope/Assumptions, the product-designer owns `## UX structure`. You stay thin so the full behaviors draft is the PM's context, not yours.
+product-manager, critic; product-designer on-call (UX, conditional); codebase-researcher. Spec is the WHAT, not the HOW — you never draft behaviors or design UX yourself: the product-manager owns Problem/Behaviors/Out of Scope/Assumptions, the product-designer owns `## UX structure`. You stay thin so the full behaviors draft is the product-manager's context, not yours.
 
 ## Spec artifact & shape
 - Drives the spec at `.workspace/plans/<yymmdd-slug>/spec.md` — its Behaviors (B-NNN) — to Status: Ready for Plan. The spec is the artifact you LOCK before any architecture is designed; nothing archives a spec — the user reviews it, then runs /plan.
@@ -47,7 +47,6 @@ First: read `.workspace/constitution.md` (note constraining rules). Derive a keb
    - Then MATERIALIZE the split — for each spec beyond this one: create its `.workspace/plans/<yymmdd-slug>/` dir, copy the stamped spec template in, move its behaviors over renumbered LOCAL from B-001, fill its header as in First (`Created`, `Status: Draft`, `Depends on`, input = one line naming this decomposition); each is left `Draft` for its own later `/spec` pass (UX, critique, readiness gate).
    - The piece this run carries forward keeps THIS dir and slug; renumber its retained behaviors contiguously from B-001.
 6. **Design UX** (only if the feature is user-facing AND the project's `product-design` skill resolves — checking for a `.claude/skills/<name>/` dir is fine, it isn't app code) — the product-designer writes `spec.md`'s `## UX structure`.
-   - `--design` / `--no-design` in `$ARGUMENTS` overrides the skip either way.
    - Skipped for purely technical work — this presence is the FE-bearing flag /plan later reads.
 
 Stub path: when the user wants to park the idea, capture Problem + Open Questions (Behaviors optional) and set `Status: Parked — Stub` — a later full pass finishes it; a stub never proceeds to decomposition or the readiness gate.

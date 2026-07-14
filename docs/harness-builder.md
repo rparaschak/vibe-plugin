@@ -60,7 +60,7 @@ Every generated harness includes these unless the user *explicitly* opts out; th
 
 ## 3. Flagship command: `/vibe:build-harness`
 
-Serves prompts like: *"Create a harness for this project. Implementation: architect, critic, engineer, test-engineer, manual QA. PM + product designer for specs. Two commands: planning (design + product thinking + technical planning) and implementing (cold reviews, task split)."*
+Serves prompts like: *"Create a harness for this project. Implementation: architect, critic, engineer, test-engineer, reviewer, manual QA. PM + product designer for specs. Two commands: planning (design + product thinking + technical planning) and implementing (per-block reviews, task split)."*
 
 Pipeline:
 
@@ -89,7 +89,7 @@ Two-level hierarchy is fine and matches current practice (plan → feature → s
 - **WIP=1:** one leaf active at a time; no "also fixing" adjacent items (course data: 87.5% vs 37.5% completion).
 - **Only the team-lead flips `active → passing`,** against reviewer-cited evidence — never the engineer that built it.
 - **Stop conditions:** numeric max fix→re-review rounds + no-progress detection (same findings two rounds running → stop, andon cord).
-- **Two-level verification:** subtask = command-level check ("endpoint returns 201"); feature = behavior/E2E check ("user can register end to end"). Cold reviews review against the leaf's stated verification, not vibes.
+- **Two-level verification:** subtask = command-level check ("endpoint returns 201"); feature = behavior/E2E check ("user can register end to end"). The reviewer's per-block reviews judge against the leaf's stated verification, not vibes.
 
 Format stays markdown (human-diffable, fits tooling); the win is the schema and the closed enum, not JSON.
 

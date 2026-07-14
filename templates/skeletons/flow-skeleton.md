@@ -15,7 +15,7 @@ This is a **FLOW SPEC**. You (or `/vibe:distill`) fill the `{{SLOTS}}` below; `/
 <!-- Optional: mark a consulting-only role ` (on-call)` (e.g. `critic (on-call)`) — it appears in the generated Role summary and in each block's fix-routing/roster line where it serves; it is never a separate dispatch stage. -->
 
 ## Artifact
-<!-- Fill: the single file this flow reads and writes as its ledger/state. This is the ONLY project file the generated command may `Edit`/`Write` — it never touches app source — so it fills the command's hard-boundary sentence. Learnings captured at finalize live in a `## Learnings` section of this same artifact — a flow never opens a second file. -->
+<!-- Fill: the single file this flow reads and writes as its ledger/state. This is the ONLY project file the generated command may `Edit`/`Write` — it never touches app source — so it fills the command's hard-boundary sentence. Learnings captured at finalize live in a `## Learnings` section of this same artifact — a custom flow never opens a second file. (The built-in plan/implement presets use their own per-run learnings split — see `presets/*/implement.md`.) -->
 {{ARTIFACT}}
 <!-- e.g. .workspace/strangler/ledger.md -->
 

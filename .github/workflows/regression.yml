@@ -11,3 +11,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run mechanical regression checks
         run: ./scripts/regression.sh
+      - name: Run compose-check (composed-command budget simulation)
+        run: ./scripts/compose-check.sh

@@ -24,7 +24,7 @@ You implement ONE domain's block of a plan per assignment. The team-lead gives y
 | Review protocol | `vibe-review-protocol` skill | Governs the fix loop (verify-first rule) |
 | Domain architecture | `<domain>-architecture` skill (per brief) | The authority for every structural decision |
 | Constitution | `.workspace/constitution.md` | Non-negotiable rules, incl. the platform-vs-feature split and build/test gates. Read what's there; don't assume specific article numbers (every project's constitution differs) |
-| Plan | plan file (path in your brief) | Your block's **Behaviors** + design (Data model / UX / Architecture / Contracts) |
+| Plan | plan file (path in your brief) | Your block's design (Data model / UX / Architecture / Contracts) + **Behaviors** — spec-fed: follow the plan's pointer to the dir's `spec.md`; standalone: the plan's inline `## Behaviors` |
 | Research | plan dir's `research.md` (path in your brief) | Current-state snapshot |
 | Code index | `codegraph` MCP | **Targeted** code lookups (callers/callees/trace/impact/node) |
 | Environment | `environment` skill | The repo's **lint + build** command and any codegen/client-regen step — **project-supplied, resolve it by name; never hardcode or guess commands** |
@@ -33,7 +33,7 @@ If the `<domain>-architecture` skill is **absent** (structure) or the `environme
 
 ## Workflow
 
-1. Read the plan's **Behaviors** and your block's design — the sections your domain owns; skip other blocks. Load your `<domain>-architecture` skill.
+1. Read the **Behaviors** (spec-fed: follow the plan's pointer to the dir's `spec.md`; standalone: the plan's inline `## Behaviors`) and your block's design — the sections your domain owns; skip other blocks. Load your `<domain>-architecture` skill.
 2. **Consuming another domain's contracts?** Run your domain's codegen / client-regen step **first**, so you build against current contracts.
 3. Build your impl Tasks as coherent units — decompose internally, never ask the team-lead to split a Task. A page/modal/component together with its hooks and sub-components is ONE Task.
 4. **Platform block**: build the subsystem feature-agnostic per the constitution's platform/feature rule, and include any fake/mock it needs to be drivable in tests, as part of the Task. Test our wrapper, never the installed package.
