@@ -1,12 +1,12 @@
 ---
-name: {{COMPONENT}}-review
-description: Review checklist for the {{COMPONENT}} component — the `reviewer` agent resolves it by name and runs its mechanized gate first.
+name: review-generic
+description: Domain-agnostic review baseline — the `reviewer` agent always loads it (alongside any `<component>-review` stack lens) and runs its mechanized gate first.
 ---
 <!-- vibe-template: templates/checklists/review-generic.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Generic review checklist
 
-Domain-agnostic review rules. The `reviewer` agent loads this as the `<domain>-review` checklist when no stack-specific one is named, and alongside a stack checklist when one is. Every line is a review rule — cite it in a finding as `why: convention/<rule>`.
+Domain-agnostic review rules. The `reviewer` agent always loads this as the `review-generic` baseline — on its own for an unmatched domain, and beneath a `<component>-review` stack checklist when one exists. Every line is a review rule — cite it in a finding as `why: convention/<rule>`.
 
 **`[mech]` = mechanizable.** A `[mech]` rule is grep-able or lint-able; the reviewer's mechanized-checks-first step runs these before any prose reading. Untagged rules need human judgment over the diff.
 

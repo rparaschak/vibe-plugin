@@ -41,12 +41,21 @@ vibe parses that intent, audits your repo (read-only, via scout subagents), and 
 | **`/vibe:build-flow`** | Compiles ONE ad-hoc, project-local flow (a strangler-fig refactor, a slice extraction, a one-off migration) into a lean linear command in your `.claude/commands/`. Elicits a flow-spec, lints it mechanically (references resolve on disk, gates present, single artifact), and stamps it through the command skeleton. Writes `.claude/commands/<slug>.md` + `.claude/flows/<slug>.md`. Never runs the flow. |
 | **`/vibe:distill`** | The learning flywheel, run inside a stamped project every ~2–3 implemented plans. Sweeps accumulated learnings, verifies staleness, and routes each survivor up a promotion ladder — mechanize → skill → constitution → plugin-template proposal → keep → retire. Every mutation is user-approved. Kernel-grade lessons emit a proposal diff you apply upstream by hand; it never writes into the plugin install. |
 
+## After the build
+
+Two command namespaces — don't confuse them:
+
+- **`/vibe:*`** (`build-harness`, `build-flow`, `distill`) — the plugin's commands. They build and maintain the harness; they never touch application code.
+- **Your own commands** — once stamped, your repo owns `/plan` and `/implement` (plus `/spec` if you picked the `spec-plan-implement` preset), run unprefixed from `.claude/commands/`. These are what you run day to day.
+
+Re-running `/vibe:build-harness` isn't a rebuild — it's the doctor: it upgrades stamped-and-unmodified sections to match current templates and never overwrites anything you've edited.
+
 ## What gets generated into your project
 
 Everything lands under your repo's `.claude/` and `.workspace/`:
 
 - **Kernel skills** (`.claude/skills/vibe-*`) — four load-bearing protocols, default-on, stamped verbatim and inherited *structurally* (a generated command cannot silently drop them):
-  - **`vibe-task-ledger`** — the leaf task schema: `behavior` / `verification` / `state` / `evidence`, a closed state enum (`not_started | active | blocked | passing`, `passing` irreversible), WIP=1, and orchestrator-only, evidence-gated transitions.
+  - **`vibe-task-ledger`** — the leaf task schema: `behavior` / `verification` / `state` / `evidence`, a closed state enum (`not_started | active | blocked | passing`, `passing` irreversible), WIP=1, and team-lead-only, evidence-gated transitions.
   - **`vibe-research-protocol`** — the context-discipline escalation ladder (cited map → codegraph → Explore → codebase-researcher).
   - **`vibe-team-protocol`** — SendMessage channel rules, done-format, the andon cord, and spawn/dispatch/teardown mechanics.
   - **`vibe-review-protocol`** — three-pass review with a 0–2 × 6-dimension rubric → Accept / Revise / Block.

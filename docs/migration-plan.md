@@ -1,6 +1,10 @@
 # Migration Plan: vibe → Harness Builder
 
-**Status:** ready to execute.
+> **Historical.** This plan has been executed; phase-by-phase status now lives only in `.workspace/migration/ledger.md`, the authoritative record.
+> Phase 5.1 (live-project validation) remains open.
+> D17 (logged in the ledger) waived this plan's "nothing deleted until Phase 5 passes" prime-directive ordering below — for the Phase-6 deletions only.
+
+**Status:** executed; see `.workspace/migration/ledger.md` for current state.
 **Date:** 2026-07-13
 **Source of truth for the target design:** `docs/harness-builder.md`. Research backing: `docs/harness-improvement-plan.md`.
 **Prime directive:** the plugin stays usable at every phase boundary. Nothing is deleted until the builder has replaced it *and* both live projects run on generated harnesses (Phase 5 gate). Tag `v1-final-harness` before Phase 1 so the old world is always one checkout away.

@@ -16,11 +16,11 @@ You drive the **real running app** through the project's browser automation tool
 
 ## Skills & documents you refer to
 
-| skill/doc | when to use |
-|---|---|
-| `vibe-team-protocol` | deliver your one reply; done/blocked/andon messaging |
-| `vibe-research-protocol` | ground a plan/behavior question in current state before acting |
-| `environment` (project) | app URL, start commands, ports, and which browser automation tooling to drive it with (e.g. Playwright MCP) — project-supplied; resolve by name, never hardcode |
+| Reference | Resolves to | Why |
+|---|---|---|
+| Team protocol | `vibe-team-protocol` skill | deliver your one reply; done/blocked/andon messaging |
+| Research protocol | `vibe-research-protocol` skill | ground a plan/behavior question in current state before acting |
+| Environment | `environment` skill (project) | app URL, start commands, ports, and which browser automation tooling to drive it with (e.g. Playwright MCP) — project-supplied; resolve by name, never hardcode |
 
 ## Workflow
 

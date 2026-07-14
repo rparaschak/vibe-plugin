@@ -33,7 +33,7 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 - Ask = one sentence: the need + scope (paths/sections/IDs) + what's already known.
 - Reply = bullets ≤2 lines, cite `file:line`/B-NNN/D-NNN; if unsure, say so — don't speculate.
 
-## Orchestrator: form & dispatch
+## Team-lead: form & dispatch
 
 - Spawn each role **named** when first needed; keep it standing to retain context — never re-spawn a held role. On-call peers spawn lazily when a question arises; keep the live set near **3–5**.
 - Worktree mode: **`EnterWorktree` BEFORE spawning the first role** (keep the worktrees dir gitignored; carry any uncommitted plan dir into the tree; bootstrap the env — deps, `.env` files — before first dispatch); all roles share the one tree; teardown exits/merges it.
@@ -42,7 +42,7 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 - **Parallel fan-out**: one role across N concurrent instances, each a different checklist lens — the sanctioned bounded exception to one-instance-per-role. Gather ALL replies, then apply the command's combine rule: a block review = all-clear (passes only when no reviewer has open findings after consolidation + fix), **not a vote**; the consolidation owner (architect, per on-call) gets the gathered findings before the fix. Once every reply is gathered, the expanded live set collapses back: tear down the fan-out instances then, not at end-of-invocation.
 - The matching architect is on-call for design-intent; the codebase-researcher is the context oracle in spec/plan. A blocked worker andon-cords.
 
-## Orchestrator: teardown
+## Team-lead: teardown
 
 - Work complete → tear down the team; no teammate left running. **"One team's lifetime = one invocation."**
 - In-process teammates don't survive `/resume` or `/rewind`. When a name stops answering, re-spawn the role from durable state (Tasks table + decisions) — don't message the dead name.

@@ -25,7 +25,7 @@ Resolve these before reviewing. `<domain>` is the domain from your brief (e.g. `
 |---|---|---|
 | Review protocol | `vibe-review-protocol` skill | Read-only stance, three-pass method, graded rubric → Accept/Revise/Block, what/why/fix findings |
 | Team protocol | `vibe-team-protocol` skill | Done-report routing to `main`; andon-cord escalation |
-| Review checklist | checklist(s) your brief names — default `<domain>-review` | Defaulting to `<domain>-review`, but a flow may supply a different or additional checklist (e.g. `security-review`) to run a specialized lens over the same diff |
+| Review checklist | `review-generic` (always) + the domain lens your brief names — default `<domain>-review` | Always load `review-generic` as the baseline; layer the `<domain>-review` stack lens on top when it exists (absent for an unmatched domain — generic still covers it). A flow may supply a different or additional checklist (e.g. `security-review`) to run over the same diff |
 | Domain architecture | `<domain>-architecture` skill | The structural conventions the diff must follow |
 | Domain testing | `<domain>-testing` skill | The test conventions the block's tests must follow |
 | Constitution | `.workspace/constitution.md` | The project's non-negotiable rules. Read what's there; don't assume specific article numbers (every project's constitution differs) |
@@ -34,11 +34,11 @@ Resolve these before reviewing. `<domain>` is the domain from your brief (e.g. `
 | Code index | `codegraph` MCP | **Targeted** lookups to trace the diff (callers/callees/impact) |
 | Environment | `environment` skill | How to run the block's checks/tests to confirm green — **project-supplied, resolve it by name; never hardcode or guess commands** |
 
-If the `<domain>-architecture` skill or a named checklist is **absent**, say so in your reply and review against what exists — a reviewer degrades and reports; it does not invent rules.
+If the `<domain>-architecture` skill is **absent**, or a named checklist beyond `review-generic` is absent (expected for an unmatched domain — `review-generic` stays your baseline), say so in your reply and review against what exists — a reviewer degrades and reports; it does not invent rules.
 
 ## Workflow
 
-1. Resolve your domain's skills — `<domain>-architecture`, `<domain>-testing`, and the checklist your brief names (default `<domain>-review`) — before reviewing.
+1. Resolve your skills before reviewing — `<domain>-architecture`, `<domain>-testing`, the always-present `review-generic` baseline checklist, and the domain lens your brief names (default `<domain>-review`, layered on top of `review-generic`; absent for an unmatched domain).
 2. Run mechanized checks first — lint/build/tests and any grep-able rule checks via the `environment` skill — before any prose review; this subsumes `vibe-review-protocol`'s pass 3 (Verify).
 3. Apply `vibe-review-protocol`'s passes 1–2 (plan independently, review per file) and graded rubric to everything the mechanized pass can't check.
 4. Reply per `vibe-review-protocol`'s Accept/Revise/Block verdict format, sent as your `vibe-team-protocol` done-report to `main`.

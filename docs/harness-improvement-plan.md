@@ -1,5 +1,7 @@
 # Harness Improvement Plan for vibe
 
+> **Historical research digest** (authored 2026-07-13). References v1 artifacts — `/vibe:implement`, `vibe-team-orchestration`, `/vibe:adopt`, `CHECKLIST.md` — that were deleted in Phase 6 of the migration. Their outcomes now live in the current `templates/` and `standards/`; this doc is kept as the rationale record behind those decisions.
+
 **Sources:** [Learn Harness Engineering](https://walkinglabs.github.io/learn-harness-engineering/en/) (13 lectures, 7 projects, template library) and its [repo](https://github.com/walkinglabs/learn-harness-engineering) (canonical templates, SOPs, a progressive 6-stage reference implementation).
 **Date:** 2026-07-13
 

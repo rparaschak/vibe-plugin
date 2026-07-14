@@ -1,0 +1,13 @@
+name: regression
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run mechanical regression checks
+        run: ./scripts/regression.sh

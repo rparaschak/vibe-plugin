@@ -12,10 +12,10 @@ skills: [vibe-team-protocol, vibe-research-protocol]
 
 ## Skills & documents you refer to
 
-| skill/doc | when to use |
-|---|---|
-| `vibe-team-protocol` | deliver your one reply; done/blocked/andon messaging |
-| `vibe-research-protocol` | ground a finding in current-state before you report it |
+| Reference | Resolves to | Why |
+|---|---|---|
+| Team protocol | `vibe-team-protocol` skill | deliver your one reply; done/blocked/andon messaging |
+| Research protocol | `vibe-research-protocol` skill | ground a finding in current-state before you report it |
 
 ## Workflow
 

@@ -8,7 +8,7 @@ description: Review checklist for the {{COMPONENT}} component — the `reviewer`
 
 <!-- BUILDER: this is a skeleton. Emit one filled copy per detected frontend component (web app, design-system package, native client). Fill every {{SLOT}} from your stack audit, delete this comment and the "— SKELETON" suffix, then keep the file ≤60 lines. Rules stay `- [ ]` lines: short, imperative, one failure mode each. Tag any grep-able/lint-able rule `[mech]`. -->
 
-The `reviewer` agent loads this as the `frontend-review` checklist. Every line is a review rule — cite it as `why: convention/<rule>`. It stacks on `review-generic.md`; put only frontend-specific rules here, not the generic ones.
+The `reviewer` agent loads this as the `frontend-review` checklist. Every line is a review rule — cite it as `why: convention/<rule>`. It stacks on top of the `review-generic` baseline (always loaded); put only frontend-specific rules here, not the generic ones.
 
 **`[mech]` = mechanizable** (grep/lint). The reviewer runs `[mech]` rules and the lint commands below in its mechanized-checks-first step, before any prose review.
 

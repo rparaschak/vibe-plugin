@@ -84,7 +84,7 @@ as not-ready. Format: - **Q-NNN · [question]** — *Asked by*: [agent] · *Cont
 
 None
 
-## Handoff *(written at Finalize by whichever command drives this spec, per `vibe-task-ledger`)*
+## Handoff *(written at Finalize by whichever command drives this spec, per `vibe-task-ledger`'s design-phase variant)*
 
 - **Locked/decided this session** — 
 - **First block not yet closed** — 

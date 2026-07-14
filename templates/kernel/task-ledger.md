@@ -1,6 +1,6 @@
 ---
 name: vibe-task-ledger
-description: The task state discipline every command and agent gates on — plans are a feature→leaf hierarchy where each leaf is evidence-gated through a closed state enum and only the orchestrator advances states, never on a self-claim of done.
+description: The task state discipline every command and agent gates on — plans are a feature→leaf hierarchy where each leaf is evidence-gated through a closed state enum and only the team-lead advances states, never on a self-claim of done.
 ---
 <!-- vibe-template: templates/kernel/task-ledger.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
@@ -19,13 +19,13 @@ The plan is the ledger. It holds a two-level hierarchy: **features** (user-visib
 
 `not_started | active | blocked | passing`
 
-`passing` is irreversible except by an explicit orchestrator/user decision recorded in the decision log.
+`passing` is irreversible except by an explicit team-lead/user decision recorded in the decision log.
 
 ## Transitions (hard rules)
 
-- Only the **orchestrator (team-lead)** changes states. Never the agent that did the work.
+- Only the **team-lead** changes states. Never the agent that did the work.
 - `active → passing` requires **reviewer-cited evidence**: the reviewer names the commit AND the executed verification output. An engineer's own "done" is never sufficient.
-- `blocked` requires a one-line reason + what would unblock it. When the unblock condition is met, the orchestrator returns the leaf to `not_started` (re-picked under WIP=1).
+- `blocked` requires a one-line reason + what would unblock it. When the unblock condition is met, the team-lead returns the leaf to `not_started` (re-picked under WIP=1).
 
 ## WIP = 1
 
@@ -34,8 +34,8 @@ Exactly **one leaf `active` per ledger**. Parallel worktrees each carry their ow
 ## Stop conditions (numeric)
 
 - Max **3** fix→re-review rounds per leaf.
-- **No-progress detection**: if the same findings survive **two consecutive rounds**, stop and **escalate to the orchestrator/user** (pull the andon cord): halt work on the leaf and surface the surviving findings for a decision.
-- The **orchestrator** keeps a compact round log per leaf: round #, what changed, reviewer verdict, next action.
+- **No-progress detection**: if the same findings survive **two consecutive rounds**, stop and **escalate to the team-lead/user** (pull the andon cord): halt work on the leaf and surface the surviving findings for a decision.
+- The **team-lead** keeps a compact round log per leaf: round #, what changed, reviewer verdict, next action.
 
 ## Two-level verification
 
@@ -49,12 +49,14 @@ Exactly **one leaf `active` per ledger**. Parallel worktrees each carry their ow
 
 Write a row when deviating from the plan or resolving an ambiguity. Read on resume — settled decisions are not re-litigated.
 
-## Handoff block (orchestrator writes when pausing; first thing read on resume)
+## Handoff block (team-lead writes when pausing; first thing read on resume)
 
 - **Verified now** — what is confirmed working.
 - **Changed this session** — what moved.
 - **Broken or unverified** — what is not yet proven.
 - **Next best step** — the single next action.
+
+Design-phase variant (a spec/design run with nothing built yet): use **Locked/decided this session** / **First block not yet closed** / **Open Questions** in place of the first three; keep **Next best step**.
 
 ## Ledger example (this table doubles as the format spec)
 

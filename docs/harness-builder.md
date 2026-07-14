@@ -51,8 +51,7 @@ Every generated harness includes these unless the user *explicitly* opts out; th
 
 - **Task ledger** (see §5) — task schema, evidence-gated states, WIP=1, stop conditions.
 - **Research protocol** — the context-discipline ladder (cited map → codegraph → Explore → codebase-researcher). Keep near-verbatim; it is the plugin's best artifact.
-- **Communication protocol** — SendMessage done-format, andon cord, role boundaries. *Merge with orchestration* (audit: the two always co-reference and duplicate the idle-run rule).
-- **Orchestration/teardown** — spawn/dispatch/fan-out/teardown mechanics.
+- **Team protocol** — SendMessage done-format, andon cord, role boundaries, plus spawn/dispatch/fan-out/teardown mechanics. Communication and orchestration/teardown were merged into this one file (audit: the two always co-referenced and duplicated the idle-run rule).
 - **Review protocol** — three-pass method + rubric verdict format (see §7).
 
 **Inheritance is structural, not judged.** Generated commands/flows come from skeletons whose kernel sections are literal fixed template text the builder *cannot omit* — only the flow-specific middle is authored per need. Today build-flow "validates guarantees are preserved" via LLM judgment; that soft enforcement is exactly what gets replaced. A generated flow cannot silently drop the andon cord or the research ladder; opt-out means the user said so, never that the generator forgot.
@@ -86,9 +85,9 @@ Two-level hierarchy is fine and matches current practice (plan → feature → s
 
 - **Sizing rule:** completable in a single session (course guidance).
 - **Leaf fields (mandatory):** `behavior` (user-visible outcome) / `verification` (executable command(s), not prose) / `state` / `evidence` (append-only: commit hash + test output ref).
-- **Closed state enum:** `not_started | active | blocked | passing`. `passing` is irreversible except by explicit orchestrator/user decision.
+- **Closed state enum:** `not_started | active | blocked | passing`. `passing` is irreversible except by explicit team-lead/user decision.
 - **WIP=1:** one leaf active at a time; no "also fixing" adjacent items (course data: 87.5% vs 37.5% completion).
-- **Only the orchestrator flips `active → passing`,** against reviewer-cited evidence — never the engineer that built it.
+- **Only the team-lead flips `active → passing`,** against reviewer-cited evidence — never the engineer that built it.
 - **Stop conditions:** numeric max fix→re-review rounds + no-progress detection (same findings two rounds running → stop, andon cord).
 - **Two-level verification:** subtask = command-level check ("endpoint returns 201"); feature = behavior/E2E check ("user can register end to end"). Cold reviews review against the leaf's stated verification, not vibes.
 
@@ -102,7 +101,7 @@ Format stays markdown (human-diffable, fits tooling); the win is the schema and 
 |---|---|---|
 | `/vibe:adopt` | **Deprecate** — replaced by `/vibe:build-harness` | Wrong direction (project conforms to plugin); fails in practice; owner rebuilds by hand anyway |
 | `/vibe:spec`, `/vibe:plan`, `/vibe:implement`, `/vibe:feature` | **Demote to presets** | No longer called directly on live projects; universality is the bloat source |
-| `/vibe:build-flow` | **Promote & repoint** — the compiler, generating into the project | Center of gravity already moved here; currently undocumented in README |
+| `/vibe:build-flow` | **Promote & repoint** — the compiler, generating into the project | Center of gravity already moved here; was undocumented in README pre-migration (fixed in 6.2) |
 | `/vibe:distill` | **Keep + extend one rung** | Project learnings stay local; kernel-grade learnings get promoted back into plugin templates (otherwise best lessons stay stranded in one repo) |
 | Skills: team-communication + team-orchestration | **Merge** (removes duplicated idle-run rule) | Audit: always co-referenced, overlapping content |
 | Skill: vibe-manual-testing | **Inline into qa-engineer template** | Single consumer, no command references it |
@@ -144,8 +143,8 @@ Once N projects are stamped, a template fix propagates to zero of them until re-
 
 These were open questions when this doc was written; `docs/migration-plan.md` §0 resolved each before execution:
 
-1. **Ordering:** kernel extraction first (merge/dedupe skills into kernel templates) vs. builder command first? Kernel-first is likely — the builder needs finished templates to stamp. → **Resolved:** kernel-first — Phases 1–3 built the material, Phase 4 the machine, Phase 5 validated, Phase 6 deleted.
+1. **Ordering:** kernel extraction first (merge/dedupe skills into kernel templates) vs. builder command first? Kernel-first is likely — the builder needs finished templates to stamp. → **Resolved:** kernel-first — Phases 1–3 built the material, Phase 4 the machine (incl. 4.4's real-execution self-test, passing), Phase 6 deleted; Phase 5.1 live-project validation remains open.
 2. **Preset fidelity:** how much of today's `plan.md`/`implement.md` prose survives into the presets vs. gets rewritten around the task ledger (P1/P2 said: rewrite implement around the state machine, ~174→~80 lines)? → **Resolved:** rewrite, don't port — `implement` rewritten around the task-ledger state machine (≤80 lines), `plan` kept its skeleton with the Tasks section replaced by the ledger schema, `spec` survived mostly intact, `feature` was not ported (the fullstack preset covers its use case).
-3. **The two live projects are the validation cases:** tech backend (plan→implement preset) and fullstack app (full product-cycle preset). Migration isn't done until both run on generated harnesses and the hand-copied harness in the monorepo is retired. → **Resolved:** confirmed as the validation gate — migration was done only once both ran real work on generated harnesses and the hand-copied monorepo harness was retired.
+3. **The two live projects are the validation cases:** tech backend (plan→implement preset) and fullstack app (full product-cycle preset). Migration isn't done until both run on generated harnesses and the hand-copied harness in the monorepo is retired. → **Resolved:** confirmed as the validation gate — migration is done only once both run real work on generated harnesses and the hand-copied monorepo harness is retired; that gate is Phase 5.1, still open.
 4. **Checklist format** for build-harness: reuse adopt's `.workspace/adoption-checklist.md` resumable pattern or a new schema aligned with the task ledger? → **Resolved:** task-ledger schema, not adopt's format — `.workspace/harness/checklist.md` uses the same leaf schema as the ledger (`behavior`/`verification`/`state`/`evidence`, closed enum).
 5. **What stays plugin-resident at runtime** (if anything): possibly only `build-harness`, `build-flow`, `distill` — everything else executes from the project's own files. → **Resolved:** only `/vibe:build-harness`, `/vibe:build-flow`, `/vibe:distill`; everything else executes from the project's own `.claude/`.
