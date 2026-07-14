@@ -1,3 +1,7 @@
+---
+name: {{COMPONENT}}-testing
+description: Testing conventions for the {{COMPONENT}} component — the `test-engineer` and `reviewer` agents resolve it by name.
+---
 <!-- vibe-template: templates/workspace/backend-testing-sample.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Backend Testing

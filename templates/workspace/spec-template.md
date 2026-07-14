@@ -8,7 +8,7 @@
 
 <!--
 The WHAT for one feature: Problem, Behaviors, (for UI) UX structure, Out of Scope, Assumptions.
-The HOW — data model, architecture, tasks — lives in this dir's plan.md, written by /vibe:plan.
+The HOW — data model, architecture, tasks — lives in this dir's plan.md, written by /plan.
 Spec is the artifact you LOCK (`Status: Ready for Plan`) before any architecture is designed.
 
 A spec is sized so the plan it feeds fits ONE team in one pass: roughly one coherent capability
@@ -18,7 +18,7 @@ B-IDs are LOCAL to this spec (B-001).
 
 Status lifecycle: Draft → Ready for Plan → (Blocked — Open Questions). Side states:
 `Superseded — by <yymmdd-slug>` (retired by a later spec) and `Parked — Stub` (intent + Open
-Questions captured; designed later in its own /vibe:spec pass).
+Questions captured; designed later in its own /spec pass).
 
 Vocabulary:
 - Behavior (B-NNN) — one testable WHAT. IDs are LOCAL to this spec, starting at B-001. The plan's
@@ -75,11 +75,18 @@ should have been put to the user, or be flagged unconfirmed. -->
 - ⚠️ [high-impact assumption — confirmed with user, or flagged unconfirmed]
 - [ordinary assumption that shapes the spec]
 
-## Open Questions *(gate — must be "None" before `/vibe:plan`)*
+## Open Questions *(gate — must be "None" before `/plan`)*
 
 <!--
-Park anything that can't be decided yet. `/vibe:plan` (spec-fed) treats an un-`Ready for Plan` spec
+Park anything that can't be decided yet. `/plan` (spec-fed) treats an un-`Ready for Plan` spec
 as not-ready. Format: - **Q-NNN · [question]** — *Asked by*: [agent] · *Context*: [≤2 lines]
 -->
 
 None
+
+## Handoff *(written at Finalize by whichever command drives this spec, per `vibe-task-ledger`)*
+
+- **Locked/decided this session** — 
+- **First block not yet closed** — 
+- **Open Questions** — 
+- **Next best step** — 

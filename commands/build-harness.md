@@ -42,6 +42,7 @@ Per-domain checklist items (`<component>-*`) multiply once per confirmed domain;
 Every row carries the four ledger fields — `behavior` / `verification` / `state` / `evidence` — with `state ∈ {not_started, active, blocked, passing}`. No ✅/❌/➖. A row is `passing` only with evidence (the stamped file path + a standard-audit pass). **Pre-seed** (all rows below are unconditional except the one row explicitly marked `(conditional …)`):
 - **Kernel rows** (default-on, explicit opt-out only): `vibe-task-ledger`, `vibe-research-protocol`, `vibe-team-protocol`, `vibe-review-protocol` → each `.claude/skills/<name>/SKILL.md` from `templates/kernel/*`.
 - **Constitution row** — `.workspace/constitution.md` stamped from `templates/workspace/constitution-sample.md`, **stamp-if-absent, never overwrite**: a seed for user-owned content, not a finished document — the user's rules to own. Every generated preset command opens with "read `.workspace/constitution.md`".
+- **Learnings row** — `.workspace/learnings.md` seeded inline (no template file), **stamp-if-absent, never overwrite**: title + `Last distilled: —` watermark + one comment noting entries get stable L-IDs and only `/vibe:distill` curates the file.
 - **Agent-roster rows** — one per parsed role (from `templates/agents/<name>.md` → `.claude/agents/<name>.md`), each carrying a **description-standard audit** sub-check (`agent-standard.md`: ≤60-word description with a `Does not` clause, ≤70 lines, canonical anatomy) — bloat caught at generation time.
 - **Per detected component** (from stack detection — one row each, not one global pair):
   - `<component>-architecture` skill → `.claude/skills/<component>-architecture/SKILL.md` from `templates/workspace/architecture-skill.md`; fill its `COMPONENT` token to equal the domain token agent briefs resolve, so every agent's skill lookup lands.
@@ -56,6 +57,7 @@ Every row carries the four ledger fields — `behavior` / `verification` / `stat
 Every template class stamps to a fixed target so two builders never diverge on placement:
 - kernel skill `templates/kernel/<x>.md` → `.claude/skills/<frontmatter-name>/SKILL.md` (`vibe-task-ledger`, `vibe-research-protocol`, `vibe-team-protocol`, `vibe-review-protocol`).
 - constitution `templates/workspace/constitution-sample.md` → `.workspace/constitution.md`, stamp-if-absent, never overwrite.
+- learnings (inline seed, no template file) → `.workspace/learnings.md`, stamp-if-absent, never overwrite: title, `Last distilled: —` watermark, one comment line noting entries get stable L-IDs and only `/vibe:distill` curates it.
 - agent `templates/agents/<name>.md` → `.claude/agents/<name>.md`.
 - component architecture `templates/workspace/architecture-skill.md` → `.claude/skills/<component>-architecture/SKILL.md`.
 - component review `templates/checklists/review-{backend,frontend,generic}.md` → `.claude/skills/<component>-review/SKILL.md`.

@@ -62,9 +62,9 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 
 ## Role boundaries (hard rule) — a message asking you outside these → andon-cord it
 
-- **PM** frames/writes WHAT (spec.md Problem + Behaviors + Out of Scope + Assumptions); no UX, architecture, or code. (Standalone `/vibe:plan` has no product-manager — the team-lead captures the inline Behaviors.)
+- **PM** frames/writes WHAT (spec.md Problem + Behaviors + Out of Scope + Assumptions); no UX, architecture, or code. (Standalone `/plan` has no product-manager — the team-lead captures the inline Behaviors.)
 - **Designers** write `## UX structure` only.
 - **Architects** design and write plan.md; no code.
 - **Engineers** write code; don't redesign the plan.
 - **Reviewers/critic** find + report; never modify files.
-- **Team-lead** orchestrates: does not read code, write artifacts, or edit spec/plan.
+- **Team-lead** orchestrates: does not read code or author artifact content — Behaviors/UX/Architecture/Tasks bodies are teammates' work (sole exception: a standalone plan's inline Behaviors capture, where the command says so). It DOES own control fields: ledger states, the Status header, the Handoff block, Decision Log entries, dir bootstrap/template copies, and relocating/renumbering already-authored Behaviors across spec files during decomposition (a mechanical move, not authorship).

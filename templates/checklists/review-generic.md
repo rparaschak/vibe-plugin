@@ -1,3 +1,7 @@
+---
+name: {{COMPONENT}}-review
+description: Review checklist for the {{COMPONENT}} component — the `reviewer` agent resolves it by name and runs its mechanized gate first.
+---
 <!-- vibe-template: templates/checklists/review-generic.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Generic review checklist

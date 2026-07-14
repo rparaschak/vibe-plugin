@@ -3,7 +3,7 @@ flow: {{SLUG}}
 description: {{DESCRIPTION}}
 ---
 <!-- vibe-template: templates/skeletons/flow-skeleton.md v1 | generated 2026-07-13 | edits below this marker are yours -->
-<!-- SLUG = the flow's short name → becomes `/vibe:<slug>`, the generated command's filename, e.g. `strangler-fig`. DESCRIPTION = one line ≤80 words: what the flow does and drives <artifact> until every leaf is `passing` → becomes the command's frontmatter `description`. -->
+<!-- SLUG = the flow's short name → becomes `/<slug>`, the generated command's filename, e.g. `strangler-fig`. DESCRIPTION = one line ≤80 words: what the flow does and drives <artifact> until every leaf is `passing` → becomes the command's frontmatter `description`. -->
 
 This is a **FLOW SPEC**. You (or `/vibe:distill`) fill the `{{SLOTS}}` below; `/vibe:build-flow` compiles it into a lean, linear command through `command-skeleton.md`. Every fixed kernel section of that command — clock-in, the research ladder, entry gate, work loop, team teardown, handoff write-out — is inherited **structurally and cannot be dropped**. You describe only the flow-specific middle: the team, the artifact it drives, and the ordered blocks. build-flow re-derives the whole command from this file on `--regen`, so this file is the single source of truth — no other regen stamp is needed.
 

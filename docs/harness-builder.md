@@ -1,9 +1,9 @@
 # vibe 2.0 — Harness Builder (Design Doc)
 
-**Status:** agreed direction, not yet planned in detail.
+**Status:** executed and shipped as plugin v2.0.0 (2026-07); migration record in `.workspace/migration/ledger.md`.
 **Date:** 2026-07-13
 **Companion doc:** `docs/harness-improvement-plan.md` (research digest from the Learn Harness Engineering course — its P1–P8 improvements fold into this design as *template properties*, see §7).
-**Next step:** produce a migration plan for turning today's plugin into the builder described here.
+**Next step:** done — `docs/migration-plan.md` was produced and executed; only live-project validation (migration Phase 5.1) remains.
 
 ---
 
@@ -35,9 +35,8 @@ plugin (vibe)                              project (generated, in-repo)
 ├── kernel templates (default-on)         .claude/
 │   ├── task-ledger                        ├── skills/    ← stamped kernel + project skills
 │   ├── research-protocol                  ├── agents/    ← generated from agent templates
-│   ├── communication-protocol             └── commands/  ← generated, lean, linear,
-│   ├── orchestration + teardown                            kernel inherited structurally
-│   └── review-protocol
+│   ├── team-protocol                      └── commands/  ← generated, lean, linear,
+│   └── review-protocol                                     kernel inherited structurally
 ├── agent template library (the 9 agents)
 ├── standards & checklists (agent-description standard,
 │   command standard, domain review checklists)
@@ -141,10 +140,12 @@ Once N projects are stamped, a template fix propagates to zero of them until re-
 
 ---
 
-## 9. Open questions for the migration plan
+## 9. Questions resolved during the migration plan
 
-1. **Ordering:** kernel extraction first (merge/dedupe skills into kernel templates) vs. builder command first? Kernel-first is likely — the builder needs finished templates to stamp.
-2. **Preset fidelity:** how much of today's `plan.md`/`implement.md` prose survives into the presets vs. gets rewritten around the task ledger (P1/P2 said: rewrite implement around the state machine, ~174→~80 lines)?
-3. **The two live projects are the validation cases:** tech backend (plan→implement preset) and fullstack app (full product-cycle preset). Migration isn't done until both run on generated harnesses and the hand-copied harness in the monorepo is retired.
-4. **Checklist format** for build-harness: reuse adopt's `.workspace/adoption-checklist.md` resumable pattern or a new schema aligned with the task ledger?
-5. **What stays plugin-resident at runtime** (if anything): possibly only `build-harness`, `build-flow`, `distill` — everything else executes from the project's own files.
+These were open questions when this doc was written; `docs/migration-plan.md` §0 resolved each before execution:
+
+1. **Ordering:** kernel extraction first (merge/dedupe skills into kernel templates) vs. builder command first? Kernel-first is likely — the builder needs finished templates to stamp. → **Resolved:** kernel-first — Phases 1–3 built the material, Phase 4 the machine, Phase 5 validated, Phase 6 deleted.
+2. **Preset fidelity:** how much of today's `plan.md`/`implement.md` prose survives into the presets vs. gets rewritten around the task ledger (P1/P2 said: rewrite implement around the state machine, ~174→~80 lines)? → **Resolved:** rewrite, don't port — `implement` rewritten around the task-ledger state machine (≤80 lines), `plan` kept its skeleton with the Tasks section replaced by the ledger schema, `spec` survived mostly intact, `feature` was not ported (the fullstack preset covers its use case).
+3. **The two live projects are the validation cases:** tech backend (plan→implement preset) and fullstack app (full product-cycle preset). Migration isn't done until both run on generated harnesses and the hand-copied harness in the monorepo is retired. → **Resolved:** confirmed as the validation gate — migration was done only once both ran real work on generated harnesses and the hand-copied monorepo harness was retired.
+4. **Checklist format** for build-harness: reuse adopt's `.workspace/adoption-checklist.md` resumable pattern or a new schema aligned with the task ledger? → **Resolved:** task-ledger schema, not adopt's format — `.workspace/harness/checklist.md` uses the same leaf schema as the ledger (`behavior`/`verification`/`state`/`evidence`, closed enum).
+5. **What stays plugin-resident at runtime** (if anything): possibly only `build-harness`, `build-flow`, `distill` — everything else executes from the project's own files. → **Resolved:** only `/vibe:build-harness`, `/vibe:build-flow`, `/vibe:distill`; everything else executes from the project's own `.claude/`.

@@ -20,7 +20,7 @@ the plan at `.workspace/plans/<yymmdd-slug>/plan.md`
 
 <!-- FILL END -->
 <!-- OPT_OUTS rationale (not emitted): plan builds no code → `Clean-state exit gate`; the plan is
-     left for the user to review before /vibe:implement → `commit` (the user commits after review). -->
+     left for the user to review before /implement → `commit` (the user commits after review). -->
 
 
 <!-- FLOW: injected verbatim into command-skeleton.md's {{FLOW}} slot -->
@@ -29,13 +29,13 @@ the plan at `.workspace/plans/<yymmdd-slug>/plan.md`
 codebase-researcher, architect, critic. No product-manager: behaviors are locked in the spec; a product/behavior question the spec can't settle → relay to the user via `AskUserQuestion`, never guessed — this preset's plan never drafts or edits behaviors; they are the spec's, referenced by B-id.
 
 ## Plan artifact & shape
-- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `vibe-task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `/vibe:implement` archives, at Implemented, so this command never does.
+- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `vibe-task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `/implement` archives, at Implemented, so this command never does.
 - Plan is the HOW, not the WHAT — Spec and plan are separate documents. This plan references behaviors by B-id; it never restates them.
 - Sized for ONE team in one pass (~3–5 engineering deliverables per stack). This plan covers ALL of its spec's B-ids (the spec is sized to exactly one plan). Each spec feeds exactly one plan; cross-plan `Depends on` comes from the specs' own `Depends on` edges. Overflow within a single plan → the spec under-decomposed; relay to the user (decomposition is the spec's job, never this command's).
 - Planning learnings, if any, land in the plan's Decision Log — no separate learnings file this phase.
 
 ## Blocks (design phases, walked in the skeleton's work loop)
-> Skeleton leaf-loop maps here to design phases — a block "closes" when its gate passes, not by a ledger leaf reaching `passing`; Tasks authored this run stay `not_started` for /vibe:implement, and resume point = first design block not yet closed.
+Blocks here are design phases: a block closes when its gate passes, not by a ledger leaf reaching `passing`. Tasks authored this run stay `not_started` for /implement; on resume, continue from the first design block not yet closed.
 First: read `.workspace/constitution.md`. The spec's dir already exists — copy the stamped plan template in as `plan.md` and fill its header (`Status: Draft`, `Depends on` from the spec's edges, input).
 1. **Resolve the spec + behaviors** — resolve WHICH spec (its dir from the plan target / `$ARGUMENTS`). The spec's Status MUST be `Ready for Plan` — if not, andon to the user (never build on an unlocked spec). Read the spec's Behaviors and record the B-ids THIS plan delivers (its spec's full local B-set); behaviors come FROM the spec by B-id — never restated, never invented. The spec's `## UX structure` present → sets FE-bearing for block 4.
 2. **Technical research** — the codebase-researcher fills `## Current State`, every claim cited `file:line`. The lead reads only the done-report, never the full research.

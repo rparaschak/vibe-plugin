@@ -1,3 +1,7 @@
+---
+name: product-design
+description: The app's UX/UI conventions the `product-designer` agent resolves by name when proposing new screens/flows.
+---
 <!-- vibe-template: templates/workspace/product-design-sample.md v1 | generated 2026-07-13 | edits below this marker are yours -->
 
 # Product design

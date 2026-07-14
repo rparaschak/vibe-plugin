@@ -22,7 +22,7 @@ skills: [vibe-team-protocol, vibe-research-protocol]
 Read the brief, then read the named artifact in full: it names the artifact and the lens-set. Critique against what the team-lead hands you and the original request (in your brief / spec Problem).
 
 - **Product brief** → Behaviors (+ Problem / Out of Scope / Assumptions); run the Product lenses; runs before UX/architecture exist.
-- **Architecture brief** → Architecture + Data model + Tasks + Test behaviors against the locked Behaviors; run the Architecture lenses; runs before `/vibe:implement`.
+- **Architecture brief** → Architecture + Data model + Tasks + Test behaviors against the locked Behaviors; run the Architecture lenses; runs before `/implement`.
 
 Adversarial. Assume the draft is plausible but wrong somewhere. Your value is the gap nobody noticed, not agreement. A draft you can't fault is rare — look harder before replying "no findings".
 
