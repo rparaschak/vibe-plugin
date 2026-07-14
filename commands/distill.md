@@ -1,5 +1,5 @@
 ---
-description: Run the learning flywheel inside a stamped vibe project — sweep the accumulated raw learnings, verify staleness via a researcher dispatch, route each survivor to the strongest rung of the promotion ladder that fits (mechanize → skill → constitution → plugin-template promotion → keep → retire), propose concrete diffs, gate every mutation on approval, apply, and prune. Run after every ~2–3 implemented plans, or when /vibe:implement nudges.
+description: Run the learning flywheel inside a stamped vibe project — sweep the accumulated raw learnings, verify staleness via a researcher dispatch, route each survivor to the strongest rung of the promotion ladder that fits (mechanize → skill → constitution → plugin-template promotion → keep → retire), propose concrete diffs, gate every mutation on approval, apply, and prune. Run after every ~2–3 implemented plans, or when your project's implement command nudges.
 ---
 <!-- vibe-template: commands/distill v1 | generated 2026-07-14 | edits below this marker are yours -->
 <!-- Plugin-entry command: hand-authored, runs from the plugin against a stamped consuming project; NOT stamped from command-skeleton.md. -->

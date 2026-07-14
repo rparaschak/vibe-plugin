@@ -17,7 +17,7 @@ In Claude Code, add this repo as a plugin marketplace, then install the plugin:
 /plugin install vibe@vibe
 ```
 
-That registers the `/vibe:*` commands (three current ones; the deprecated v1 commands still ship pending removal — see the legacy note below). (Or run `/plugin`, browse to the **vibe** marketplace, and install from the menu.) Installing from a local clone instead of GitHub? Point the marketplace at the path: `/plugin marketplace add /path/to/vibe-plugin`.
+That registers the three `/vibe:*` commands. (Or run `/plugin`, browse to the **vibe** marketplace, and install from the menu.) Installing from a local clone instead of GitHub? Point the marketplace at the path: `/plugin marketplace add /path/to/vibe-plugin`.
 
 ## Quick start
 
@@ -68,7 +68,7 @@ Each stamped project diverges freely afterward and carries none of the other's e
 ## Repo layout
 
 ```
-commands/           the 3 plugin commands: build-harness, build-flow, distill (+ deprecated v1 files pending removal)
+commands/           the 3 plugin commands: build-harness, build-flow, distill
 templates/kernel/   the 4 kernel skills stamped into every harness
 templates/agents/   9 agent role templates (architect, critic, engineer, reviewer, …)
 templates/checklists/  review checklists: backend / frontend / generic
@@ -79,7 +79,3 @@ presets/            plan-implement, spec-plan-implement
 standards/          agent, command, and composition standards the builder audits against
 docs/               design docs (harness-builder.md is authoritative)
 ```
-
-## Legacy v1 note
-
-The v1 runtime commands (`/vibe:adopt`, `/vibe:spec`, `/vibe:plan`, `/vibe:feature`, `/vibe:implement`) and the `skills/` and `workspace-starter/` directories are **deprecated**. They remain in the repo only until removal after live-project validation. Do not use them for new projects — start with `/vibe:build-harness`.
