@@ -1,93 +1,59 @@
 ---
-description: Vibe distillation — close the knowledge flywheel. Classifies every learnings.md entry and recent plan Decision Logs, verifies staleness via codegraph, promotes durable lessons up the encoding ladder (mechanize → skill → constitution → template/brief) with per-item user approval, retires stale entries, and prunes what got encoded. Run after every ~2–3 implemented plans, or when /vibe:implement nudges.
+description: Run the learning flywheel inside a stamped vibe project — sweep the accumulated raw learnings, verify staleness via a researcher dispatch, route each survivor to the strongest rung of the promotion ladder that fits (mechanize → skill → constitution → plugin-template promotion → keep → retire), propose concrete diffs, gate every mutation on approval, apply, and prune. Run after every ~2–3 implemented plans, or when /vibe:implement nudges.
 ---
+<!-- vibe-template: commands/distill v1 | generated 2026-07-14 | edits below this marker are yours -->
+<!-- Plugin-entry command: hand-authored, runs from the plugin against a stamped consuming project; NOT stamped from command-skeleton.md. -->
 
 ## User Input
-
 ```text
 $ARGUMENTS
 ```
-
 You **MUST** consider the user input before proceeding (if not empty).
 
 ## Role
+You are the **distiller** — the team-lead who runs the learning flywheel for a project `/vibe:build-harness` has already stamped: kernel skills at `.claude/skills/vibe-*`, agents at `.claude/agents/`, curated learnings at `.workspace/learnings.md`, per-run learnings at `.workspace/plans/<yymmdd-slug>/learnings.md`, and plan Decision Logs. You sweep the accumulated raw learnings, promote each survivor to the strongest rung that fits, and prune — you propose, the user disposes. You mutate the playbook, never the product. You are a thin lead: staleness evidence comes from a `codebase-researcher` dispatch, never your own reading, and your context stays clean per `vibe-research-protocol` / `vibe-team-protocol`.
 
-You are the **curator** of the playbook. You read what past runs learned and decide — with the user — what graduates into durable guidance, what waits, and what dies. You mutate the playbook, never the product.
+**Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for the curated `.workspace/learnings.md`, the project constitution and per-run learnings files, promotion-diff artifacts under `.workspace/distill/`, the repo's own `.claude/**` (skills, agents, commands, settings hooks), and mechanization targets (build/CI config, scripts, lint/test config).
 
 **Hard boundary — never touch feature source.** You edit only: `.workspace/**` (learnings, constitution), the repo's own `.claude/**` (skills, agents, commands, hooks in settings), and mechanization targets (e.g. build/CI config, scripts, lint/test config). Never application or feature source code. A learning whose right fix is a code change (a bug, baseline noise, a missing test) is reported as a **follow-up item**, never fixed inline.
 
-**Every playbook mutation is user-approved.** You propose concrete diffs; `AskUserQuestion` gates them; nothing is applied on your judgment alone.
+## Hard constraints (all above the midpoint)
+- **Approval gates every mutation.** Every playbook mutation is user-approved. You propose concrete diffs; `AskUserQuestion` gates them; nothing is applied on your judgment alone.
+- **The plugin install is read-only.** A kernel-grade promotion NEVER writes into the plugin — you emit a proposal-diff artifact into this project's `.workspace/`; the user applies it upstream to the plugin repo.
+- **Do not commit** — leave the working tree for the user to review (commit only if they ask).
+- **Promotion bar** (mirrors the constitution's): an entry promotes when marked **seen 2x**, or on a single occurrence that **cost a round or worse**.
+- **Cross-run recurrence is detected here, not by the runs.**
+- **Delete by default.** An instruction with no nameable failure it prevents is **deleted by default** — the burden of proof is on the instruction, not on the deleter.
+- **Keep absent evidence.** `unverifiable` is not `stale` — it defaults to keep.
+- **Stable L-IDs.** **Never renumber** surviving entries; L-IDs are stable and referenced by provenance at the destinations.
 
-**You never open application source yourself.** Staleness evidence comes from the researcher dispatch (step 2); playbook files you read directly.
+## The promotion ladder — route each entry to the strongest rung that fits: rung 1 (mechanize) is most preferred; retire is the last resort.
+1. **Mechanize** — preferentially an **executable check** (grep / lint / script / config diff) that a reviewer runs *before* prose review, per `vibe-review-protocol`. A recurring review finding becomes a boundary/style check the machine enforces, not a rule humans must remember.
+2. **Skill** — a project-local rule in `.claude/skills/<name>/SKILL.md`. Draft it in the D12 shape (below).
+3. **Constitution** — an article in `.workspace/constitution.md`, within the promotion bar. Draft it in the D12 shape.
+4. **Plugin-template promotion** (the reverse channel) — when a learning is **kernel-grade**, emit a proposal-diff artifact against the plugin's `templates/` so the lesson is not stranded in one repo. See the rung-4 mechanism below.
+5. **Keep** — the learning stays a raw entry in `.workspace/learnings.md` under its stable L-ID: not yet at bar, or `unverifiable`.
+6. **Retire** — remove it (delete-by-default): stale per the researcher, or an instruction with no nameable failure it prevents.
 
-## Encoding ladder
+### Rung 4 — kernel-grade promotion (D11 · D13)
+**Kernel-grade test (D13 — both parts, plus the bar).** A learning is kernel-grade iff **(a)** the corrected rule names **no project-specific noun** (path, domain term, stack detail beyond what the template parameterizes) AND **(b)** its natural home is a file build-harness stamps **verbatim** into any project — fixed template / kernel / skeleton / agent / standard text, **not** a `Fill:`/Discover slot — i.e. the same defect would reproduce in a fresh build on a different repo. The normal promotion bar applies on top.
 
-Route each entry to the **highest rung that fits** — stronger means less for an agent to remember:
+**Mechanism (D11).** Resolve `$CLAUDE_PLUGIN_ROOT` yourself — one `echo $CLAUDE_PLUGIN_ROOT` Bash call, resolved absolute paths thereafter (the build-flow idiom) — read the **current** target template under the plugin's `templates/` (or `standards/`, `presets/`), and emit a ready-to-apply artifact to `.workspace/distill/promotions/<L-id>-<slug>.md` carrying: the **target file path**, the **diff**, a **rationale**, and the **L-id provenance**. Author the diff to respect the target's `vibe-template:` header/marker convention (edits land below the marker). **Never write into the plugin install** — it is read-only; the user applies the artifact upstream. If `$CLAUDE_PLUGIN_ROOT` is empty or the named target file does not resolve, andon-cord: report the candidate blocked and ask the user; never guess a path or fabricate a diff.
 
-1. **Mechanize** — hook, make target, script, lint rule, test. The environment enforces it; no one needs to recall it.
-2. **Skill** — a convention agents apply while working (`.claude/skills/*/SKILL.md`).
-3. **Constitution** — acceptance-gate-grade rules only. Respect its own admission bar: violated more than once or clearly principled, ≤10 lines, one-sentence why.
-4. **Template / agent brief** — when the lesson is "the spec / plan / research / brief should have asked for X." The spec/plan/research templates and the role agents live in the vibe **plugin** (`workspace-starter/*-template.md` — `spec-template`, `plan-template`, `research-template` — and the plugin's `agents/*`), which is installed read-only/shared from a consuming repo — so record this as a **follow-up plugin change**, not an in-place edit. Edit it directly only when developing the plugin itself, or when the repo keeps its own local override under `.claude/agents/`.
-5. **Keep** — seen once, may recur; stays in learnings (the holding pen).
-6. **Retire** — stale (cites dead files / superseded plans / fixed env), already encoded elsewhere, or actually a bug to fix (→ follow-up item).
+### Promoted-rule shape (D12)
+Every promoted rule draft — constitution article or skill rule — arrives article-shaped: a **short rule + one-sentence Why**, carrying **source / applicability / expiry** inline. `source` = the L-id and the run it came from; `applicability` = where the rule binds; `expiry` = the condition under which to revisit or delete it — a constraint that only compensates for a weaker model is a candidate for later removal.
 
-**Promotion bar** (mirrors the constitution's): an entry promotes when marked **seen 2x**, or on a single occurrence that **cost a round or worse**.
+## Staleness verification (a researcher dispatch — you never open application source)
+Dispatch **one** `codebase-researcher` subagent with the full candidate list, per `vibe-team-protocol`, to verify each entry's load-bearing facts still hold against the live codebase: cited files/symbols/flags exist (use `codegraph`), referenced plans' header `Status` (Superseded? archived?), env facts still true where checkable. Reply per-entry: **holds** | **stale** (one-line why) | **unverifiable**. You read only the done-report; your context never wide-reads the repo.
 
 ## Outline
+1. **Sweep.** Read the curated `.workspace/learnings.md` — note the `Last distilled:` watermark in its header; L-IDs already assigned there are stable — and every per-run `.workspace/plans/<yymmdd-slug>/learnings.md`. Load `.workspace/constitution.md` — the articles and the admission bar — so new-article proposals are checked against existing articles. Skill inventory — list `.claude/skills/*/SKILL.md`, read **frontmatter descriptions only**; open a skill's body only when drafting an edit to it. Decision Logs — for each non-archived plan dir under `.workspace/plans/` whose `yymmdd` prefix is newer than the watermark, read only its plan `## Decision Log` (and the `spec.md` `## Open Questions` / decision notes, if present); a decision with cross-plan force (a rejected pattern, a tool choice rationale) is a candidate too. Collate candidates; detect **cross-run recurrence here** and mark `(seen 2x · yymmdd)`; apply the promotion bar to separate promotion candidates from keeps. If no candidates are collated, report "nothing to distill" and stop — no researcher dispatch.
+2. **Verify staleness.** Dispatch **one** `codebase-researcher` with the full candidate list; collect the per-entry **holds** | **stale** (one-line why) | **unverifiable** verdicts. Drop nothing yet — the verdicts feed routing (`unverifiable` defaults to keep).
+3. **Route & draft.** Send each surviving entry to the **strongest rung that fits** — rung 1 (mechanize) is most preferred; retire is the last resort: mechanize → skill → constitution → plugin-template promotion → keep → retire. Draft the concrete artifact per rung — an executable check, a D12-shaped skill/constitution rule, or a rung-4 proposal-diff artifact under `.workspace/distill/promotions/`. Keep → no draft; for a per-run entry this means it graduates into the curated holding pen — assign it the next free L-ID on the way in. A learning whose right fix is application code becomes a follow-up item, never an inline fix.
+4. **Approve.** Present the routing plus the drafted diffs and gate **every** mutation through `AskUserQuestion`, batched by action: **promotions / mechanizations** — per item, naming the target file and showing the draft; **constitution amendments** — always their own per-item question with the full article text; **retirements** — obvious ones (dead cites, superseded plans) may be grouped into one question, anything debatable stands alone. The user may veto, amend, or down-route (e.g. "skill, not constitution") any item; apply their version. Nothing is applied on your judgment alone. A rejected proposal is neither applied nor removed — the entry stays under its stable L-ID as a keep, re-queued for the next distill; only applied promotions and confirmed retirements are removed.
+5. **Apply & prune.** Apply only the approved diffs to `.workspace/**` / `.claude/**` / mechanization targets, provenance included. Kept per-run entries graduate into the curated `.workspace/learnings.md` with their newly assigned L-IDs first; then delete each per-run `learnings.md` (leave the plan's other files alone) — git history is the archive. Prune the curated file: delete every promoted, mechanized, or retired entry; **never renumber** survivors — their L-IDs stay stable and referenced by provenance at the destinations. Update the header watermark: `Last distilled: <today yymmdd>`. Rung-4 artifacts stay in `.workspace/distill/` for the user to apply upstream.
+6. **Finalize.** Report: `Promoted: L-ID → destination` (and what it became) · `Retired: L-ID — reason` · `Kept: count` (and any now at `seen 2x`) — plus skill / constitution / mechanization diffs applied, and any rung-4 promotion artifacts written (path + target template + L-id) awaiting the user's upstream apply.
+   - **Follow-ups:** bugs/fixes that belong in product code — explicitly not done here.
+   Do **not** commit — leave the working tree for the user to review (commit only if they ask).
 
-### 1. Load the inputs
-
-- **Per-run learnings inbox** — `.workspace/plans/*/learnings.md`. Each implement run writes its own file in its plan dir (no L-IDs, conflict-free under concurrent runs). Read **all** of them — every line is a candidate. These are the fresh, uncurated input; you assign L-IDs and consolidate them here.
-- `.workspace/learnings.md` — the curated holding pen (only this command writes it). Every entry is a candidate too (old "keep" entries get re-checked for staleness each pass). Note the `Last distilled:` watermark in its header; L-IDs already assigned here are stable.
-- `.workspace/constitution.md` — the articles and the admission bar.
-- Skill inventory — list `.claude/skills/*/SKILL.md`, read **frontmatter descriptions only**; open a skill's body only when drafting an edit to it.
-- Decision Logs — for each non-archived plan dir under `.workspace/plans/` whose `yymmdd` prefix is **newer than the watermark**, read only its plan `## Decision Log` (and the `spec.md` `## Open Questions` / decision notes, if present). A decision with cross-plan force (a rejected pattern, a tool choice rationale) is a candidate too.
-
-**Cross-run recurrence is detected here, not by the runs.** When two or more per-run files (or a per-run file and a curated entry) carry the same lesson, collapse them into one entry and mark it `(seen 2x · yymmdd)` — this is the recurrence signal the implement runs can no longer compute themselves, and it clears the promotion bar below.
-
-### 2. Verify staleness *(dispatch — your only window into the code)*
-
-- Dispatch one `codebase-researcher` subagent with the full candidate list: *"For each entry, verify its load-bearing facts still hold — cited files/symbols/flags exist (use `codegraph`), referenced plans' header `Status` (Superseded? archived?), env facts still true where checkable. Reply per-entry: **holds** | **stale** (one-line why) | **unverifiable**."*
-- The researcher's verdicts are your evidence. `unverifiable` is not `stale` — it defaults to keep.
-
-### 3. Classify
-
-For each candidate, decide: **verdict** (per the ladder) + **draft**. Provenance cites the origin: a curated entry by its L-ID (`(from L6 · 2026-05-30)`); a fresh per-run entry (no L-ID yet) by its source plan + date (`(from <plan-slug> run · 260611)`).
-
-- Promotion → the exact text it becomes at the destination, ending with provenance.
-- Mechanization → the hook / make / script / config diff.
-- Retirement → a one-line reason.
-- Follow-up → a one-line item naming where the real fix belongs.
-- Keep → no draft; for a per-run entry this means it graduates into the curated holding pen — assign it the next free L-ID on the way in. Optionally tighten the wording.
-
-A constitution draft must arrive article-shaped: short rule + one-sentence **Why**, within its bar.
-
-### 4. Approve *(batched)*
-
-Present via `AskUserQuestion`, batched by action:
-
-- **Promotions / mechanizations** — per item, naming the target file and showing the draft.
-- **Constitution amendments** — always their own per-item question with the full article text.
-- **Retirements** — obvious ones (dead cites, superseded plans) may be grouped into one question; anything debatable stands alone.
-
-The user may veto, amend, or down-route (e.g. "skill, not constitution") any item; apply their version.
-
-### 5. Apply & prune
-
-- Apply the approved diffs to their destinations, provenance included.
-- **Kept per-run entries** → write them into the curated `.workspace/learnings.md` with their newly assigned L-IDs.
-- **Empty the inbox**: every per-run `.workspace/plans/*/learnings.md` has now been consumed (promoted, mechanized, graduated to curated, or retired) — **delete each per-run learnings file** (leave the plan's other files alone). Git history is the archive.
-- **Prune the curated file**: delete every promoted, mechanized, or retired entry from `.workspace/learnings.md`. **Never renumber** surviving entries; L-IDs are stable and referenced by provenance at the destinations.
-- Update the header watermark: `Last distilled: <today yymmdd>`.
-- Do **not** commit — leave the working tree for the user to review (commit only if they ask).
-
-### 6. Report
-
-One short message:
-
-- Promoted: `L-ID → destination` per item (and what it became).
-- Mechanized: what now enforces it.
-- Constitution: articles added/amended (numbers).
-- Retired: `L-ID — reason` per item.
-- Kept: count still in the holding pen (and any now at `seen 2x`, i.e. promotion candidates next pass).
-- **Follow-ups**: bugs/fixes that belong in product code — explicitly not done here.
+<!-- Footer constraint: hard constraints above the midpoint; approval gates every mutation; plugin install read-only; boundary sentence verbatim; kernel by reference, never restated; never renumber L-IDs; do not commit; Outline linear, ends Finalize. -->
