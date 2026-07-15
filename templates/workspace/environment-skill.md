@@ -18,7 +18,7 @@ Run this before any test that needs infra or the app. It is **idempotent** (safe
 ```
 {{ENV_UP_PATH}}
 ```
-<!-- Discover: the repo-relative path env-up.sh was written to. e.g. .claude/scripts/env-up.sh -->
+<!-- Discover: the repo-relative path env-up.sh was written to. e.g. .claude/scripts/env-up.sh or .grok/scripts/env-up.sh -->
 - App URL (what a browser opens): {{APP_URL}} <!-- Discover: the base URL a browser opens, from env-up's wait_http checks. e.g. http://127.0.0.1:8080 -->
 
 ## Lint & build
@@ -35,7 +35,7 @@ One entry point for every test layer. Pass a layer and, optionally, a single fil
 ```
 {{TEST_RUN_PATH}} [unit|integration|e2e|all] [file-or-args…]
 ```
-<!-- Discover: the repo-relative path test-run.sh was written to, and which layer names actually resolve to a real command (others are `:`). e.g. .claude/scripts/test-run.sh integration -->
+<!-- Discover: the repo-relative path test-run.sh was written to, and which layer names actually resolve to a real command (others are `:`). e.g. .claude/scripts/test-run.sh integration or .grok/scripts/test-run.sh integration -->
 
 ## Which verifications a change triggers
 <!-- Discover: is this a monorepo / are there dependent clients? Trace whether one component consumes another's contracts (generated clients, shared schemas). Record the decision logic: which change scope runs which layers, and why a cross-cutting change must run all. -->

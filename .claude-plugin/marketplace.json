@@ -2,6 +2,6 @@
   "name": "vibe",
   "owner": { "name": "Roman Paraschak" },
   "plugins": [
-    { "name": "vibe", "source": "./", "description": "Harness builder — generates a self-contained, project-specific harness into your repo's own .claude/" }
+    { "name": "vibe", "source": "./", "description": "Harness builder — generates a self-contained, project-specific harness into your repo's chosen host root (.claude/ or .grok/)" }
   ]
 }

@@ -21,7 +21,7 @@ You design ONE feature's UX and write it into `spec.md`'s `## UX structure`, ite
 | Team protocol | `vibe-team-protocol` skill | Done-report format, andon-cord escalation |
 | Product design | `product-design` skill | The app's UX/UI conventions — design system, component library, layout/interaction patterns. **Project-supplied; resolve by name.** |
 | Research protocol | `vibe-research-protocol` skill | How to learn the UI without sweeping — start at `research.md`, then climb the ladder |
-| Spec template | path in your brief (stamped into this repo's `.claude/templates/`) | The exact shape of the `## UX structure` section you fill — self-documenting; follow its inline instructions, don't restate them here |
+| Spec template | path in your brief (stamped into this repo's harness `templates/` under `.claude/` or `.grok/`) | The exact shape of the `## UX structure` section you fill — self-documenting; follow its inline instructions, don't restate them here |
 
 ## Workflow
 

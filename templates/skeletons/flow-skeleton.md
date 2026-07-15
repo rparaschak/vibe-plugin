@@ -8,7 +8,7 @@ description: {{DESCRIPTION}}
 This is a **FLOW SPEC**. You (or `/vibe:distill`) fill the `{{SLOTS}}` below; `/vibe:build-flow` compiles it into a lean, linear command through `command-skeleton.md`. Every fixed kernel section of that command — clock-in, the research ladder, entry gate, work loop, team teardown, handoff write-out — is inherited **structurally and cannot be dropped**. You describe only the flow-specific middle: the team, the artifact it drives, and the ordered blocks. build-flow re-derives the whole command from this file on `--regen`, so this file is the single source of truth — no other regen stamp is needed.
 
 ## Team
-<!-- Fill: the agent roles this flow dispatches, comma-separated. Every role MUST resolve to an already-stamped `.claude/agents/<role>.md` — build-flow stamps no agents; a missing role means build the harness (or the agent) first. Use exact template names. Pick from: architect, critic, engineer, test-engineer, reviewer, qa-engineer, product-manager, product-designer, codebase-researcher. -->
+<!-- Fill: the agent roles this flow dispatches, comma-separated. Every role MUST resolve to an already-stamped HARNESS_ROOT/agents/<role>.md (HARNESS_ROOT is .claude or .grok) — build-flow stamps no agents; a missing role means build the harness (or the agent) first. Use exact template names. Pick from: architect, critic, engineer, test-engineer, reviewer, qa-engineer, product-manager, product-designer, codebase-researcher. -->
 {{TEAM}}
 <!-- e.g. engineer, test-engineer, reviewer -->
 <!-- Optional: append ` · worktree` to run each block in its own git worktree; omit for in-place. `vibe-team-protocol` owns the mechanics. -->
@@ -36,4 +36,4 @@ This is a **FLOW SPEC**. You (or `/vibe:distill`) fill the `{{SLOTS}}` below; `/
 {{OPT_OUTS}}
 <!-- e.g. (blank) — or: Clean-state exit gate -->
 
-<!-- build-flow, compiling this spec: DESCRIPTION → command `description`; TEAM → agent roles resolved to existing `.claude/agents/<role>.md` (build-flow stamps no agents) + {{ROLE_SUMMARY}}; ARTIFACT → the Role boundary's <named artifacts> + {{ROLE_SUMMARY}}; BLOCKS → the {{FLOW}} slot (ordered blocks, per-block roster, gate/checklist lens, fix-routing); OPT_OUTS → the command's `opt-out:` line; worktree flag → Role paragraph note; PRESET = empty (regen stamp's `preset=` left blank), FLOW_SPEC = this file's path → the command's regen stamp. -->
+<!-- build-flow, compiling this spec: DESCRIPTION → command `description`; TEAM → agent roles resolved to existing HARNESS_ROOT/agents/<role>.md (build-flow stamps no agents) + {{ROLE_SUMMARY}}; ARTIFACT → the Role boundary's <named artifacts> + {{ROLE_SUMMARY}}; BLOCKS → the {{FLOW}} slot (ordered blocks, per-block roster, gate/checklist lens, fix-routing); OPT_OUTS → the command's `opt-out:` line; worktree flag → Role paragraph note; PRESET = empty (regen stamp's `preset=` left blank), FLOW_SPEC = this file's path → the command's regen stamp. -->

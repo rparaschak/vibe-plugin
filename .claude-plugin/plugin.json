@@ -1,7 +1,7 @@
 {
   "name": "vibe",
   "version": "2.0.0",
-  "description": "Harness builder: generates a self-contained, project-specific Claude Code harness (kernel skills, agents, domain skills, lean commands) into your repo's own .claude/",
+  "description": "Harness builder: generates a self-contained, project-specific harness (kernel skills, agents, domain skills, lean commands) into your repo's chosen host root (.claude/ or .grok/). Detects host and asks before stamping.",
   "author": { "name": "Roman Paraschak" },
   "keywords": ["harness-builder", "scaffolding", "code-generation", "agents", "orchestration"]
 }

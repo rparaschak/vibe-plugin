@@ -1,6 +1,6 @@
 ---
 name: agent-standard
-description: Quality bar for agent definition files (`.claude/agents/*.md`) — the plugin's own agent templates, the files the builder stamps into projects, and audits of a project's existing agents. Every rule is mechanically checkable.
+description: Quality bar for agent definition files (`HARNESS_ROOT/agents/*.md`, where `HARNESS_ROOT` is `.claude` or `.grok`) — the plugin's own agent templates, the files the builder stamps into projects, and audits of a project's existing agents. Every rule is mechanically checkable.
 ---
 
 <!-- vibe-template: standards/agent-standard v1 | generated 2026-07-13 | edits below this marker are yours -->

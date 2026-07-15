@@ -46,7 +46,7 @@ First: read `.workspace/constitution.md` (note constraining rules). Derive a keb
    - Overflow → the product-manager proposes seams (priority-first, then capability boundary); you put the split to the user via `AskUserQuestion` and record which behaviors land in WHICH SPEC, wired by `Depends on` (an acyclic DAG). Fits in one → no split.
    - Then MATERIALIZE the split — for each spec beyond this one: create its `.workspace/plans/<yymmdd-slug>/` dir, copy the stamped spec template in, move its behaviors over renumbered LOCAL from B-001, fill its header as in First (`Created`, `Status: Draft`, `Depends on`, input = one line naming this decomposition); each is left `Draft` for its own later `/spec` pass (UX, critique, readiness gate).
    - The piece this run carries forward keeps THIS dir and slug; renumber its retained behaviors contiguously from B-001.
-6. **Design UX** (only if the feature is user-facing AND the project's `product-design` skill resolves — checking for a `.claude/skills/<name>/` dir is fine, it isn't app code) — the product-designer writes `spec.md`'s `## UX structure`.
+6. **Design UX** (only if the feature is user-facing AND the project's `product-design` skill resolves — checking for a `.claude/skills/<name>/` dir is fine, it isn't app code; stamp-time W-I rewrites `.claude/` → chosen host root) — the product-designer writes `spec.md`'s `## UX structure`.
    - Skipped for purely technical work — this presence is the FE-bearing flag /plan later reads.
 
 Stub path: when the user wants to park the idea, capture Problem + Open Questions (Behaviors optional) and set `Status: Parked — Stub` — a later full pass finishes it; a stub never proceeds to decomposition or the readiness gate.
