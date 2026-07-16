@@ -19,7 +19,7 @@ the spec at `.workspace/plans/<yymmdd-slug>/spec.md`
 
 <!-- FILL END -->
 <!-- OPT_OUTS rationale (not emitted): the spec builds no code → `Clean-state exit gate`; the spec is
-     left for the user to review before /plan → `commit` (the user commits after review); nothing
+     left for the user to review before {{CMD_PLAN}} → `commit` (the user commits after review); nothing
      archives a spec — it is the artifact the user LOCKS, then feeds forward → `archive`. -->
 
 
@@ -29,7 +29,7 @@ the spec at `.workspace/plans/<yymmdd-slug>/spec.md`
 product-manager, critic; product-designer on-call (UX, conditional); codebase-researcher. Spec is the WHAT, not the HOW — you never draft behaviors or design UX yourself: the product-manager owns Problem/Behaviors/Out of Scope/Assumptions, the product-designer owns `## UX structure`. You stay thin so the full behaviors draft is the product-manager's context, not yours.
 
 ## Spec artifact & shape
-- Drives the spec at `.workspace/plans/<yymmdd-slug>/spec.md` — its Behaviors (B-NNN) — to Status: Ready for Plan. The spec is the artifact you LOCK before any architecture is designed; nothing archives a spec — the user reviews it, then runs /plan.
+- Drives the spec at `.workspace/plans/<yymmdd-slug>/spec.md` — its Behaviors (B-NNN) — to Status: Ready for Plan. The spec is the artifact you LOCK before any architecture is designed; nothing archives a spec — the user reviews it, then runs {{CMD_PLAN}}.
 - Spec is the WHAT, not the HOW — Spec and plan are separate documents. The spec names behaviors; the HOW (data model, architecture, tasks) is the plan's job, referenced by B-id, never restated here.
 - Sized so EACH plan it feeds fits ONE team in one pass (~3–5 engineering deliverables per stack). Work too big does not andon — decomposition is the spec's job: it becomes SEPARATE specs, each its own `.workspace/plans/<yymmdd-slug>/` dir with its own local B-ids, each feeding its own plan, wired by `Depends on` (an acyclic DAG). Fits in one → no split. B-IDs are LOCAL to this spec (B-001).
 - No task ledger this phase and no learnings file — the spec IS the artifact; the Finalize handoff is written to the spec's own `## Handoff` section, per `vibe-task-ledger`.
@@ -44,10 +44,10 @@ First: read `.workspace/constitution.md` (note constraining rules). Derive a keb
 4. **Critique gate** — the critic scores the spec against its Product lens-set (this is the spec's "review" the fixed Role names); reconcile, don't rubber-stamp; cap at 3 revise cycles, then stop and report as-is; any unresolved finding → `## Open Questions`. Then **Lock the behaviors** — nothing downstream (UX, or the plan's architecture) is built against an unvetted behavior.
 5. **Size & decompose** — measure the locked behaviors + research Summary against one team's capacity.
    - Overflow → the product-manager proposes seams (priority-first, then capability boundary); you put the split to the user via `AskUserQuestion` and record which behaviors land in WHICH SPEC, wired by `Depends on` (an acyclic DAG). Fits in one → no split.
-   - Then MATERIALIZE the split — for each spec beyond this one: create its `.workspace/plans/<yymmdd-slug>/` dir, copy the stamped spec template in, move its behaviors over renumbered LOCAL from B-001, fill its header as in First (`Created`, `Status: Draft`, `Depends on`, input = one line naming this decomposition); each is left `Draft` for its own later `/spec` pass (UX, critique, readiness gate).
+   - Then MATERIALIZE the split — for each spec beyond this one: create its `.workspace/plans/<yymmdd-slug>/` dir, copy the stamped spec template in, move its behaviors over renumbered LOCAL from B-001, fill its header as in First (`Created`, `Status: Draft`, `Depends on`, input = one line naming this decomposition); each is left `Draft` for its own later {{CMD_SPEC}} pass (UX, critique, readiness gate).
    - The piece this run carries forward keeps THIS dir and slug; renumber its retained behaviors contiguously from B-001.
 6. **Design UX** (only if the feature is user-facing AND the project's `product-design` skill resolves — checking for a `.claude/skills/<name>/` dir is fine, it isn't app code; stamp-time W-I rewrites `.claude/` → chosen host root) — the product-designer writes `spec.md`'s `## UX structure`.
-   - Skipped for purely technical work — this presence is the FE-bearing flag /plan later reads.
+   - Skipped for purely technical work — this presence is the FE-bearing flag {{CMD_PLAN}} later reads.
 
 Stub path: when the user wants to park the idea, capture Problem + Open Questions (Behaviors optional) and set `Status: Parked — Stub` — a later full pass finishes it; a stub never proceeds to decomposition or the readiness gate.
 

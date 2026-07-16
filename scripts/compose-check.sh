@@ -40,10 +40,12 @@
 #     (`cat -s`) across the whole composed body.
 #   - Placeholder resolution: DESCRIPTION/OPT_OUTS/PRESET/FLOW_SPEC/
 #     ROLE_SUMMARY are "filled from project context at stamp time" (not from
-#     the preset file), and FLOW-embedded ones (e.g. {{PLAN_TEMPLATE_PATH}})
-#     per W-A "still resolve every embedded {{PLACEHOLDER}}". We dummy-fill
-#     every remaining `{{TOKEN}}` generically — real values don't matter for
-#     a budget/placeholder-count regression check.
+#     the preset file), and FLOW-embedded ones (e.g. {{PLAN_TEMPLATE_PATH}},
+#     or {{CMD_PLAN}}/{{CMD_IMPLEMENT}}/{{CMD_SPEC}} resolved by the real
+#     builder from COMMAND_PREFIX) per W-A "still resolve every embedded
+#     {{PLACEHOLDER}}". We dummy-fill every remaining `{{TOKEN}}` generically
+#     — real values don't matter for a budget/placeholder-count regression
+#     check; CMD_* tokens are covered by that same generic fill.
 #
 # Known simplifications (deliberately NOT modeled — none affect pass/fail
 # for the current tree; flagged here for honesty):

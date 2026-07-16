@@ -31,7 +31,7 @@ PM + product designer for specs. Two commands: planning (design + product + tech
 and implementing (per-block reviews, task split).
 ```
 
-**Host root first.** The builder detects whether you're on Claude Code or Grok (and whether a harness already exists under `.claude/` or `.grok/`), then **asks which root to stamp into** before any audit. Pass `--root .grok` / `--host grok` (or `.claude` / `claude`) to skip that gate. Never silently assume Claude when you're on Grok.
+**Host root first.** The builder detects whether you're on Claude Code or Grok (and whether a harness already exists under `.claude/` or `.grok/`), then **asks which root to stamp into** before any audit. Pass `--root .grok` / `--host grok` (or `.claude` / `claude`) to skip that gate. Never silently assume Claude when you're on Grok. Generated project commands default to the `dev` prefix (`/dev:plan`, …); pass `--prefix <slug>` or `--prefix none` to change that.
 
 Then it audits your repo (**read-only scout subagents** — the lead does not wide-read the project), emits a checklist at `.workspace/harness/checklist.md` — the gap analysis **is** the roadmap and your control point — and past the checklist gate **dispatches stamp workers** to write harness files. The team-lead only owns the checklist; it does not stamp agents/skills/commands itself. When it finishes, your repo is self-sufficient: the generated commands and agents run entirely from your own files under the chosen root.
 
@@ -50,7 +50,7 @@ Then it audits your repo (**read-only scout subagents** — the lead does not wi
 Two command namespaces — don't confuse them:
 
 - **`/vibe:*`** (`build-harness`, `build-flow`, `distill`) — the plugin's commands. They build and maintain the harness; they never touch application code.
-- **Your own commands** — once stamped, your repo owns `/plan` and `/implement` (plus `/spec` if you picked the `spec-plan-implement` preset), run unprefixed from `HARNESS_ROOT/commands/`. These are what you run day to day.
+- **Your own commands** — once stamped, namespaced by default under `HARNESS_ROOT/commands/dev/`: **`/dev:plan`**, **`/dev:implement`** (and **`/dev:spec`** for the fullstack preset). Override the slug with `--prefix <slug>`, or disable with `--prefix none` for unprefixed `/plan` / `/implement` (collides with host builtins — e.g. Grok's `/plan` takes priority over a same-named project command).
 
 Re-running `/vibe:build-harness` isn't a rebuild — it's the doctor: it upgrades stamped-and-unmodified sections to match current templates and never overwrites anything you've edited.
 
@@ -66,7 +66,7 @@ Everything lands under your repo's chosen **`HARNESS_ROOT/`** (`.claude` or `.gr
 - **Agents** (`HARNESS_ROOT/agents/`) — the roles you asked for, drawn from the template library, each audited against the agent standard at generation time.
 - **Domain skills & checklists** (`HARNESS_ROOT/skills/`) — one `<component>-architecture`, `<component>-review`, and `<component>-testing` per detected component, plus `environment` and (for UI repos) `product-design`.
 - **Environment scripts** (`HARNESS_ROOT/scripts/`) — self-verifying `env-up.sh` and `test-run.sh`, so agents never improvise build/test commands.
-- **Commands** (`HARNESS_ROOT/commands/`) — lean, linear, per-preset.
+- **Commands** (`HARNESS_ROOT/commands/dev/` by default) — lean, linear, per-preset (`/dev:plan`, `/dev:implement`, …).
 - **Workspace** (`.workspace/`) — a `constitution.md` seed (stamped once, yours to own) and the plans/learnings layout the commands read and write.
 
 ## Presets

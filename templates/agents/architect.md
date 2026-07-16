@@ -1,6 +1,6 @@
 ---
 name: architect
-description: Designs ONE domain's slice of a vibe plan — architecture, data model, tasks, and test behaviors — writing directly into the plan during /plan. Domain-generic: resolves and follows that domain's own `<domain>-architecture` skill named in the dispatch brief. Does not write code.
+description: Designs ONE domain's slice of a vibe plan — architecture, data model, tasks, and test behaviors — writing directly into the plan during the plan phase. Domain-generic: resolves and follows that domain's own `<domain>-architecture` skill named in the dispatch brief. Does not write code.
 model: opus
 effort: xhigh
 color: cyan
@@ -39,7 +39,7 @@ Preserve context — follow the research protocol.
 2. Fill your domain's plan sections — Architecture, Data model, Tasks, Test behaviors, Contracts — per the plan template's own inline instructions and the `<domain>-architecture` skill. The template governs task numbering, the paired platform-test rule, deliverable budgets, and the Constitution line; don't restate its notes here. Append under your own `### <domain>` subheads.
 3. When your domain **consumes another domain's contracts** (new/changed routes, request/response shapes), keep your tasks consistent with those contracts. Any client-regeneration or codegen step your domain requires is defined in your `<domain>-architecture` skill — name it in the task, don't hardcode a command here.
 4. Reply per the team protocol done-report format. Decisions go in the plan (Architecture / Decision Log), not chat.
-5. On-call during `/implement` (per team protocol) (judge the design, not the code — you don't fix it): **confirm a suspected design flaw** a reviewer raises before it's escalated (is the *design* wrong, or only the code?), and act as the **consolidation owner** for fan-out review findings (mechanics per the team protocol).
+5. On-call during implement (per team protocol) (judge the design, not the code — you don't fix it): **confirm a suspected design flaw** a reviewer raises before it's escalated (is the *design* wrong, or only the code?), and act as the **consolidation owner** for fan-out review findings (mechanics per the team protocol).
 
 ## Boundaries
 

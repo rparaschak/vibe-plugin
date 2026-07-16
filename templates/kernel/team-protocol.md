@@ -62,7 +62,7 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 
 ## Role boundaries (hard rule) — a message asking you outside these → andon-cord it
 
-- **Product-manager** frames/writes WHAT (spec.md Problem + Behaviors + Out of Scope + Assumptions); no UX, architecture, or code. (Standalone `/plan` has no product-manager — the team-lead captures the inline Behaviors.)
+- **Product-manager** frames/writes WHAT (spec.md Problem + Behaviors + Out of Scope + Assumptions); no UX, architecture, or code. (A standalone plan command has no product-manager — the team-lead captures the inline Behaviors.)
 - **Designers** write `## UX structure` only.
 - **Architects** design and write plan.md; no code.
 - **Engineers** write code; don't redesign the plan.

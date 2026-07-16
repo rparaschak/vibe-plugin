@@ -8,7 +8,7 @@
 > file however you like; just keep those concepts stated somewhere a plan's Constitution line can cite.
 > Replace the stack-specific wording below (paths, commands, tools) with your project's reality.
 
-Non-negotiable rules for this project. Loaded by every vibe phase. Gated explicitly by `/plan` — any violation must be justified on the plan's `## Architecture` Constitution line (⚠️ + why), otherwise the plan is incomplete.
+Non-negotiable rules for this project. Loaded by every vibe phase. Gated explicitly by the plan command — any violation must be justified on the plan's `## Architecture` Constitution line (⚠️ + why), otherwise the plan is incomplete.
 
 Keep this file small. Add an article only when the rule has been violated more than once or has a clear principled reason.
 

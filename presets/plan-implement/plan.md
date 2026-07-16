@@ -19,7 +19,7 @@ the plan at `.workspace/plans/<yymmdd-slug>/plan.md`
 
 <!-- FILL END -->
 <!-- OPT_OUTS rationale (not emitted): plan builds no code → `Clean-state exit gate`; the plan is
-     left for the user to review before /implement → `commit` (the user commits after review). -->
+     left for the user to review before {{CMD_IMPLEMENT}} → `commit` (the user commits after review). -->
 
 
 <!-- FLOW: injected verbatim into command-skeleton.md's {{FLOW}} slot -->
@@ -28,13 +28,13 @@ the plan at `.workspace/plans/<yymmdd-slug>/plan.md`
 codebase-researcher, architect, critic. No product-manager: this preset's plan is standalone — no spec ever precedes it, so the lead captures the WHAT inline and never drafts a product spec.
 
 ## Plan artifact & shape
-- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `vibe-task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `/implement` archives, at Implemented, so this command never does.
+- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `vibe-task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `{{CMD_IMPLEMENT}}` archives, at Implemented, so this command never does.
 - This plan carries both the WHAT and the HOW — Behaviors (B-NNN) are captured inline in the plan's `## Behaviors` by the lead (block 1); Architecture and Tasks reference them by B-id.
 - Sized for ONE team in one pass (~3–5 engineering deliverables per stack). No concept of parts — overflow → andon to the user (decomposition is a spec's job, and this preset has no spec).
 - Planning learnings, if any, land in the plan's Decision Log — no separate learnings file this phase.
 
 ## Blocks (design phases, walked in the skeleton's work loop)
-Blocks here are design phases: a block closes when its gate passes, not by a ledger leaf reaching `passing`. Tasks authored this run stay `not_started` for /implement; on resume, continue from the first design block not yet closed.
+Blocks here are design phases: a block closes when its gate passes, not by a ledger leaf reaching `passing`. Tasks authored this run stay `not_started` for {{CMD_IMPLEMENT}}; on resume, continue from the first design block not yet closed.
 First: read `.workspace/constitution.md`. Derive a kebab-case slug from the input (2–4 words, action-noun, preserve acronyms); create `.workspace/plans/<yymmdd-slug>/` using today's date and copy the stamped plan template in as `plan.md`, filling its header (`Status: Draft`, `Depends on` prerequisite plan slugs or `—`, input).
 1. **Capture Goal + Behaviors** — the lead writes a lightweight Goal + inline B-NNN into the plan's `## Behaviors` (observable lines for test traceability; no UX, no Out-of-Scope ceremony). A genuine scope ambiguity that would change the build → relay via `AskUserQuestion`, don't guess.
 2. **Technical research** — the codebase-researcher fills `## Current State`, every claim cited `file:line`. The lead reads only the done-report, never the full research.

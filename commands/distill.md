@@ -1,7 +1,7 @@
 ---
 description: Run the learning flywheel inside a stamped vibe project — sweep accumulated raw learnings, verify staleness via a researcher dispatch, promote learnings up the ladder, propose concrete diffs, gate every mutation on approval, apply, and prune. Run after every ~2–3 implemented plans, or when your project's implement command nudges.
 ---
-<!-- vibe-template: commands/distill v1 | generated 2026-07-14 | edits below this marker are yours -->
+<!-- vibe-template: commands/distill v1 | generated 2026-07-16 | edits below this marker are yours -->
 <!-- Plugin-entry command: hand-authored, runs from the plugin against a stamped consuming project; NOT stamped from command-skeleton.md. -->
 
 ## User Input
@@ -18,7 +18,7 @@ You are the **distiller** — the team-lead who runs the learning flywheel for a
 **Hard boundary — never touch feature source.** You edit only: `.workspace/**` (learnings, constitution), the repo's own `HARNESS_ROOT/**` (skills, agents, commands, hooks in settings), and mechanization targets (e.g. build/CI config, scripts, lint/test config). Never application or feature source code. A learning whose right fix is a code change (a bug, baseline noise, a missing test) is reported as a **follow-up item**, never fixed inline.
 
 ## Hard constraints (all above the midpoint)
-- **Resolve `HARNESS_ROOT` first.** Detect from existing harness evidence (`Glob` only) under `.claude` and/or `.grok` (kernel skills or stamped plan/implement/spec commands). Explicit `$ARGUMENTS` `--root`/`--host` wins. If both roots have a harness, or neither does, `AskUserQuestion` before any mutation. No harness → andon-cord: run `/vibe:build-harness` first. Never guess a root.
+- **Resolve `HARNESS_ROOT` first.** Detect from existing harness evidence (`Glob` only) under `.claude` and/or `.grok`: `HARNESS_ROOT/skills/vibe-*` or `HARNESS_ROOT/commands/{plan,implement,spec}.md` or namespaced `HARNESS_ROOT/commands/*/{plan,implement,spec}.md`. Explicit `$ARGUMENTS` `--root`/`--host` wins. If both roots have a harness, or neither does, `AskUserQuestion` before any mutation. No harness → andon-cord: run `/vibe:build-harness` first. Never guess a root.
 - **Approval gates every mutation.** Every playbook mutation is user-approved. You propose concrete diffs; `AskUserQuestion` gates them; nothing is applied on your judgment alone.
 - **The plugin install is read-only.** A kernel-grade promotion NEVER writes into the plugin — you emit a proposal-diff artifact into this project's `.workspace/`; the user applies it upstream to the plugin repo.
 - **Do not commit** — leave the working tree for the user to review (commit only if they ask).

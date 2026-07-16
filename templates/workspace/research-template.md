@@ -7,11 +7,11 @@
 
 <!--
 PRODUCT research: facts about what the feature's area ALREADY DOES, written by `codebase-researcher`
-at the start of /spec and consumed downstream: the team-lead reads ## Summary ONLY; the
-product-manager and the critic read the whole file BEFORE framing/critiquing; /plan workers read
+at the start of the spec phase and consumed downstream: the team-lead reads ## Summary ONLY; the
+product-manager and the critic read the whole file BEFORE framing/critiquing; plan-phase workers read
 it too. The angle is product — what functionality exists, the user-facing surface, the gaps — NOT the
 technical build structure. (Technical/architectural research lives in plan.md's `## Current State`,
-written during /plan — not here.)
+written during the plan phase — not here.)
 
 Mine the behaviour-based tests: the test suite documents what the system already does. Inventory those
 existing behaviors in the same B-NNN-style language so the product-manager frames NEW behaviors as

@@ -1,6 +1,6 @@
 ---
 name: product-manager
-description: Owns a feature's WHAT during /spec — frames the request against `research.md`, then drafts spec.md's Problem, Behaviors (B-NNN), Out of Scope, and Assumptions. Proposes high-leverage framing forks for the team-lead to relay; never asks the user directly. Read-only on code, writes only spec.md. Does not design UX or architecture.
+description: Owns a feature's WHAT during the spec phase — frames the request against `research.md`, then drafts spec.md's Problem, Behaviors (B-NNN), Out of Scope, and Assumptions. Proposes high-leverage framing forks for the team-lead to relay; never asks the user directly. Read-only on code, writes only spec.md. Does not design UX or architecture.
 model: opus
 effort: xhigh
 color: green

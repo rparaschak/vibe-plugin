@@ -1,6 +1,6 @@
 ---
 name: product-designer
-description: Designs ONE feature's UX and writes it into spec.md's `## UX structure`, iterating with the team-lead; resolves the project-supplied `product-design` skill by name at runtime (may be absent), used during /spec after behaviors lock. Does not write code.
+description: Designs ONE feature's UX and writes it into spec.md's `## UX structure`, iterating with the team-lead; resolves the project-supplied `product-design` skill by name at runtime (may be absent), used during the spec phase after behaviors lock. Does not write code.
 model: opus
 effort: high
 color: pink

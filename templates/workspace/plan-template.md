@@ -8,7 +8,7 @@
 
 <!--
 The HOW for one feature: Current State, Data model, Architecture, Tasks, Test behaviors.
-The WHAT — Problem, Behaviors (B-NNN), UX — lives in this dir's spec.md (produced by /spec,
+The WHAT — Problem, Behaviors (B-NNN), UX — lives in this dir's spec.md (produced by the spec command,
 this command's companion). This plan references behaviors by id; it never restates them. Spec and plan
 are SEPARATE documents. (For a purely technical run with no spec, the Behaviors section below is
 filled inline with a lightweight Goal + B-NNN — see its note.)
@@ -68,7 +68,7 @@ every claim cited `file:line`. This is the architects' window into the code — 
 Decisions + the constitution/platform gate. 1 line each: the decision + its driver.
 Name an EXISTING artifact when reuse is load-bearing ("reuse upload-dropzone as-is"); never
 pre-name NEW files/components — the engineer owns naming (plan intent binds, naming is advisory).
-⚠️ = a choice that needs YOUR call before /implement (new tool/library/subsystem, or a
+⚠️ = a choice that needs YOUR call before implement (new tool/library/subsystem, or a
 constitution deviation) — give options + a recommendation. Any ⚠️ left open → Open Questions.
 
 Platform (the constitution's platform/feature split):
@@ -113,10 +113,10 @@ Platform (the constitution's platform/feature split):
 
 - ⚠️ [high-impact technical assumption — confirmed, or flagged unconfirmed]
 
-## Open Questions *(gate — must be "None" before `/implement`)*
+## Open Questions *(gate — must be "None" before implement)*
 
 <!--
-Park anything you can't decide. `/implement` refuses to start if this has entries.
+Park anything you can't decide. The implement command refuses to start if this has entries.
 Format: - **Q-NNN · [question]** — *Asked by*: [agent] · *Context*: [≤2 lines]
 -->
 
@@ -128,7 +128,7 @@ None
 Flat list, sized so ONE team builds this plan in one pass. Order: Platform (T-9xx) → BE (T-0xx) →
 FE (T-1xx). The team builds each block and makes it green before the next; an engineer consuming a prior
 block's contracts runs its domain's codegen/client-regen step (project-supplied) first. This table
-IS the task ledger — the ONLY thing /implement mutates.
+IS the task ledger — the ONLY thing the implement command mutates.
 
 - Each row is a leaf: ONE coherent deliverable sized for a single agent session (a CRUD endpoint group;
   a page WITH its hooks + sub-components). Design detail (pipelines, wiring, copy) lives in Architecture —

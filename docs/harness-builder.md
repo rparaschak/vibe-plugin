@@ -75,7 +75,7 @@ The checklist is persistent state (resumable, reviewable) — same pattern adopt
 
 For ad-hoc, task-shaped needs — strangler-fig refactor, slice extraction, one-off migrations. Generates a lean, linear, project-local flow from the same skeletons with the same structural kernel inheritance. Flows are allowed to be opinionated, specific, and disposable; the kernel is not.
 
-**Presets:** today's `spec`/`plan`/`implement` are demoted from universal commands to **reference presets** the builder instantiates. The backend project stamps plan→implement; the fullstack app stamps spec→plan→implement; each diverges freely afterward. Neither carries the other's edge cases.
+**Presets:** today's `spec`/`plan`/`implement` are demoted from universal commands to **reference presets** the builder instantiates. The backend project stamps plan→implement; the fullstack app stamps spec→plan→implement; each diverges freely afterward. Neither carries the other's edge cases. Generated commands land under `HARNESS_ROOT/commands/<prefix>/` (default prefix `dev` → `/dev:plan`, `/dev:implement`, …; `--prefix none` for unprefixed) so they don't collide with host builtins that share the bare name.
 
 ---
 
