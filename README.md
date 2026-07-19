@@ -6,6 +6,8 @@
 
 The authoritative design is in [`docs/harness-builder.md`](docs/harness-builder.md).
 
+**Terminology (tiers):** an **orchestrator** orchestrates cmux *sessions* (the proposed session tier — design in [`docs/cmux-orchestration.md`](docs/cmux-orchestration.md)); a **team-lead** manages the team *within* a session (the role every stamped command runs as). "Orchestrate" always means the session tier, never the team-lead.
+
 ---
 
 ## Install
@@ -90,5 +92,6 @@ templates/skeletons/   command + flow skeletons (fixed kernel sections)
 templates/workspace/   doc templates + sample skills stamped into a project
 presets/            plan-implement, spec-plan-implement
 standards/          agent, command, and composition standards the builder audits against
-docs/               design docs (harness-builder.md is authoritative)
+docs/               design docs (harness-builder.md is authoritative;
+                    cmux-orchestration.md is the proposed session-tier design)
 ```

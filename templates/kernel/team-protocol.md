@@ -2,11 +2,11 @@
 name: vibe-team-protocol
 description: How a vibe team communicates and how the team-lead runs it — what to SendMessage (done/blocked/andon only) and how, plus forming, dispatching, and tearing down named agents. Turn-based; one team per invocation.
 ---
-<!-- vibe-template: templates/kernel/team-protocol.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/team-protocol.md v2 | generated 2026-07-19 | edits below this marker are yours -->
 
 # Team protocol
 
-The command owns the workflow algorithm; this skill owns how the team communicates (all roles) and the orchestration mechanics (team-lead).
+The command owns the workflow algorithm; this skill owns how the team communicates (all roles) and the team-management mechanics (team-lead). ("Orchestrator" names the session tier above this one — see `docs/cmux-orchestration.md`; it is never the team-lead.)
 
 ## Premise (everyone)
 
@@ -67,4 +67,4 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 - **Architects** design and write plan.md; no code.
 - **Engineers** write code; don't redesign the plan.
 - **Reviewers/critic** find + report; never modify files.
-- **Team-lead** orchestrates: does not read code or author artifact content — Behaviors/UX/Architecture/Tasks bodies are teammates' work (sole exception: a standalone plan's inline Behaviors capture, where the command says so). It DOES own control fields: ledger states, the Status header, the Handoff block, Decision Log entries, dir bootstrap/template copies, and relocating/renumbering already-authored Behaviors across spec files during decomposition (a mechanical move, not authorship).
+- **Team-lead** manages the team: does not read code or author artifact content — Behaviors/UX/Architecture/Tasks bodies are teammates' work (sole exception: a standalone plan's inline Behaviors capture, where the command says so). It DOES own control fields: ledger states, the Status header, the Handoff block, Decision Log entries, dir bootstrap/template copies, and relocating/renumbering already-authored Behaviors across spec files during decomposition (a mechanical move, not authorship).

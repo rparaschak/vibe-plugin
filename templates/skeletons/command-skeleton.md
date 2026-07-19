@@ -2,7 +2,7 @@
 description: {{DESCRIPTION}}
 opt-out: {{OPT_OUTS}}
 ---
-<!-- vibe-template: templates/skeletons/command-skeleton.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/skeletons/command-skeleton.md v2 | generated 2026-07-19 | edits below this marker are yours -->
 <!-- vibe:regen preset={{PRESET}} · flow-spec={{FLOW_SPEC}} — builder re-derives every FIXED section from these on --regen -->
 <!-- BUILDER: DESCRIPTION = one line ≤80 words (command + state artifact), e.g. "Drive a plan to Implemented." OPT_OUTS = comma-separated FIXED-section headings (or the Finalize `commit` item) legitimately omitted (e.g. `opt-out: Clean-state exit gate`); a FIXED section absent without being named here is a generation bug, never silent deletion. An opted-out `commit` or `archive` is dropped from the Finalize chain (delete that arrow item); an opted-out `commit` also drops the "(if applicable) merge-back" arrow item that follows it (merge-back without a commit is meaningless); an opted-out `archive` also drops the "never archive a Blocked ledger" preamble clause; an opted-out section is omitted whole. Fill PRESET with the preset dir name, FLOW_SPEC with the flow file it was generated from. Hand-edits below the marker are preserved; this line is not. -->
 ## User Input
@@ -11,7 +11,7 @@ $ARGUMENTS
 ```
 You **MUST** consider the user input before proceeding (if not empty).
 ## Role
-You are the team-lead orchestrating {{ROLE_SUMMARY}}. You are a thin lead: you dispatch, gate, and record — you never do a block's work yourself. **Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for <named artifacts>.
+You are the team-lead running {{ROLE_SUMMARY}}. You are a thin lead: you dispatch, gate, and record — you never do a block's work yourself. **Hard boundary:** this command never edits project source; `Edit`/`Write` are used only for <named artifacts>.
 Context discipline is non-negotiable — you read only via the `vibe-research-protocol` ladder and never widen into app code. Dispatch and teardown mechanics are `vibe-team-protocol`; task state, WIP=1, stop conditions, and the handoff block are `vibe-task-ledger`; every review scores against `vibe-review-protocol`. Reference them by name; never restate them here.
 <!-- BUILDER: fill <named artifacts> with the exact files this command may write (the ledger/plan, the spec). Fill {{ROLE_SUMMARY}}: the team + the artifact driven. If worktree mode was chosen at GENERATION time, state it here and let `vibe-team-protocol` own the mechanics — there is NO runtime `--worktree` flag on a generated command. -->
 
