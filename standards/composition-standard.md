@@ -1,13 +1,13 @@
 ---
 name: composition-standard
-description: Determinism contract for composing a project command from `templates/skeletons/command-skeleton.md` plus a preset or flow-spec. Obeyed by any builder command that stamps commands this way (currently build-harness). Every rule is mechanically checkable.
+description: Determinism contract for composing a project command from a skeleton (`command-skeleton.md` or `loop-command-skeleton.md`) plus a preset, flow-spec, or loop-spec. Obeyed by any builder command that stamps commands this way (currently build-harness, build-flow, build-loop). Every rule is mechanically checkable.
 ---
 
-<!-- vibe-template: standards/composition-standard v2 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: standards/composition-standard v3 | generated 2026-07-20 | edits below this marker are yours -->
 
 # Composition Standard
 
-Obeyed by: any builder command that composes a project command from `templates/skeletons/command-skeleton.md` plus a preset or flow-spec — currently `build-harness`; future builders inherit this contract by reference, never by restating it.
+Obeyed by: any builder command that composes a project command from a skeleton plus a preset, flow-spec, or loop-spec — currently `build-harness`, `build-flow`, `build-loop`; future builders inherit this contract by reference, never by restating it.
 
 The mandate: two conforming builders, given the same skeleton and the same preset/flow-spec, MUST stamp byte-identical output — no re-authoring, no re-ordering, no spacing drift. The rules below are the letter of that mandate.
 
@@ -26,3 +26,4 @@ Presets live at `presets/<preset>/*.md`; each supplies the skeleton's fills (`DE
 - **`<named artifacts>`** — the angle-bracket slot in the boundary sentence is distinct from `{{PLACEHOLDER}}`; fill it from the preset's `FILL NAMED_ARTIFACTS`, comma-joined into prose — resolved, not left as a literal token.
 - **Regen stamp** — fill the `<!-- vibe:regen preset={{PRESET}} · flow-spec={{FLOW_SPEC}} -->` line per builder, spelling out the inverse literally: build-harness stamps `preset=<preset-dir> · flow-spec=` (empty). build-flow stamps `preset= · flow-spec=<HARNESS_ROOT/flows/<slug>.md>` (empty preset). Never `n-a` for the empty side — this makes `--regen` re-derivable.
 - **Generated-command header** — for a preset stamp, the generated command's `vibe-template:` header names `presets/<preset>/<cmd>.md` and its version — never the skeleton; for a FLOW stamp it names the flow-spec (`HARNESS_ROOT/flows/<slug>.md`). Doctor/drift-diff checks FIXED sections against `templates/skeletons/command-skeleton.md`, and the FLOW middle against the preset file (preset stamp) or the flow-spec's injected sections (FLOW stamp), respectively.
+- **W-K** — **loop stamps.** build-loop composes through `templates/skeletons/loop-command-skeleton.md`: every rule above applies unchanged with the `{{STAGES}}` slot in place of `{{FLOW}}` (W-A/W-H read "STAGES" for "FLOW"). Loop-specs live flat at `HARNESS_ROOT/loops/<slug>.md`; the regen stamp is `loop-spec=<that path>` (no `preset=`/`flow-spec=` sides exist on a loop stamp); the generated header names the loop-spec; drift-diff checks FIXED sections against `loop-command-skeleton.md`. Every cli/model/permission-mode literal in the spec's `## Stages` is resolved text, not a placeholder — a leftover `{{WORKER_CLI}}`-style slot in composed output is a defect, same as a bare `{{CMD_*}}`.

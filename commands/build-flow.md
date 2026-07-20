@@ -1,7 +1,7 @@
 ---
 description: Compile one ad-hoc, project-local flow into this repo's existing harness root (`HARNESS_ROOT/commands/`). From your sketch it elicits and writes a flow-spec, then stamps it through `command-skeleton.md` with the kernel inherited structurally. Hand it a filled flow-spec and it compiles directly; `--regen` re-derives the command from that spec.
 ---
-<!-- vibe-template: commands/build-flow v3 | generated 2026-07-16 | edits below this marker are yours -->
+<!-- vibe-template: commands/build-flow v4 | generated 2026-07-20 | edits below this marker are yours -->
 <!-- Plugin-entry command: hand-authored, runs from the plugin; NOT stamped from command-skeleton.md and NOT subject to the ≤80-line implementation-loop budget. -->
 
 ## User Input
@@ -63,6 +63,6 @@ Every check is a resolve-or-stop; an unresolvable name → **andon-cord, ask the
    - generated-command header → the `vibe-template:` line names the flow-spec (`HARNESS_ROOT/flows/<slug>.md`) as its source of record — the flow analog of composition-standard's preset-path header rule, so `--regen` and drift-diff resolve back to the spec.
    - W-I → rewrite any remaining project-relative `.claude/` path prefixes to `HARNESS_ROOT/` when the root is not `.claude`.
    - W-J → write the command at `HARNESS_ROOT/commands/[<COMMAND_PREFIX>/]<slug>.md` per the resolved prefix (flows stay at `HARNESS_ROOT/flows/<slug>.md`).
-4. **Report.** Write the compiled command to the repo root's `HARNESS_ROOT/commands/[<COMMAND_PREFIX>/]<slug>.md` (edit marker governs overwrite), then report: host root, `COMMAND_PREFIX` (or empty), invoke name (`/<slug>` or `/<COMMAND_PREFIX>:<slug>`), the command file written and its flow-spec path; whether it was elicited, compiled from an existing spec, or regenerated; the Team roster and the per-block exit lenses; worktree mode; any opt-outs. Do **not** run the generated flow — the user reviews it, then invokes it.
+4. **Report.** Write the compiled command to the repo root's `HARNESS_ROOT/commands/[<COMMAND_PREFIX>/]<slug>.md` (edit marker governs overwrite), then report: host root, `COMMAND_PREFIX` (or empty), invoke name (`/<slug>` or `/<COMMAND_PREFIX>:<slug>`), the command file written and its flow-spec path; whether it was elicited, compiled from an existing spec, or regenerated; worktree mode; any opt-outs. End with the **handoff table**, two parts: one row per block — `block · roster · exit lens`; then one row per distinct role — `agent · model · effort · file` from `HARNESS_ROOT/agents/<role>.md` frontmatter (`inherit` where unpinned; read frontmatter lines only). Advise: verify or pin models/efforts in those agent files before first run. Do **not** run the generated flow — the user reviews it, then invokes it.
 
 <!-- Footer constraint: hard constraints live above the midpoint; HARNESS_ROOT + COMMAND_PREFIX detect; determinism per composition-standard W-A..W-J; boundary sentence verbatim; kernel by reference, never restated; zero runtime branches; Outline linear, ends Report. -->

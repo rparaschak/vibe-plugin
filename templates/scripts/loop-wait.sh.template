@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# vibe-template: templates/scripts/loop-wait.sh.template v1 | generated 2026-07-20 | edits below this marker are yours
+#
+# loop-wait — the loop orchestrator's ONE sanctioned way to wait on a worker
+# session. Blocks (foreground) until a status line for <slug> appears in the
+# status log past <since-line>, prints that line, and exits 0. Exits 124 on
+# timeout. Portable on purpose: plain bash + grep, no host-specific machinery —
+# it works whichever CLI runs the orchestrator.
+set -euo pipefail
+
+# STATUS_LOG — the append-only signal log both levels share (vibe-loop-protocol
+# owns the line grammar). e.g. .workspace/status.log
+STATUS_LOG="{{STATUS_LOG}}"
+
+# POLL_INTERVAL — seconds between polls. Signals are minutes apart; keep ≥5.
+# e.g. 5
+POLL_INTERVAL="{{POLL_INTERVAL}}"
+
+SLUG="${1:?usage: loop-wait.sh <slug> <timeout-seconds> [since-line]}"
+TIMEOUT="${2:?usage: loop-wait.sh <slug> <timeout-seconds> [since-line]}"
+SINCE="${3:-0}"
+
+waited=0
+while :; do
+  if [ -f "$STATUS_LOG" ]; then
+    match="$(tail -n "+$((SINCE + 1))" "$STATUS_LOG" | grep -F "| $SLUG |" | head -n 1 || true)"
+    if [ -n "$match" ]; then
+      printf '%s\n' "$match"
+      exit 0
+    fi
+  fi
+  if [ "$waited" -ge "$TIMEOUT" ]; then
+    echo "loop-wait: TIMEOUT — no status line for '$SLUG' after ${TIMEOUT}s (since-line $SINCE)" >&2
+    exit 124
+  fi
+  sleep "$POLL_INTERVAL"
+  waited=$((waited + POLL_INTERVAL))
+done
