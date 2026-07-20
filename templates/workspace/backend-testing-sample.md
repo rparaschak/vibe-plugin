@@ -2,7 +2,7 @@
 name: {{COMPONENT}}-testing
 description: Testing conventions for the {{COMPONENT}} component — the `test-engineer` and `reviewer` agents resolve it by name.
 ---
-<!-- vibe-template: templates/workspace/backend-testing-sample.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/workspace/backend-testing-sample.md v2 | generated 2026-07-20 | edits below this marker are yours -->
 
 # Backend Testing
 
@@ -35,17 +35,21 @@ description: Testing conventions for the {{COMPONENT}} component — the `test-e
 ## Testing Behaviours section
 Structure tests by behaviour: an outer group per capability, nested cases per rule (access control, validation, happy path). Each case name states the observable rule and maps to a spec Behavior.
 
-e.g., in a Go service:
+<!-- Discover: open the repo's best behaviour-structured test file and excerpt its skeleton — the group nesting plus 2–3 case names, bodies elided — in the repo's own language and test framework, cited file:line. No such file yet → the row goes blocked naming this slot (composition-standard W-L); never ship an example in a language the repo doesn't use. -->
+{{BEHAVIOUR_EXAMPLE}}
+<!-- e.g., in a Go service:
 ```go
 func BrandInvitations_API_Test(t *testing.T) {
     t.Run("Creating Brand ACL", func(t *testing.T) {
         t.Run("Anonymous user can not create Brand", func(t *testing.T) {...})
         t.Run("Manager can create Brand", func(t *testing.T) {...})
     })
-    
+
     t.Run("Creating Brand validation", func(t *testing.T) {
         t.Run("Can create Brand with all fields valid", func(t *testing.T) {...})
         t.Run("Can not create Brand if user haven't finished onboarding", func(t *testing.T) {...})
     })
 }
 ```
+-->
+
