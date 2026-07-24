@@ -89,8 +89,9 @@ fi
 echo
 
 # ---------------------------------------------------------------------------
-# 4. Kernel naming: every templates/kernel/*.md has frontmatter
-#    name: vibe-<something> and is <=80 lines.
+# 4. Kernel naming: every templates/kernel/*.md has a frontmatter name: from
+#    the closed kernel set (unprefixed since the vibe-* rename) and is <=80
+#    lines.
 # ---------------------------------------------------------------------------
 CHECK4_FAIL=0
 for f in templates/kernel/*.md; do
@@ -98,7 +99,7 @@ for f in templates/kernel/*.md; do
   lines=$(wc -l < "$f" | tr -d ' ')
   name=$(awk -F': ' '/^name:/{print $2; exit}' "$f")
   case "$name" in
-    vibe-*) named=1 ;;
+    team-protocol|research-protocol|review-protocol|task-ledger|loop-protocol) named=1 ;;
     *) named=0 ;;
   esac
   if [ "$lines" -gt 80 ] || [ "$named" -eq 0 ]; then
@@ -107,21 +108,21 @@ for f in templates/kernel/*.md; do
   fi
 done
 if [ "$CHECK4_FAIL" -eq 0 ]; then
-  pass "4. kernel naming (templates/kernel/*.md name: vibe-*, <=80 lines)"
+  pass "4. kernel naming (templates/kernel/*.md name: in the kernel set, <=80 lines)"
 else
   fail "4. kernel naming — see FAIL detail lines above"
 fi
 echo
 
 # ---------------------------------------------------------------------------
-# 5. Kernel reference integrity: every vibe-task-ledger / vibe-research-protocol
-#    / vibe-team-protocol / vibe-review-protocol reference in presets/,
+# 5. Kernel reference integrity: every task-ledger / research-protocol
+#    / team-protocol / review-protocol / loop-protocol reference in presets/,
 #    templates/skeletons/, templates/agents/ resolves to a templates/kernel/
 #    file whose frontmatter name matches. Stamped project-specific skills
 #    (e.g. <domain>-review) are out of scope.
 # ---------------------------------------------------------------------------
 CHECK5_FAIL=0
-KNAMES=$(grep -rhoE 'vibe-(task-ledger|research-protocol|team-protocol|review-protocol)' \
+KNAMES=$(grep -rhoE '(task-ledger|research-protocol|team-protocol|review-protocol|loop-protocol)' \
   presets templates/skeletons templates/agents 2>/dev/null | sort -u)
 if [ -z "$KNAMES" ]; then
   CHECK5_FAIL=1
@@ -136,7 +137,7 @@ else
   done
 fi
 if [ "$CHECK5_FAIL" -eq 0 ]; then
-  pass "5. kernel reference integrity (all referenced vibe-* kernel skills resolve)"
+  pass "5. kernel reference integrity (all referenced kernel skills resolve)"
 else
   fail "5. kernel reference integrity — see FAIL detail lines above"
 fi

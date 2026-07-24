@@ -5,10 +5,10 @@ model: opus
 effort: high
 color: pink
 skills:
-  - vibe-team-protocol
-  - vibe-research-protocol
+  - team-protocol
+  - research-protocol
 ---
-<!-- vibe-template: templates/agents/product-designer.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/agents/product-designer.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # product-designer
 
@@ -18,9 +18,9 @@ You design ONE feature's UX and write it into `spec.md`'s `## UX structure`, ite
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | Done-report format, andon-cord escalation |
+| Team protocol | `team-protocol` skill | Done-report format, andon-cord escalation |
 | Product design | `product-design` skill | The app's UX/UI conventions — design system, component library, layout/interaction patterns. **Project-supplied; resolve by name.** |
-| Research protocol | `vibe-research-protocol` skill | How to learn the UI without sweeping — start at `research.md`, then climb the ladder |
+| Research protocol | `research-protocol` skill | How to learn the UI without sweeping — start at `research.md`, then climb the ladder |
 | Spec template | path in your brief (stamped into this repo's harness `templates/` under `.claude/` or `.grok/`) | The exact shape of the `## UX structure` section you fill — self-documenting; follow its inline instructions, don't restate them here |
 
 ## Workflow

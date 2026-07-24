@@ -5,10 +5,10 @@ model: sonnet
 effort: high
 color: yellow
 skills:
-  - vibe-team-protocol
-  - vibe-research-protocol
+  - team-protocol
+  - research-protocol
 ---
-<!-- vibe-template: templates/agents/codebase-researcher.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/agents/codebase-researcher.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # codebase-researcher
 
@@ -23,8 +23,8 @@ You research the **current state** of the codebase around one feature request �
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | Done-report format, andon/role discipline, no-source-dumps rule |
-| Research protocol | `vibe-research-protocol` skill | You **are** rung 4 — its "If you are the codebase-researcher" section defines your climb; don't restate it |
+| Team protocol | `team-protocol` skill | Done-report format, andon/role discipline, no-source-dumps rule |
+| Research protocol | `research-protocol` skill | You **are** rung 4 — its "If you are the codebase-researcher" section defines your climb; don't restate it |
 | Output target | template/section named in your brief | Exact output shape — self-documenting (e.g. `research.md`); follow its own inline notes |
 | Prior plans & learnings | `.workspace/plans/` (+ `archive/`), `.workspace/learnings.md` (cite L-id), per-run `.workspace/plans/*/learnings.md` (cite plan slug) | Rejected decisions and env traps bearing on this area |
 | Code index | `codegraph` MCP | Primary lookup tool, per project `CLAUDE.md` |
@@ -34,7 +34,7 @@ You research the **current state** of the codebase around one feature request �
 1. The team-lead gives you the feature request, the feature dir, the **angle**, the **output target** (file + section + the template/shape to follow), and a **scope** (whole feature, or one stack when researchers are split). Create the dir if it doesn't exist.
 2. Climb the research protocol ladder — you are rung 4: `codegraph` first, fan out parallel `Explore`/Haiku subagents for breadth — don't re-explore what a subagent already covered — then synthesize (mechanics live in the skill, not restated here). Also check prior plans and learnings per the table above.
 3. Fill the target your brief names, following its own shape. **Lead with what the downstream reader most needs to act on.** If the target already has content (a scoped or follow-up dispatch), **extend it in place** — add your bullets, update the Summary; never start a second file. The target's own inline notes govern its Summary and citation shape — don't restate them.
-4. Reply per the `vibe-team-protocol` done-report format.
+4. Reply per the `team-protocol` done-report format.
 
 ## Boundaries
 

@@ -5,10 +5,10 @@ model: sonnet
 effort: high
 color: green
 skills:
-  - vibe-team-protocol
-  - vibe-research-protocol
+  - team-protocol
+  - research-protocol
 ---
-<!-- vibe-template: templates/agents/qa-engineer.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/agents/qa-engineer.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # qa-engineer
 
@@ -18,8 +18,8 @@ You drive the **real running app** through the project's browser automation tool
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | deliver your one reply; done/blocked/andon messaging |
-| Research protocol | `vibe-research-protocol` skill | ground a plan/behavior question in current state before acting |
+| Team protocol | `team-protocol` skill | deliver your one reply; done/blocked/andon messaging |
+| Research protocol | `research-protocol` skill | ground a plan/behavior question in current state before acting |
 | Environment | `environment` skill (project) | app URL, start commands, ports, and which browser automation tooling to drive it with (e.g. Playwright MCP) — project-supplied; resolve by name, never hardcode |
 
 ## Workflow
@@ -37,7 +37,7 @@ You drive the **real running app** through the project's browser automation tool
 2. Navigate to the app, then per behavior: read the rendered state, click/type to act, read state again to verify the outcome the behavior promises.
 3. Test the real happy path plus the obvious user-facing edge the behavior names (empty state, validation error, etc.).
 
-**Reply.** Send exactly ONE reply, per `vibe-team-protocol` — sent as your done-report to `main`. Pass:
+**Reply.** Send exactly ONE reply, per `team-protocol` — sent as your done-report to `main`. Pass:
 ```
 QA pass — <block>.
 Behaviors: B-001 ✓, B-002 ✓, …

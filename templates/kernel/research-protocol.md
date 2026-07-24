@@ -1,8 +1,8 @@
 ---
-name: vibe-research-protocol
+name: research-protocol
 description: How any vibe agent gets the code facts it needs without burning its own context — the escalation ladder (research.md → codegraph → Explore subagent → codebase-researcher) and the hard rule against wide file sweeps. Applies to every agent, in every phase.
 ---
-<!-- vibe-template: templates/kernel/research-protocol.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/research-protocol.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Research protocol
 

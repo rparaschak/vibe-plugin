@@ -1,12 +1,12 @@
 ---
-name: vibe-loop-protocol
-description: How a loop orchestrator runs disposable worker sessions via cmux — one session per stage of one chunk, briefs in, status-log signals out, verify-then-kill, O(1) context per rotation, and the loop board. The cross-session level above vibe-team-protocol.
+name: loop-protocol
+description: How a loop orchestrator runs disposable worker sessions via cmux — one session per stage of one chunk, briefs in, status-log signals out, verify-then-kill, O(1) context per rotation, and the loop board. The cross-session level above team-protocol.
 ---
-<!-- vibe-template: templates/kernel/loop-protocol.md v1 | generated 2026-07-20 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/loop-protocol.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Loop protocol
 
-Two orchestration levels, one vocabulary. A **flow** runs *inside* a session: one team-lead spawning specialized agents per `vibe-team-protocol`. A **loop** runs *across* sessions: one orchestrator session that only manages other CLI sessions via cmux — it never reads app code, never runs tests, never reads a worker transcript. Each worker session is disposable and single-purpose: it runs exactly one stage of one chunk (one flow command), talks to the user directly, signals through the status log, and is killed after verification.
+Two orchestration levels, one vocabulary. A **flow** runs *inside* a session: one team-lead spawning specialized agents per `team-protocol`. A **loop** runs *across* sessions: one orchestrator session that only manages other CLI sessions via cmux — it never reads app code, never runs tests, never reads a worker transcript. Each worker session is disposable and single-purpose: it runs exactly one stage of one chunk (one flow command), talks to the user directly, signals through the status log, and is killed after verification.
 
 ## Status log (the one signal channel)
 
@@ -14,29 +14,31 @@ Two orchestration levels, one vocabulary. A **flow** runs *inside* a session: on
 
 `<utc hh:mm> | <slug> | <signal> | <one-line detail>`
 
-`signal ∈ {done, blocked, needs-user, session-exited}` — closed enum, no other values. Flow commands append `needs-user` immediately before any `AskUserQuestion` and `done`/`blocked` at Finalize (harmless on a direct run — a free audit trail). The spawn epilogue appends `session-exited` when the worker's CLI process dies for any reason. The log is a **doorbell, not a source of truth**: a `done` line wakes the orchestrator; only verification against artifacts advances the ledger.
+`signal ∈ {done, blocked, needs-user, plan-ready, session-exited}` — closed enum, no other values. Flow commands append `needs-user` immediately before any `AskUserQuestion` and `done`/`blocked` at Finalize (harmless on a direct run — a free audit trail). `plan-ready` is emitted only by stages compiled with a plan gate: the worker finished the PLANNING phase of a plan+implement stage, wrote the plan to disk, and ended its turn awaiting a proceed. The spawn epilogue appends `session-exited` when the worker's CLI process dies for any reason. The log is a **doorbell, not a source of truth**: a `done` line wakes the orchestrator; only verification against artifacts advances the ledger.
 
 ## Worker lifecycle (one rotation)
 
-1. **Brief** — write `<loop-dir>/briefs/<chunk>-<stage>.md` from the loop command's brief template: chunk, stage input paths, pre-decided answers, questions that MUST be surfaced to the user, learnings fed forward from prior rotations. Standing decrees live once in the loop ledger's `## Standing decrees`; the brief cites that path, never restates it.
+1. **Brief** — write `<loop-dir>/briefs/<chunk>-<stage>.md` from the loop command's brief template: chunk, stage input paths, pre-decided answers, questions that MUST be surfaced to the user, learnings fed forward from prior rotations. Hard cap: a brief is ≤ ~10 lines and pointers ONLY — it cites paths (plan, decree section, prior report files), never re-serializes artifact content. Standing decrees live once in the loop ledger's `## Standing decrees`; the brief cites that path, never restates it.
 2. **Spawn** — pointer prompt, never inline `$(cat …)` injection:
    `cmux new-workspace --cwd <tree> --command 'CMUX_CLAUDE_HOOKS_DISABLED=1 <cli> "<flow-invoke> brief=<brief-path>" ; echo "$(date -u +%H:%M) | <chunk> | session-exited | rc=$?" >> .workspace/status.log'`
    `CMUX_CLAUDE_HOOKS_DISABLED=1` is mandatory on every worker spawn: it disables cmux's injected per-turn hooks (done / needs-input sidebar notifications), which would false-flag on every worker turn the orchestrator — not the user — will consume. Workers stay silent; the user hears only the orchestrator's `cmux notify` milestones and each flow's own `AskUserQuestion`.
    then `cmux rename-workspace --workspace <ref> "<STAGE>: <chunk>"` — so the user can find the session that will ask them questions.
-3. **Wait** — capture `since-line` (`wc -l` of the log) *before* spawning, then foreground-block on `loop-wait.sh <chunk> <timeout> <since-line>`. This is the sanctioned form of waiting — `vibe-team-protocol`'s turn discipline still holds: block in the foreground, never end a turn promising to report later. On timeout: `read-screen --lines 30`, judge liveness, re-wait or andon — never kill blind.
+3. **Wait** — capture `since-line` (`wc -l` of the log) *before* spawning, then foreground-block on `loop-wait.sh <chunk> <timeout> <since-line>`. This is the sanctioned form of waiting — `team-protocol`'s turn discipline still holds: block in the foreground, never end a turn promising to report later. On timeout: `read-screen --lines 30`, judge liveness, re-wait or andon — never kill blind.
 4. **Verify** — the worker's claim is input, not truth. Run the stage's compiled verify checks (artifact Status header, `git log --oneline -5`, push reached remote) — bounded reads only.
 5. **Kill** — `read-screen --lines 30` first (never close a workspace blind — it may sit on a question or still be flushing), then `close-workspace`.
-6. **Record** — flip the chunk's ledger leaf on verify evidence per `vibe-task-ledger`, note learnings for the next brief, re-render the loop board.
+6. **Record** — flip the chunk's ledger leaf on verify evidence per `task-ledger` plus ONE evidence line, then re-render the loop board. The orchestrator never narrates rotations in prose — the narrative lives in status.log and git history.
 
 ## Signals the orchestrator reacts to
 
 - `needs-user` → `cmux notify --title "<chunk> needs you" --body "<detail>"`. The decision is answered **in the worker session that asked** — the loop never proxies a gate and never answers for the user.
+- `plan-ready` → the **compact gate**: send the worker session its stage's compact command (e.g. `cmux send --workspace <ref> "/compact"` for the claude CLI), immediately queue the proceed message — do NOT wait for compaction to finish — then re-capture the status-log line count and re-enter Wait. The compact command is a generation-time literal resolved per stage CLI in the loop-spec; a CLI with no compact equivalent degrades the gate to queue-proceed-only. Hard rule: at most ONE compact gate per rotation — a second `plan-ready` from the same rotation → andon. The point: plan-phase context is separated from implement-phase context inside the SAME worker session, without a kill — the plan on disk is the durable artifact, the compaction summary is disposable.
 - `session-exited` before `done` → post-mortem via `capture-pane --scrollback`, mark the leaf `blocked` with the rc and last lines, andon.
-- `blocked` → leaf `blocked` per `vibe-task-ledger`; andon.
+- `blocked | context-pressure` (a `blocked` line whose detail says context pressure) → a checkpoint, not a failure: verify the checkpoint is real (Handoff block written + leaf states current, per `task-ledger`), then respawn the SAME chunk×stage once — the fresh worker resumes from the Handoff. A second context-pressure trip on the same chunk → andon + leaf `blocked`.
+- `blocked` (ordinary) → leaf `blocked` per `task-ledger`; andon.
 
 ## Context discipline (O(1) per rotation — hard rules)
 
-The orchestrator's context must not grow with the run. Per rotation it reads ONLY: the signal line `loop-wait.sh` printed (plus at most a 5-line log tail) · the active chunk's ledger leaf and Handoff (never the whole ledger) · the exact lines its verify checks name (≤20 lines per check) · one pre-kill `read-screen --lines 30`. It never reads worker transcripts, app code, diffs beyond a `--oneline` log, or its own briefs back. Compaction is the design assumption, not a failure: cold clock-in = ledger Handoff → `cmux list-workspaces` → reconcile → board — one rotation's cost, never a re-derivation of the run.
+The orchestrator's context must not grow with the run. Per rotation it reads ONLY: the signal lines `loop-wait.sh` printed — one per Wait entry; a compact-gate rotation has exactly two — (plus at most a 5-line log tail) · the active chunk's ledger leaf and Handoff (never the whole ledger) · the exact lines its verify checks name (≤20 lines per check) · one pre-kill `read-screen --lines 30`. It never reads worker transcripts, app code, diffs beyond a `--oneline` log, or its own briefs back. Compaction is the design assumption, not a failure: cold clock-in = ledger Handoff → `cmux list-workspaces` → reconcile → board — one rotation's cost, never a re-derivation of the run.
 
 ## Loop board (rendered every rotation)
 

@@ -1,7 +1,7 @@
 ---
 description: Compile one ad-hoc, project-local flow into this repo's existing harness root (`HARNESS_ROOT/commands/`). From your sketch it elicits and writes a flow-spec, then stamps it through `command-skeleton.md` with the kernel inherited structurally. Hand it a filled flow-spec and it compiles directly; `--regen` re-derives the command from that spec.
 ---
-<!-- vibe-template: commands/build-flow v4 | generated 2026-07-20 | edits below this marker are yours -->
+<!-- vibe-template: commands/build-flow v5 | generated 2026-07-24 | edits below this marker are yours -->
 <!-- Plugin-entry command: hand-authored, runs from the plugin; NOT stamped from command-skeleton.md and NOT subject to the ≤80-line implementation-loop budget. -->
 
 ## User Input
@@ -20,10 +20,10 @@ Three inputs, each by reference — never restate them:
 - `templates/skeletons/flow-skeleton.md` is the flow-spec's own shape, with the derivation map for every fill.
 - `templates/skeletons/command-skeleton.md` is the command this stamps, whose kernel sections are fixed text.
 
-The generated command inherits `vibe-research-protocol` / `vibe-team-protocol` / `vibe-task-ledger` / `vibe-review-protocol` structurally. build-flow itself only ever writes to the **repo root's** `HARNESS_ROOT/commands/[<COMMAND_PREFIX>/]<slug>.md` (never inside the plugin's own `commands/`) and the flow-spec at `HARNESS_ROOT/flows/<slug>.md` (flows stay flat under `flows/`; only commands are namespaced).
+The generated command inherits `research-protocol` / `team-protocol` / `task-ledger` / `review-protocol` structurally. build-flow itself only ever writes to the **repo root's** `HARNESS_ROOT/commands/[<COMMAND_PREFIX>/]<slug>.md` (never inside the plugin's own `commands/`) and the flow-spec at `HARNESS_ROOT/flows/<slug>.md` (flows stay flat under `flows/`; only commands are namespaced).
 
 ## Hard constraints (all above the midpoint; a generated flow carries zero runtime branches)
-- **Resolve `HARNESS_ROOT` first.** Detect from existing harness evidence (`Glob` only): `HARNESS_ROOT/skills/vibe-*` or `HARNESS_ROOT/commands/{plan,implement,spec}.md` or `HARNESS_ROOT/commands/*/{plan,implement,spec}.md` under `.claude` and/or `.grok`. Explicit `$ARGUMENTS` `--root`/`--host` wins. If both roots have a harness, or neither does, `AskUserQuestion` before any write (options: `.claude`, `.grok`, cancel). No harness at all → andon-cord: run `/vibe:build-harness` first. Never guess a root and never stamp into a root that has no kernel.
+- **Resolve `HARNESS_ROOT` first.** Detect from existing harness evidence (`Glob` only): `HARNESS_ROOT/skills/{team,research,review}-protocol` or legacy `HARNESS_ROOT/skills/vibe-*` (either generation counts) or `HARNESS_ROOT/commands/{plan,implement,spec}.md` or `HARNESS_ROOT/commands/*/{plan,implement,spec}.md` under `.claude` and/or `.grok`. Explicit `$ARGUMENTS` `--root`/`--host` wins. If both roots have a harness, or neither does, `AskUserQuestion` before any write (options: `.claude`, `.grok`, cancel). No harness at all → andon-cord: run `/vibe:build-harness` first. Never guess a root and never stamp into a root that has no kernel.
 - **Resolve `COMMAND_PREFIX` next** (composition-standard W-J). Value is empty or kebab-case. Order:
   1. Explicit `$ARGUMENTS` `--prefix <slug>` / `--prefix none` (none → empty) wins for this flow's stamp location.
   2. Else if `.workspace/harness/checklist.md` Handoff has the key `COMMAND_PREFIX=` → use its value **including empty** (`COMMAND_PREFIX=` with no value locks empty; do **not** treat empty as missing and fall through).
@@ -44,7 +44,8 @@ Every check is a resolve-or-stop; an unresolvable name → **andon-cord, ask the
 - every block carries both an entry-gate line and an exit-gate/lens line; any block with `test-engineer` also carries a fix-routing line;
 - `## Opt-outs` names come only from the blessed set (a FIXED command-skeleton section heading or a Finalize sub-item);
 - `## Artifact` names exactly one path — the sole `Edit`/`Write` target of the generated command; the file need not pre-exist, the generated flow creates it on first run;
-- block prose contains no runtime-conditional language ("if the project has…", "when a frontend exists…") — flows are generation-time specialized; a conditional need is two flows.
+- block prose contains no runtime-conditional language ("if the project has…", "when a frontend exists…") — flows are generation-time specialized; a conditional need is two flows;
+- the `· lead-hands-on` Team marker is valid only when `## Team` includes `reviewer` (someone must review the lead's edits).
 
 ## Outline
 
@@ -58,6 +59,9 @@ Every check is a resolve-or-stop; an unresolvable name → **andon-cord, ask the
    - `ROLE_SUMMARY` + `<named artifacts>` → from `## Team` + the single `## Artifact` (flows are single-artifact — that one file is the only thing the command may `Edit`/`Write`).
    - `{{FLOW}}` → the flow-spec's `## Team`, `## Artifact`, and `## Blocks` sections, **injected verbatim** (builder-facing comments stripped per composition-standard W-E) — no prose re-rendering, so two conforming builders emit identical bytes; `## Opt-outs` and the closing build-flow mapping comment are consumed as fills, never injected.
    - worktree note → the Team's optional ` · worktree` suffix becomes a generation-time note in the Role paragraph (no runtime `--worktree` flag).
+   - lead-hands-on → the Team's optional ` · lead-hands-on` marker emits this fixed sentence, verbatim, in the generated command's Role paragraph: "Hands-on carve-out (declared by this flow): you may directly fix small defects (a few lines, shape already decided) and write 1–2 tests for them; anything larger is dispatched to engineer/test-engineer; your own edits still go through review — you never review your own work." No marker → no sentence; the standard hands-off boundary stands.
+   - `## Adaptive dispatch` (optional) → when present, its hard-invariants list plus the skip-log rule (default-stage skips are one-line `## Skip log` entries per `task-ledger`, never silent, never gate evidence), the tracker narrow-read rule (grep the item's row + Read ±5 lines, never the whole map), and the category-reuse rule (an earlier green category stands IFF no code change since; reuse = a Skip-log line) are compiled into the command — verbatim-style injection, same treatment as BLOCKS. Absent → nothing emitted; the flow stays lean.
+   - post-plan pause → when `## Blocks` declares it (plan + implement in one session), the compiled block sequence carries the pause: the planning block ends with the plan on disk and the turn ENDED (loop: append `plan-ready` to the status log per `loop-protocol`; direct-run: await the user's proceed); implement starts on the proceed, reading the plan from disk. Not declared → nothing emitted.
    - `OPT_OUTS` → the frontmatter `opt-out:` line (omit the line when empty).
    - regen stamp → `preset=` left **empty** and `flow-spec=` the resolved `HARNESS_ROOT/flows/<slug>.md` path — the mirror of build-harness, per composition-standard's Regen-stamp rule.
    - generated-command header → the `vibe-template:` line names the flow-spec (`HARNESS_ROOT/flows/<slug>.md`) as its source of record — the flow analog of composition-standard's preset-path header rule, so `--regen` and drift-diff resolve back to the spec.

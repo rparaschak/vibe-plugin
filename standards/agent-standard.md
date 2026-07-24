@@ -3,7 +3,7 @@ name: agent-standard
 description: Quality bar for agent definition files (`HARNESS_ROOT/agents/*.md`, where `HARNESS_ROOT` is `.claude` or `.grok`) — the plugin's own agent templates, the files the builder stamps into projects, and audits of a project's existing agents. Every rule is mechanically checkable.
 ---
 
-<!-- vibe-template: standards/agent-standard v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: standards/agent-standard v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Agent Standard
 
@@ -11,7 +11,7 @@ Judged against by: author agents (write to it), reviewer agents (score against i
 
 ## Hard rules (all checkable; violations are defects)
 
-1. **Frontmatter contract.** Required fields, all present: `name`, `description`, `model`, `effort`, `color`, `skills`. Templates declare default `model` + `effort`; the builder may override both at generation time, but a generated file MUST omit neither. (Prevents: under-specified dispatch — a missing `effort` runs the agent at an unintended budget.)
+1. **Frontmatter contract.** Required fields, all present: `name`, `description`, `model`, `effort`, `color`, `skills`. Templates declare default `model` + `effort`; the builder may override both at generation time, but a generated file MUST omit neither. `model` + `effort` are tunable-per-project after stamping and excluded from drift detection — a doctor re-stamp preserves the stamped file's values. (Prevents: under-specified dispatch — a missing `effort` runs the agent at an unintended budget.)
 2. **Description budget & shape.** ≤60 words. One or two sentences carrying two things: what the agent does, and a `Does not …` clause naming its hardest boundary. It is the API the team-lead dispatches on. (Prevents: description bloat — an over-length description is documentation smuggled into an API.)
 3. **File size budget.** ≤70 lines total. Detail beyond budget moves to referenced skills/docs, never inline. (Prevents: body creep — the ceiling keeps agent files lean and blocks growth beyond it.)
 4. **Canonical body anatomy, in order.** `# <name>` → `## Skills & documents you refer to` (table: Reference | Resolves to | Why) → `## Workflow` → `## Boundaries` (bulleted never-list). Small agents may omit Workflow; never Boundaries. (Prevents: structural drift — unheaded prose with no Boundaries section.)
@@ -33,6 +33,7 @@ Judged against by: author agents (write to it), reviewer agents (score against i
 - [ ] Constraints only in description + Boundaries — none mid-file.
 - [ ] No kernel content restated (grep for the team protocol's done-format field names — take the terms from the referenced protocol skill; skill stance paragraphs).
 - [ ] Zero unresolved `{{…}}` placeholders (generated files).
+- [ ] Cross-role references (on-call clauses, fix-routing mentions) resolve within the stamped roster — roster-conditional clauses are marked with a builder comment in the template (generated files).
 - [ ] Description names one job — no "and" joining two unrelated jobs.
 - [ ] Template header present as first non-frontmatter line (generated files).
 

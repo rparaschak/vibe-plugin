@@ -1,4 +1,4 @@
-<!-- vibe-template: templates/workspace/plan-template.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/workspace/plan-template.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Plan: [FEATURE NAME]
 
@@ -162,8 +162,14 @@ IS the task ledger — the ONLY thing the implement command mutates.
 ## Decision Log *(optional — non-obvious choices not already captured in Architecture)*
 
 - **D-001** — [decision] · [driver] · [alternative rejected]
+<!-- /decision-log -->
 
-## Handoff *(written at Finalize by whichever command drives this ledger, per `vibe-task-ledger`)*
+## Skip log *(adaptive flows — every skipped default step, one line; else omit)*
+
+<!-- - skipped <step> — <reason> -->
+<!-- /skip-log -->
+
+## Handoff *(written at Finalize by whichever command drives this ledger, per `task-ledger`)*
 
 - **Verified now** — 
 - **Changed this session** — 

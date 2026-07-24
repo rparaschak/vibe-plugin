@@ -1,4 +1,4 @@
-<!-- vibe-template: presets/plan-implement/plan.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: presets/plan-implement/plan.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 <!-- This preset supplies command-skeleton.md's fills (below) and its ONE {{FLOW}} slot (bottom).
      The builder substitutes each FILL into the skeleton's frontmatter / Role, and injects the
@@ -28,7 +28,7 @@ the plan at `.workspace/plans/<yymmdd-slug>/plan.md`
 codebase-researcher, architect, critic. No product-manager: this preset's plan is standalone — no spec ever precedes it, so the lead captures the WHAT inline and never drafts a product spec.
 
 ## Plan artifact & shape
-- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `vibe-task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `{{CMD_IMPLEMENT}}` archives, at Implemented, so this command never does.
+- Drives the plan at `.workspace/plans/<yymmdd-slug>/plan.md` — the `task-ledger` (its `## Tasks` table) — to Status: Ready for Implement. Finished plans move to `.workspace/plans/archive/` — only `{{CMD_IMPLEMENT}}` archives, at Implemented, so this command never does.
 - This plan carries both the WHAT and the HOW — Behaviors (B-NNN) are captured inline in the plan's `## Behaviors` by the lead (block 1); Architecture and Tasks reference them by B-id.
 - Sized for ONE team in one pass (~3–5 engineering deliverables per stack). No concept of parts — overflow → andon to the user (decomposition is a spec's job, and this preset has no spec).
 - Planning learnings, if any, land in the plan's Decision Log — no separate learnings file this phase.
@@ -43,7 +43,7 @@ First: read `.workspace/constitution.md`. Derive a kebab-case slug from the inpu
 4. **Critique gate** — the critic scores the design against its Architecture lens-set (this is the plan's "review" the fixed Role names); reconcile, don't rubber-stamp; cap at 3 revise cycles, then stop and report as-is; any unresolved ⚠️ → `## Open Questions`. A finding that the Behaviors themselves are wrong (not the design) → refine the inline `## Behaviors` yourself (standalone plan; no andon needed).
 
 ## Plan readiness gate (this plan's OWN exit gate — distinct from implement's clean-state exit gate)
-Before Status → Ready for Implement, confirm: Open Questions is None · a Constitution line is present, and every ⚠️ in Architecture (Constitution or otherwise) carries options + a recommendation · every behavior has a delivering Task AND an entry in `## Test behaviors` · Tasks are ordered Platform → BE · Every header `Depends on` slug resolves to a real plan (acyclic across plans; `Implemented` is enforced at implement-entry) · every Task carries the closed state enum defined in `vibe-task-ledger` — the lead confirms this gate before the Finalize state-flip to Ready for Implement.
+Before Status → Ready for Implement, confirm: Open Questions is None · a Constitution line is present, and every ⚠️ in Architecture (Constitution or otherwise) carries options + a recommendation · every behavior has a delivering Task AND an entry in `## Test behaviors` · Tasks are ordered Platform → BE · Every header `Depends on` slug resolves to a real plan (acyclic across plans; `Implemented` is enforced at implement-entry) · every Task carries the closed state enum defined in `task-ledger` — the lead confirms this gate before the Finalize state-flip to Ready for Implement.
 Report: B-range, engineering-task count per stack, Constitution ⚠️ count, and Open Questions verbatim.
 
 <!-- FLOW END -->

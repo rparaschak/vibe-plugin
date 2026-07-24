@@ -1,8 +1,8 @@
 ---
-name: vibe-task-ledger
+name: task-ledger
 description: The task state discipline every command and agent gates on — plans are a feature→leaf hierarchy where each leaf is evidence-gated through a closed state enum and only the team-lead advances states, never on a self-claim of done.
 ---
-<!-- vibe-template: templates/kernel/task-ledger.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/task-ledger.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Task ledger
 
@@ -37,6 +37,11 @@ Exactly **one leaf `active` per ledger**. Parallel worktrees each carry their ow
 - **No-progress detection**: if the same findings survive **two consecutive rounds**, stop and **escalate to the team-lead/user** (pull the andon cord): halt work on the leaf and surface the surviving findings for a decision.
 - The **team-lead** keeps a compact round log per leaf: round #, what changed, reviewer verdict, next action.
 
+## Skip log (adaptive flows)
+
+- An adaptive command may skip a default step (a research dispatch, a critic pass, a full review) **only by logging it**: one line per skip, format `- skipped <step> — <reason>`, appended to the plan's `## Skip log` section. **Never a silent skip.** Skips are distill fuel — a costly skip becomes a learning at the next distill pass.
+- **Invariants cannot be skipped into existence.** A skip line never satisfies an evidence gate — `active → passing` still requires reviewer-cited evidence, and states still move only on the team-lead's verified flip. The Skip log records that a STEP was omitted; it proves nothing about the work.
+
 ## Two-level verification
 
 - **Leaf** = command-level check ("endpoint returns 201").
@@ -48,6 +53,13 @@ Exactly **one leaf `active` per ledger**. Parallel worktrees each carry their ow
 | date | decision | reasoning | rejected alternatives |
 
 Write a row when deviating from the plan or resolving an ambiguity. Read on resume — settled decisions are not re-litigated.
+
+## Sentinel-append (lead context diet)
+
+- Lead-owned append-only log sections each end with a fixed sentinel comment: `<!-- /decision-log -->`, `<!-- /skip-log -->`, `<!-- /round-log -->`, `<!-- /learnings -->` — one per section kind, when the section exists.
+- **Appending = ONE `Edit`**: old_string is the sentinel, new_string is the new row(s) + the sentinel. **No pre-read of the section, ever** — that's the point.
+- **Batch at gates**: log rows (decision, skip, round) are written as one Edit per section per gate — never one Edit per row mid-work. **Never batched, always immediate**: leaf state flips, the WIP=1 active-leaf mark, and the Handoff block on any pause/andon.
+- A section absent from a given plan is **bootstrapped on first append** (heading + sentinel), never pre-created.
 
 ## Handoff block (team-lead writes when pausing; first thing read on resume)
 

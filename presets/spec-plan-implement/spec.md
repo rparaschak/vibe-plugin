@@ -1,4 +1,4 @@
-<!-- vibe-template: presets/spec-plan-implement/spec.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: presets/spec-plan-implement/spec.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 <!-- This preset supplies command-skeleton.md's fills (below) and its ONE {{FLOW}} slot (bottom).
      The builder substitutes each FILL into the skeleton's frontmatter / Role, and injects the
@@ -32,7 +32,7 @@ product-manager, critic; product-designer on-call (UX, conditional); codebase-re
 - Drives the spec at `.workspace/plans/<yymmdd-slug>/spec.md` — its Behaviors (B-NNN) — to Status: Ready for Plan. The spec is the artifact you LOCK before any architecture is designed; nothing archives a spec — the user reviews it, then runs {{CMD_PLAN}}.
 - Spec is the WHAT, not the HOW — Spec and plan are separate documents. The spec names behaviors; the HOW (data model, architecture, tasks) is the plan's job, referenced by B-id, never restated here.
 - Sized so EACH plan it feeds fits ONE team in one pass (~3–5 engineering deliverables per stack). Work too big does not andon — decomposition is the spec's job: it becomes SEPARATE specs, each its own `.workspace/plans/<yymmdd-slug>/` dir with its own local B-ids, each feeding its own plan, wired by `Depends on` (an acyclic DAG). Fits in one → no split. B-IDs are LOCAL to this spec (B-001).
-- No task ledger this phase and no learnings file — the spec IS the artifact; the Finalize handoff is written to the spec's own `## Handoff` section, per `vibe-task-ledger`.
+- No task ledger this phase and no learnings file — the spec IS the artifact; the Finalize handoff is written to the spec's own `## Handoff` section, per `task-ledger`.
 
 ## Blocks (product phases, walked in the skeleton's work loop)
 Blocks here are product phases: a block closes when its gate passes, not by a ledger leaf reaching `passing`. No task ledger this phase — the spec IS the artifact; on resume, continue from the first block not yet closed.

@@ -1,4 +1,4 @@
-<!-- vibe-template: presets/spec-plan-implement/implement.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: presets/spec-plan-implement/implement.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 <!-- This preset supplies command-skeleton.md's fills (below) and its ONE {{FLOW}} slot (bottom).
      The builder substitutes each FILL into the skeleton's frontmatter / Role, and injects the
@@ -26,8 +26,8 @@ the plan ledger at `.workspace/plans/<yymmdd-slug>/plan.md` and `.workspace/plan
 - First: read `.workspace/constitution.md`.
 - Walk the plan's Task blocks in the plan's authored order — block order lives in the plan, never here.
 - Entry: Status `Ready for Implement` (a mid-run resume per the ledger's Handoff block also qualifies); every header `Depends on` plan is `Implemented` — this command is where that promise is enforced.
-- Commit: on, per block. When a block's build work is done, you commit it, then dispatch the block's review against that commit — the reviewer's verdict and each leaf's evidence cite that hash, per `vibe-task-ledger`/`vibe-review-protocol`; every fix round commits before re-review. Within a block, the build leaf holds the single `active` slot; sibling leaves (e.g. the test leaf) are authored while still `not_started` and flip straight to `passing` on the same reviewer Accept, every leaf's evidence citing the block's commit hash. The Finalize commit is the closing commit only (ledger state-flips, learnings, Handoff). At Status Implemented, archive = move `.workspace/plans/<yymmdd-slug>/` into `.workspace/plans/archive/` — this command is the only archiver.
-- Worktree: off (in-place). `vibe-team-protocol` owns worktree mechanics for the variant.
+- Commit: on, per block. When a block's build work is done, you commit it, then dispatch the block's review against that commit — the reviewer's verdict and each leaf's evidence cite that hash, per `task-ledger`/`review-protocol`; every fix round commits before re-review. Within a block, the build leaf holds the single `active` slot; sibling leaves (e.g. the test leaf) are authored while still `not_started` and flip straight to `passing` on the same reviewer Accept, every leaf's evidence citing the block's commit hash. The Finalize commit is the closing commit only (ledger state-flips, learnings, Handoff). At Status Implemented, archive = move `.workspace/plans/<yymmdd-slug>/` into `.workspace/plans/archive/` — this command is the only archiver.
+- Worktree: off (in-place). `team-protocol` owns worktree mechanics for the variant.
 
 ## Roster per block
 - **Platform / BE block** — the engineer (backend domain), the test-engineer (backend domain), the reviewer (backend domain); plus the architect (backend domain) on-call.

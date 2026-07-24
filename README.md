@@ -41,7 +41,7 @@ Then it audits your repo (**read-only scout subagents** — the lead does not wi
 
 | Command | What it does |
 |---|---|
-| **`/vibe:build-harness`** | Detects host root (`.claude` or `.grok`) and asks before stamping. Parses intent → scout audit → `vibe-task-ledger` checklist → stamp workers write kernel skills, agents, domain skills/checklists, env scripts, lean commands. Re-run = doctor mode. Never touches application code. |
+| **`/vibe:build-harness`** | Detects host root (`.claude` or `.grok`) and asks before stamping. Parses intent → scout audit → `task-ledger` checklist → stamp workers write kernel skills, agents, domain skills/checklists, env scripts, lean commands. Re-run = doctor mode. Never touches application code. |
 | **`/vibe:build-flow`** | Compiles ONE ad-hoc, project-local flow into a lean linear command under the existing harness root's `commands/`. Elicits a flow-spec, lints it mechanically, stamps through the command skeleton. Writes `HARNESS_ROOT/commands/<slug>.md` + `HARNESS_ROOT/flows/<slug>.md`. Never runs the flow. |
 | **`/vibe:distill`** | The learning flywheel, run inside a stamped project every ~2–3 implemented plans. Sweeps accumulated learnings, verifies staleness, and routes each survivor up a promotion ladder — mechanize → skill → constitution → plugin-template proposal → keep → retire. Every mutation is user-approved. Kernel-grade lessons emit a proposal diff you apply upstream by hand; it never writes into the plugin install. |
 
@@ -58,11 +58,11 @@ Re-running `/vibe:build-harness` isn't a rebuild — it's the doctor: it upgrade
 
 Everything lands under your repo's chosen **`HARNESS_ROOT/`** (`.claude` or `.grok`) and `.workspace/`:
 
-- **Kernel skills** (`HARNESS_ROOT/skills/vibe-*`) — four load-bearing protocols, default-on, stamped verbatim and inherited *structurally* (a generated command cannot silently drop them):
-  - **`vibe-task-ledger`** — the leaf task schema: `behavior` / `verification` / `state` / `evidence`, a closed state enum (`not_started | active | blocked | passing`, `passing` irreversible), WIP=1, and team-lead-only, evidence-gated transitions.
-  - **`vibe-research-protocol`** — the context-discipline escalation ladder (cited map → codegraph → Explore → codebase-researcher).
-  - **`vibe-team-protocol`** — SendMessage channel rules, done-format, the andon cord, and spawn/dispatch/teardown mechanics.
-  - **`vibe-review-protocol`** — three-pass review with a 0–2 × 6-dimension rubric → Accept / Revise / Block.
+- **Kernel skills** (`HARNESS_ROOT/skills/`) — four load-bearing protocols, default-on, stamped verbatim and inherited *structurally* (a generated command cannot silently drop them):
+  - **`task-ledger`** — the leaf task schema: `behavior` / `verification` / `state` / `evidence`, a closed state enum (`not_started | active | blocked | passing`, `passing` irreversible), WIP=1, and team-lead-only, evidence-gated transitions.
+  - **`research-protocol`** — the context-discipline escalation ladder (cited map → codegraph → Explore → codebase-researcher).
+  - **`team-protocol`** — SendMessage channel rules, done-format, the andon cord, and spawn/dispatch/teardown mechanics.
+  - **`review-protocol`** — three-pass review with a 0–2 × 6-dimension rubric → Accept / Revise / Block.
 - **Agents** (`HARNESS_ROOT/agents/`) — the roles you asked for, drawn from the template library, each audited against the agent standard at generation time.
 - **Domain skills & checklists** (`HARNESS_ROOT/skills/`) — one `<component>-architecture`, `<component>-review`, and `<component>-testing` per detected component, plus `environment` and (for UI repos) `product-design`.
 - **Environment scripts** (`HARNESS_ROOT/scripts/`) — self-verifying `env-up.sh` and `test-run.sh`, so agents never improvise build/test commands.

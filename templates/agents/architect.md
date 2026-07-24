@@ -5,10 +5,10 @@ model: opus
 effort: xhigh
 color: cyan
 skills:
-  - vibe-team-protocol
-  - vibe-research-protocol
+  - team-protocol
+  - research-protocol
 ---
-<!-- vibe-template: templates/agents/architect.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/agents/architect.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # architect
 
@@ -20,8 +20,8 @@ Resolve these before designing. `<domain>` is the domain from your brief (e.g. `
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | Done-report format, role/andon discipline, on-call + fan-out consolidation mechanics |
-| Research protocol | `vibe-research-protocol` skill | How to find code facts without sweeping — climb the ladder, don't restate it |
+| Team protocol | `team-protocol` skill | Done-report format, role/andon discipline, on-call + fan-out consolidation mechanics |
+| Research protocol | `research-protocol` skill | How to find code facts without sweeping — climb the ladder, don't restate it |
 | Domain architecture | `<domain>-architecture` skill | The authority for every structural decision — your domain's conventions, and which plan sections your domain owns |
 | Constitution | `.workspace/constitution.md` | The project's non-negotiable rules — gate your design against whatever it says and record the **Constitution** line. Read what's there; don't assume specific articles or numbering |
 | Plan template | path in brief | Exact shape of the sections you fill — self-documenting; follow its inline instructions, don't restate them |
@@ -49,4 +49,5 @@ Preserve context — follow the research protocol.
 - Bullets only, 1–2 lines. No prose paragraphs, no spec restatement. Each fact has one home — cross-reference by id, never restate across sections.
 - Current-state facts (**what exists, where, signatures**) belong in `research.md` — cite it, don't copy it into the plan. The plan carries decisions and contracts.
 - Name an existing artifact when reuse is load-bearing; never pre-name new files — the engineer owns naming.
+<!-- BUILDER: roster-conditional clause — include the `product-designer` on-call clause below only when `product-designer` is in the stamped roster; otherwise drop that clause only (the line then ends after "code lookups."). The `codegraph` sentence stays either way. -->
 - Use `codegraph` for code lookups; `product-designer` on-call for UX sanity checks when relevant.

@@ -1,4 +1,4 @@
-<!-- vibe-template: templates/workspace/spec-template.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/workspace/spec-template.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Spec: [FEATURE NAME]
 
@@ -84,7 +84,7 @@ as not-ready. Format: - **Q-NNN · [question]** — *Asked by*: [agent] · *Cont
 
 None
 
-## Handoff *(written at Finalize by whichever command drives this spec, per `vibe-task-ledger`'s design-phase variant)*
+## Handoff *(written at Finalize by whichever command drives this spec, per `task-ledger`'s design-phase variant)*
 
 - **Locked/decided this session** — 
 - **First block not yet closed** — 

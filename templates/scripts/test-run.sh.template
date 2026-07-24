@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vibe-template: templates/scripts/test-run.sh.template v1 | generated 2026-07-13 | edits below this marker are yours
+# vibe-template: templates/scripts/test-run.sh.template v2 | generated 2026-07-24 | edits below this marker are yours
 #
 # test-run — the ONE sanctioned command to run verification.
 # Usage: test-run [LAYER] [args…]
@@ -12,6 +12,12 @@ set -uo pipefail
 
 LAYER="${1:-all}"
 [ "$#" -gt 0 ] && shift   # remaining "$@" are passthrough args for the runner
+
+# Discover: the layer axis below comes from the PROJECT, not from a canonical
+# unit/integration/e2e triple — a project may slice by module, category, or
+# marker instead; rename the layers (slots, case arms, usage line) to match.
+# An absent layer is a fact: leave its slot `:` so it reports "(none)" and
+# returns 0 — NEVER invent a placeholder suite to fill the row.
 
 # {{UNIT_CMD}} — runs the unit layer (fast, no infra). Set to `:` if none exist.
 # Discover: the quickest test target with no infra dependency.

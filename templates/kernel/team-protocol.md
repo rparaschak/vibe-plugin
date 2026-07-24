@@ -1,8 +1,8 @@
 ---
-name: vibe-team-protocol
+name: team-protocol
 description: How a vibe team communicates and how the team-lead runs it — what to SendMessage (done/blocked/andon only) and how, plus forming, dispatching, and tearing down named agents. Turn-based; one team per invocation.
 ---
-<!-- vibe-template: templates/kernel/team-protocol.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/team-protocol.md v3 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Team protocol
 
@@ -24,6 +24,7 @@ The command owns the workflow algorithm; this skill owns how the team communicat
   Result: <role's evidence — test/build outcome with counts, findings count, or "Open Questions added: N">
   Blocked on: <none or one line>
   ```
+- **Report cap (hard rule)**: a done-report stays **≤ ~15 lines**. When the substance exceeds that (long findings lists, gate evidence, research summaries), the body goes to a file: `<artifact-dir>/reports/<role>-<seq>.md` — `<artifact-dir>` = the dir of the run's driving artifact (the plan/ledger dir, e.g. `.workspace/plans/<yymmdd-slug>/`), `<role>` = your agent name, `<seq>` = a per-role incrementing number (01, 02, …). **NEW file per report** — never overwrite an earlier one. The chat done-report then carries only: verdict/result + counts + the file path (plus the usual `Done.` / `Wrote:` / `Blocked on:` fields).
 - Blocker split: a reportable blocker (task still progressing) → done-report with `Blocked on:` populated (header stays `Done.`); an unresolvable/structural blocker → andon cord (below).
 - Decisions/reasoning live in the artifact (spec.md WHAT, plan.md Decision Log HOW, non-obvious WHY in code comments, PR description) — never in chat.
 - Never `SendMessage`: long source dumps (cite `file:line`), decisions belonging in the Decision Log, reasoning meant for the user, or internal deliberation — decide first, then send.
@@ -40,12 +41,19 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 - **Dispatch to <role>** = ONE `SendMessage` with the command's brief, then wait. Briefs are short + self-contained: what to do, scope (paths/plan section/IDs), what's known. Teammates load their own project context (CLAUDE.md, skills, codegraph) and read their own plan section, sourcing from the cited map — never paste stale context or code. Every brief ends by telling the worker to `SendMessage` its done-report to `main`.
 - **Standing vs fresh**: re-dispatch = `SendMessage` the STANDING instance; a fresh instance = tear down the standing one, then spawn new. **"Fresh replaces, never adds"** — one-instance-per-role and live-set limits still hold; the new instance rebuilds from brief + cited map.
 - **Parallel fan-out**: one role across N concurrent instances, each a different checklist lens — the sanctioned bounded exception to one-instance-per-role. Gather ALL replies, then apply the command's combine rule: a block review = all-clear (passes only when no reviewer has open findings after consolidation + fix), **not a vote**; the consolidation owner (architect, per on-call) gets the gathered findings before the fix. Once every reply is gathered, the expanded live set collapses back: tear down the fan-out instances then, not at end-of-invocation.
+- **Briefs never ask for thorough in-chat reporting** — the done-report reply format is a CEILING, not a floor; asking a worker to "report all findings in detail" in chat is a protocol violation.
+- **The file channel never skips a gate** — before advancing any ledger state on a filed report, read that file's verdict/evidence section (a targeted read of the relevant lines, not the whole file).
+- **Fix-dispatches cite the report path** — never re-paste findings from a report into a brief.
 - The matching architect is on-call for design-intent; the codebase-researcher is the context oracle in spec/plan. A blocked worker andon-cords.
 
 ## Team-lead: teardown
 
 - Work complete → tear down the team; no teammate left running. **"One team's lifetime = one invocation."**
 - In-process teammates don't survive `/resume` or `/rewind`. When a name stops answering, re-spawn the role from durable state (Tasks table + decisions) — don't message the dead name.
+
+## Solo mode (no SendMessage available)
+
+- Running as a single-shot subagent with no `SendMessage` tool (some hosts/CLIs dispatch workers this way): your returned result IS the done-report — same format, same cap, same file channel. Andons = a `BLOCKED:` / `NEED:` line at the top of the returned result. Everything else in this skill applies unchanged.
 
 ## Turn discipline (everyone — hard rules)
 
@@ -66,5 +74,5 @@ The command owns the workflow algorithm; this skill owns how the team communicat
 - **Designers** write `## UX structure` only.
 - **Architects** design and write plan.md; no code.
 - **Engineers** write code; don't redesign the plan.
-- **Reviewers/critic** find + report; never modify files.
-- **Team-lead** orchestrates: does not read code or author artifact content — Behaviors/UX/Architecture/Tasks bodies are teammates' work (sole exception: a standalone plan's inline Behaviors capture, where the command says so). It DOES own control fields: ledger states, the Status header, the Handoff block, Decision Log entries, dir bootstrap/template copies, and relocating/renumbering already-authored Behaviors across spec files during decomposition (a mechanical move, not authorship).
+- **Reviewers/critic** find + report; never modify project files — their single sanctioned write is their own `reports/` file per the file channel above (reviewers additionally per `review-protocol`'s carve-out).
+- **Team-lead** orchestrates: does not read code or author artifact content — Behaviors/UX/Architecture/Tasks bodies are teammates' work (sole exceptions: those the command's Role explicitly declares — a standalone plan's inline Behaviors capture; a lead-hands-on flow's small-defect fixes per the compiled carve-out). It DOES own control fields: ledger states, the Status header, the Handoff block, Decision Log entries, dir bootstrap/template copies, and relocating/renumbering already-authored Behaviors across spec files during decomposition (a mechanical move, not authorship).

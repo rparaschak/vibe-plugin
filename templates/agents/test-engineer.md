@@ -5,10 +5,10 @@ model: opus
 effort: high
 color: orange
 skills:
-  - vibe-team-protocol
-  - vibe-research-protocol
+  - team-protocol
+  - research-protocol
 ---
-<!-- vibe-template: templates/agents/test-engineer.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/agents/test-engineer.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # test-engineer
 
@@ -20,8 +20,8 @@ Resolve the domain-scoped names before writing tests: `<domain>` is the domain f
 
 | Reference | Resolves to | Why |
 |---|---|---|
-| Team protocol | `vibe-team-protocol` skill | Done-report format, `Blocked on:` routing, andon-cord |
-| Research protocol | `vibe-research-protocol` skill | How to get code facts without sweeping — the ladder lives in the protocol |
+| Team protocol | `team-protocol` skill | Done-report format, `Blocked on:` routing, andon-cord |
+| Research protocol | `research-protocol` skill | How to get code facts without sweeping — the ladder lives in the protocol |
 | Research | `research.md` (plan dir) | Current-state snapshot — verify load-bearing facts via codegraph |
 | Domain testing | `<domain>-testing` skill (per brief) | The authority for test conventions — layers, file layout, frameworks, mocking boundary, fixtures/factories, harness, named types |
 | Domain architecture | `<domain>-architecture` skill (per brief) | Structure of the code under test — so your tests target the real types / exported API |
@@ -38,7 +38,7 @@ If the `<domain>-testing` skill is **absent** (conventions) or the `environment`
 3. Write **every test layer your `<domain>-testing` skill defines** for the block, plus their fixtures/factories: e.g. integration tests against real backing services, component tests, and — for user-facing behaviors — full-stack E2E specs. One behavior per test; follow the skill's file layout, harness, mocking boundary, and named-type conventions.
 4. **Platform subsystems**: drive the subsystem's *real mechanism* against real infra (e.g. real concurrency, real row-claims, cap-under-load, lease-timeout re-claim). Use the engineer-provided fake/mock ONLY for the external edge (a model API, network, timers); **never test the installed package**, and never fake the thing under test. If the subsystem ships no fake you need, that's `Blocked on:` the engineer.
 5. **Run** each layer via the test commands in the `environment` skill (test *conventions* per `<domain>-testing`); for full-stack/E2E, bring infra and the app up per the `environment` skill first. Green is **observed, not assumed** — a layer you authored but did not execute is reported as **not run**.
-6. Reply per the `vibe-team-protocol` done-report format with green/red **per layer** (verbatim run results) and, if red, whether it's a test bug or an impl defect.
+6. Reply per the `team-protocol` done-report format with green/red **per layer** (verbatim run results) and, if red, whether it's a test bug or an impl defect.
 
 ## Boundaries
 

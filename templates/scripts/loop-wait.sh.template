@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vibe-template: templates/scripts/loop-wait.sh.template v1 | generated 2026-07-20 | edits below this marker are yours
+# vibe-template: templates/scripts/loop-wait.sh.template v2 | generated 2026-07-24 | edits below this marker are yours
 #
 # loop-wait — the loop orchestrator's ONE sanctioned way to wait on a worker
 # session. Blocks (foreground) until a status line for <slug> appears in the
@@ -8,7 +8,7 @@
 # it works whichever CLI runs the orchestrator.
 set -euo pipefail
 
-# STATUS_LOG — the append-only signal log both levels share (vibe-loop-protocol
+# STATUS_LOG — the append-only signal log both levels share (loop-protocol
 # owns the line grammar). e.g. .workspace/status.log
 STATUS_LOG="{{STATUS_LOG}}"
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vibe-template: templates/scripts/env-up.sh.template v1 | generated 2026-07-13 | edits below this marker are yours
+# vibe-template: templates/scripts/env-up.sh.template v2 | generated 2026-07-24 | edits below this marker are yours
 #
 # env-up — the ONE sanctioned command to bring the project environment up.
 # Idempotent: safe to re-run when services are already up.
@@ -24,8 +24,15 @@ echo "env-up: starting infra…"
 {{INFRA_UP_CMD}}
 
 # APP_UP_CMD — starts the app/server in the background so this script can poll.
-# Discover: the local dev run target; background it and redirect its logs.
-# e.g. make start >/tmp/app.log 2>&1 &
+# WARNING: never a foreground launcher held under `wait` with a teardown trap —
+# when the launching session is reaped, the trap kills the stack for every session.
+# Discover: the local dev run target; prefer a start that DETACHES (its own
+# session/process group via setsid, or the stack's own daemon mode) and returns
+# once launched. An attached launcher only exits at teardown, so its exit must
+# never be read as readiness — readiness is the wait_port/wait_http polls below.
+# Any stop path must find the stack by ground truth (port → PID/PGID), not by
+# which session started it.
+# e.g. setsid make start >/tmp/app.log 2>&1 &      (or: make start >/tmp/app.log 2>&1 &)
 echo "env-up: starting app…"
 {{APP_UP_CMD}}
 
@@ -58,6 +65,8 @@ wait_http() {
 # READINESS_CHECKS — one wait_port/wait_http call per service a test needs up.
 # Discover: the ports/health URLs infra and the app listen on (compose port maps,
 # app config, the frontend's API base URL). Name each so its failure is legible.
+# These polls are the ONLY readiness signal — never process liveness or a start
+# command exiting.
 # e.g. wait_port 127.0.0.1 5432 postgres
 #      wait_http http://127.0.0.1:8080/healthz api
 {{READINESS_CHECKS}}

@@ -1,13 +1,13 @@
 ---
-name: vibe-review-protocol
+name: review-protocol
 description: The universal review discipline — a read-only reviewer scores one block's diff against the plan, checklists, constitution, and tests on a six-dimension graded rubric, files findings as what/why/fix attributable to a dimension, and replies Accept/Revise/Block per the team's done-report.
 ---
-<!-- vibe-template: templates/kernel/review-protocol.md v1 | generated 2026-07-13 | edits below this marker are yours -->
+<!-- vibe-template: templates/kernel/review-protocol.md v2 | generated 2026-07-24 | edits below this marker are yours -->
 
 # Review protocol
 ## Read-only stance (this binds top and bottom)
 
-- **You never edit files.** Never `Edit` / `Write`. If you're tempted to "just fix it", that's a finding, not an edit. Tools: Read / Grep / Glob / codegraph / read-only Bash (`git diff`, the test/build commands) only.
+- **You never edit project files.** Never `Edit`. Sole `Write` carve-out: exactly one path, `<plan-dir>/reports/<your-name>-<seq>.md` — your own findings file, a NEW file per review round, per `team-protocol`'s file channel. Still absolutely forbidden: project/source files, the plan, any other agent's report. If you're tempted to "just fix it", that's a finding, not an edit. Tools: Read / Grep / Glob / codegraph / read-only Bash (`git diff`, the test/build commands) only — plus `Write` for that one findings path.
 - You do not redesign. If the plan itself is wrong, andon-cord the team-lead — don't route it as a code finding.
 
 ## What you review against
@@ -61,10 +61,17 @@ Revise / Block — findings first (file-then-line), test result on its own line 
 Tests: <cmd> → <green | red | not run>
 ```
 
+Filed form — when the findings list would push the reply past `team-protocol`'s report cap (~15 lines), the full list goes in your findings file (same what/why/fix format, one per line/block, dimension-attributed — unchanged whether inline or filed) and the reply carries verdict + count + worst dimension + path:
+```
+<Revise|Block> — <block>. Commit: <hash>
+Findings: <N> · worst: <dimension> · filed: <plan-dir>/reports/<your-name>-<seq>.md
+Tests: <cmd> → <green | red | not run>
+```
+
 ## Scope
 
 - Review only the block you were assigned. Don't review unrelated pre-existing code.
 - Don't re-review files you already approved in a prior cycle unless the fix touched them.
 - Before flagging a contract, env var, or behavior from an older plan as broken or missing, check that plan's header `Status` — Superseded plans' contracts are obsolete by design, not findings. Supersession is the #1 source of false findings.
 - A finding may already be satisfied in the working tree — a reviewer can race the engineer's in-flight writes. Fix engineers verify each finding against current code before changing anything; the team-lead arbitrates a disputed finding by re-review, not a blind re-fix.
-<!-- Read-only stance (restated): you never edit files; a temptation to fix is a finding; a wrong plan is an andon cord, not a code finding. -->
+<!-- Read-only stance (restated): you never edit project files — your sole Write is your own reports/ findings file; a temptation to fix is a finding; a wrong plan is an andon cord, not a code finding. -->
